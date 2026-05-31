@@ -70,8 +70,7 @@ const store = {
    response unchanged. In the artifact preview there is no backend, so askClaude returns ""
    and the deterministic fallback line is shown — that's expected. Real AI requires the route. */
 let LAST_AI_ERROR = "";
-const DEBUG_AI = false; // confirmed AI working; flip true only to debug again
-const APP_VERSION = "v-test-002";
+const DEBUG_AI = false;
 const AI_ENDPOINT = "/api/ask-claude";
 async function askClaude(userContent, maxTokens = 1000, temperature = 1) {
   try {
@@ -168,7 +167,7 @@ export default function App() {
     <div style={wrap}>
       <style>{FONT}{css}</style>
       <div style={grain} />
-      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", position: "relative", zIndex: 2, paddingBottom: 24 }}>
+      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", position: "relative", zIndex: 2, paddingBottom: "calc(84px + env(safe-area-inset-bottom))" }}>
         {view === "home" && <Home settings={settings} memory={memory} urges={urges} mornings={mornings} days={days}
           needMorning={needMorning} needDay={needDay} voice={voice}
           onFold={() => setView("intervene")} onMorning={() => setView("morning")} onDay={() => setView("day")} />}
@@ -287,12 +286,12 @@ function Home({ settings, memory, urges, mornings, days, needMorning, needDay, v
   const clearThis = mornings.filter((m) => new Date(m.date + "T12:00").getMonth() === month && (m.feel === "Clear" || m.feel === "Amazing")).length;
   const checkins = urges.length + mornings.length + days.length;
   const homeTitle = checkins < 3 ? "You don't need to\nfigure out your whole\nlife tonight." : checkins < 6 ? "I'm starting to\nnotice a few things." : "Here's what I'm\nnoticing about you.";
-  const cardLabel = checkins < 3 ? "Start here" : checkins < 6 ? "Starting signal" : "What I noticed today";
+  const cardLabel = checkins < 3 ? "Your pattern" : checkins < 6 ? "What you told me" : "What I know so far";
   const cardBody = checkins < 3 ? onboardingCard(settings) : noticedToday(memory, urges, mornings, days);
 
   return (
     <div style={pad}>
-      <p style={kicker}>Clear Morning{settings.name ? ` · ${settings.name}` : ""} <span style={{ opacity: 0.4, fontSize: 9 }}>{APP_VERSION}</span></p>
+      <p style={kicker}>Clear Morning{settings.name ? ` · ${settings.name}` : ""}</p>
       <h1 style={{ ...h1, whiteSpace: "pre-line" }}>{homeTitle}</h1>
 
       <div style={brandCard}>
@@ -350,7 +349,7 @@ function Intervene({ settings, memory, urges, mornings, days, feedback, replacem
       <Progress step={step} total={9} />
 
       {voice && (
-        <button style={voiceBar} onClick={() => playRef.current && playRef.current.play()}>▶ Hear from clear-headed you</button>
+        <button style={voiceBar} onClick={() => playRef.current && playRef.current.play()}>Listen to your own reminder</button>
       )}
       {voice && <audio ref={playRef} src={voice} />}
 
@@ -791,7 +790,6 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
   const [err, setErr] = useState("");
   const recRef = useRef(null); const chunks = useRef([]); const timerRef = useRef(null); const playRef = useRef(null);
 
-  const MAX_REC = 60;
   const startRec = async () => {
     setErr("");
     try {
@@ -799,13 +797,7 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
       const mr = new MediaRecorder(stream); chunks.current = [];
       mr.ondataavailable = (e) => chunks.current.push(e.data);
       mr.onstop = () => { stream.getTracks().forEach((t) => t.stop()); const blob = new Blob(chunks.current, { type: "audio/webm" }); const r = new FileReader(); r.onload = () => saveVoice(r.result); r.readAsDataURL(blob); };
-      mr.start(); recRef.current = mr; setRecording(true); setElapsed(0);
-      timerRef.current = setInterval(() => {
-        setElapsed((e) => {
-          if (e + 1 >= MAX_REC) { clearInterval(timerRef.current); try { recRef.current && recRef.current.stop(); } catch (_) {} setRecording(false); }
-          return e + 1;
-        });
-      }, 1000);
+      mr.start(); recRef.current = mr; setRecording(true); setElapsed(0); timerRef.current = setInterval(() => setElapsed((e) => e + 1), 1000);
     } catch (e) { setErr("Mic isn't available in this preview — it works in the shipped app."); }
   };
   const stopRec = () => { try { recRef.current && recRef.current.stop(); } catch (_) {} clearInterval(timerRef.current); setRecording(false); };
@@ -817,21 +809,14 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
 
       <div style={{ ...aiCard, marginTop: 22 }}>
         <p style={{ margin: "0 0 4px", color: "#c8b79a", fontSize: 15, fontWeight: 500 }}>Future Me</p>
-        <p style={{ margin: "0 0 14px", color: "#7a6b58", fontSize: 13, lineHeight: 1.5 }}>Record a 15–60 second message for the version of you who's about to fold.</p>
+        <p style={{ margin: "0 0 14px", color: "#7a6b58", fontSize: 13, lineHeight: 1.5 }}>Record a message to the version of you who's about to fold. It's the first thing you can hit in emergency mode.</p>
         {!recording ? (
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <button style={{ ...primary, width: "auto", padding: "12px 18px", fontSize: 14 }} onClick={startRec}>{voice ? "Re-record" : "● Record"}</button>
-            {voice && <button style={{ ...secondary, width: "auto", padding: "12px 18px", fontSize: 14 }} onClick={() => playRef.current && playRef.current.play()}>Hear from clear-headed you</button>}
+            {voice && <button style={{ ...secondary, width: "auto", padding: "12px 18px", fontSize: 14 }} onClick={() => playRef.current && playRef.current.play()}>Listen</button>}
             {voice && <button style={{ ...secondary, width: "auto", padding: "12px 18px", fontSize: 14, borderColor: "#4a2a2a", color: "#a87" }} onClick={() => saveVoice(null)}>Delete</button>}
           </div>
-        ) : (
-          <div>
-            <button style={{ ...primary, width: "auto", padding: "12px 22px", fontSize: 14, background: "#b5483f" }} onClick={stopRec}>■ Stop</button>
-            <p style={{ margin: "10px 0 0", color: elapsed >= 50 ? "#c87" : "#7a6b58", fontSize: 13, fontVariantNumeric: "tabular-nums" }}>
-              {`0:${String(elapsed).padStart(2, "0")} / 1:00`}{elapsed >= MAX_REC ? " — Recording complete." : ""}
-            </p>
-          </div>
-        )}
+        ) : (<button style={{ ...primary, width: "auto", padding: "12px 22px", fontSize: 14, background: "#b5483f" }} onClick={stopRec}>■ Stop ({elapsed}s)</button>)}
         {err && <p style={{ color: "#a87", fontSize: 12.5, marginTop: 10, lineHeight: 1.4 }}>{err}</p>}
         {voice && <audio ref={playRef} src={voice} />}
       </div>
@@ -1276,12 +1261,16 @@ const miniLbl = { color: "#7a6b58", fontSize: 12, marginTop: 6, lineHeight: 1.3 
 const brandCard = { marginTop: 22, padding: "18px 20px", border: "1px solid rgba(154,123,79,0.15)", borderRadius: 14, background: "rgba(0,0,0,0.2)" };
 const aiCard = { padding: "18px 20px", marginBottom: 12, borderRadius: 14, border: "1px solid rgba(154,123,79,0.18)", background: "rgba(154,123,79,0.05)" };
 const nav = {
-  position: "relative",
-  flexShrink: 0,
-  zIndex: 20,
+  position: "fixed",
+  bottom: 0,
+  left: "50%",
+  transform: "translateX(-50%)",
+  width: "100%",
+  maxWidth: 440,
+  zIndex: 50,
   display: "flex",
   borderTop: "1px solid #2a2018",
-  background: "rgba(8,5,3,0.96)",
+  background: "rgba(8,5,3,0.97)",
   backdropFilter: "blur(12px)",
   paddingBottom: "env(safe-area-inset-bottom)"
 };
