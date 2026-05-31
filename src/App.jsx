@@ -393,6 +393,15 @@ function Feedback({ line, onDone }) {
   );
 }
 
+function ThinkingIcon() {
+  return (
+    <div style={thinkingWrap}>
+      <div style={thinkingOrb} />
+      <span>thinking through your moment</span>
+    </div>
+  );
+}
+
 function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, onNext }) {
   const [aiLine, setAiLine] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -483,7 +492,7 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
     <div className="fade" style={stepWrap}>
       <p style={kicker}>Reality check</p>
       {loading ? (
-        <p style={{ ...sub, fontStyle: "italic", fontSize: 16 }}>reading your moment…</p>
+        <ThinkingIcon />
       ) : (
         <p style={{ fontFamily: "'Fraunces',serif", color: "#e8ddcc", fontSize: 23, lineHeight: 1.38, margin: "4px 0 0", whiteSpace: "pre-line" }}>
           {shownLine}
@@ -991,11 +1000,14 @@ function buildReplacement(settings) {
   return null;
 }
 
+const REALITY_ANGLES = ["trigger", "need", "pattern", "tomorrow", "identity"];
+const REALITY_ANGLES = ["trigger", "need", "pattern", "tomorrow", "identity"];
 function buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref }) {
   const recentLines = [
     ...(feedback || []).map((f) => f.line),
     ...(urges || []).map((u) => u.realityLine),
   ].filter(Boolean).slice(0, 5);
+  const angle = REALITY_ANGLES[Math.floor(Math.random() * REALITY_ANGLES.length)];
   return `
 You are Clear Morning.
 Talk like a calm friend with backbone. Direct. Human. No therapy voice. No fake motivation.
@@ -1016,6 +1028,8 @@ ${summarize(urges)}
 ${yref ? `Yesterday: ${yref}` : ""}
 ${(feedback || []).filter((f) => f.verdict === "miss" && f.note).slice(0, 4).map((f) => `A past line missed; they wanted noticed: "${f.note}"`).join("\n")}
 ${recentLines.length ? `Things you've ALREADY said to them on past nights (do NOT repeat these — find a fresh angle, fresh words):\n- ${recentLines.join("\n- ")}` : ""}
+Do not mention the user's project, build, or skills in every response. Use them only when they clearly fit the current moment. Vary the angle. Sometimes focus on the trigger, sometimes the emotional need, sometimes the pattern, sometimes tomorrow morning, and only occasionally the bigger goal. Avoid repeating the same personal anchor across multiple checks in a row.
+Response angle for this check: ${angle}
 Write 2 short paragraphs.
 Paragraph 1: name what is actually happening emotionally.
 Paragraph 2: tell them exactly what to do for the next 10 minutes.
@@ -1183,7 +1197,7 @@ function movementLine(behavior, context) {
 const wrap = { maxWidth: 440, width: "100%", margin: "0 auto", height: "100dvh", minHeight: 600, background: "linear-gradient(175deg,#1a130d,#0c0805 65%,#080503)", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", overflowX: "hidden", overscrollBehavior: "none", fontFamily: "'Jost',sans-serif" };
 const wrapMorning = { maxWidth: 440, margin: "0 auto", background: "linear-gradient(175deg,#f3e3cd,#e9cfa9 70%,#dcb886)", position: "relative" };
 const grain = { position: "absolute", inset: 0, zIndex: 1, opacity: 0.04, pointerEvents: "none", backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" };
-const css = `html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior:none}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}.fade{animation:fu .6s cubic-bezier(.2,.7,.2,1) both}@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}input,textarea{outline:none}input:focus,textarea:focus{border-color:#9a7b4f!important}input::placeholder,textarea::placeholder{color:#6f6253;opacity:1}h1,h2,p{overflow-wrap:break-word;word-break:break-word}button{cursor:pointer;font-family:'Jost',sans-serif}`;
+const css = `html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior:none}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}.fade{animation:fu .6s cubic-bezier(.2,.7,.2,1) both}@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes pulseThink{0%{transform:scale(0.85);opacity:0.45;box-shadow:0 0 0 0 rgba(154,123,79,0.35)}70%{transform:scale(1);opacity:1;box-shadow:0 0 0 9px rgba(154,123,79,0)}100%{transform:scale(0.85);opacity:0.45;box-shadow:0 0 0 0 rgba(154,123,79,0)}}input,textarea{outline:none}input:focus,textarea:focus{border-color:#9a7b4f!important}input::placeholder,textarea::placeholder{color:#6f6253;opacity:1}h1,h2,p{overflow-wrap:break-word;word-break:break-word}button{cursor:pointer;font-family:'Jost',sans-serif}`;
 const pad = { padding: "52px 26px 26px" };
 const stepWrap = { flex: 1, display: "flex", flexDirection: "column" };
 const kicker = { textTransform: "uppercase", letterSpacing: 3, fontSize: 11, color: "#6f6253", margin: "0 0 10px" };
@@ -1220,3 +1234,5 @@ const toggleRow = { display: "flex", justifyContent: "space-between", alignItems
 const tog = (on) => ({ width: 48, height: 28, borderRadius: 20, background: on ? "#9a7b4f" : "#2a2018", position: "relative", flexShrink: 0, transition: "background .2s" });
 const dot = (on) => ({ position: "absolute", top: 3, left: on ? 23 : 3, width: 22, height: 22, borderRadius: "50%", background: "#e8ddcc", transition: "left .2s" });
 const chip = { fontSize: 13, color: "#c8b79a", border: "1px solid #3a2f22", borderRadius: 20, padding: "6px 12px", cursor: "pointer" };
+const thinkingWrap = { display: "flex", alignItems: "center", gap: 10, marginTop: 18, color: "#8a7b66", fontSize: 13, letterSpacing: 0.4 };
+const thinkingOrb = { width: 11, height: 11, borderRadius: "50%", background: "#9a7b4f", boxShadow: "0 0 0 rgba(154,123,79,0.45)", animation: "pulseThink 1.4s infinite" };
