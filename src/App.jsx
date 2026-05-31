@@ -71,6 +71,7 @@ const store = {
    and the deterministic fallback line is shown — that's expected. Real AI requires the route. */
 let LAST_AI_ERROR = "";
 const DEBUG_AI = true; // set true while testing to see why a fallback was used
+const APP_VERSION = "v-test-002";
 const AI_ENDPOINT = "/api/ask-claude";
 async function askClaude(userContent, maxTokens = 1000, temperature = 1) {
   try {
@@ -291,7 +292,7 @@ function Home({ settings, memory, urges, mornings, days, needMorning, needDay, v
 
   return (
     <div style={pad}>
-      <p style={kicker}>Clear Morning{settings.name ? ` · ${settings.name}` : ""}</p>
+      <p style={kicker}>Clear Morning{settings.name ? ` · ${settings.name}` : ""} <span style={{ opacity: 0.4, fontSize: 9 }}>{APP_VERSION}</span></p>
       <h1 style={{ ...h1, whiteSpace: "pre-line" }}>{homeTitle}</h1>
 
       <div style={brandCard}>
