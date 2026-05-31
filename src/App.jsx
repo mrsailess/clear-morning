@@ -350,7 +350,7 @@ function Intervene({ settings, memory, urges, mornings, days, feedback, replacem
       <Progress step={step} total={9} />
 
       {voice && (
-        <button style={voiceBar} onClick={() => playRef.current && playRef.current.play()}>Listen to your own reminder</button>
+        <button style={voiceBar} onClick={() => playRef.current && playRef.current.play()}>▶ Hear from your future self</button>
       )}
       {voice && <audio ref={playRef} src={voice} />}
 
@@ -791,6 +791,7 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
   const [err, setErr] = useState("");
   const recRef = useRef(null); const chunks = useRef([]); const timerRef = useRef(null); const playRef = useRef(null);
 
+  const MAX_REC = 60;
   const startRec = async () => {
     setErr("");
     try {
@@ -798,7 +799,13 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
       const mr = new MediaRecorder(stream); chunks.current = [];
       mr.ondataavailable = (e) => chunks.current.push(e.data);
       mr.onstop = () => { stream.getTracks().forEach((t) => t.stop()); const blob = new Blob(chunks.current, { type: "audio/webm" }); const r = new FileReader(); r.onload = () => saveVoice(r.result); r.readAsDataURL(blob); };
-      mr.start(); recRef.current = mr; setRecording(true); setElapsed(0); timerRef.current = setInterval(() => setElapsed((e) => e + 1), 1000);
+      mr.start(); recRef.current = mr; setRecording(true); setElapsed(0);
+      timerRef.current = setInterval(() => {
+        setElapsed((e) => {
+          if (e + 1 >= MAX_REC) { clearInterval(timerRef.current); try { recRef.current && recRef.current.stop(); } catch (_) {} setRecording(false); }
+          return e + 1;
+        });
+      }, 1000);
     } catch (e) { setErr("Mic isn't available in this preview — it works in the shipped app."); }
   };
   const stopRec = () => { try { recRef.current && recRef.current.stop(); } catch (_) {} clearInterval(timerRef.current); setRecording(false); };
@@ -810,14 +817,21 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
 
       <div style={{ ...aiCard, marginTop: 22 }}>
         <p style={{ margin: "0 0 4px", color: "#c8b79a", fontSize: 15, fontWeight: 500 }}>Future Me</p>
-        <p style={{ margin: "0 0 14px", color: "#7a6b58", fontSize: 13, lineHeight: 1.5 }}>Record a message to the version of you who's about to fold. It's the first thing you can hit in emergency mode.</p>
+        <p style={{ margin: "0 0 14px", color: "#7a6b58", fontSize: 13, lineHeight: 1.5 }}>Record a 15–60 second message for the version of you who's about to fold.</p>
         {!recording ? (
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <button style={{ ...primary, width: "auto", padding: "12px 18px", fontSize: 14 }} onClick={startRec}>{voice ? "Re-record" : "● Record"}</button>
-            {voice && <button style={{ ...secondary, width: "auto", padding: "12px 18px", fontSize: 14 }} onClick={() => playRef.current && playRef.current.play()}>Listen</button>}
+            {voice && <button style={{ ...secondary, width: "auto", padding: "12px 18px", fontSize: 14 }} onClick={() => playRef.current && playRef.current.play()}>Hear from your future self</button>}
             {voice && <button style={{ ...secondary, width: "auto", padding: "12px 18px", fontSize: 14, borderColor: "#4a2a2a", color: "#a87" }} onClick={() => saveVoice(null)}>Delete</button>}
           </div>
-        ) : (<button style={{ ...primary, width: "auto", padding: "12px 22px", fontSize: 14, background: "#b5483f" }} onClick={stopRec}>■ Stop ({elapsed}s)</button>)}
+        ) : (
+          <div>
+            <button style={{ ...primary, width: "auto", padding: "12px 22px", fontSize: 14, background: "#b5483f" }} onClick={stopRec}>■ Stop</button>
+            <p style={{ margin: "10px 0 0", color: elapsed >= 50 ? "#c87" : "#7a6b58", fontSize: 13, fontVariantNumeric: "tabular-nums" }}>
+              {`0:${String(elapsed).padStart(2, "0")} / 1:00`}{elapsed >= MAX_REC ? " — Recording complete." : ""}
+            </p>
+          </div>
+        )}
         {err && <p style={{ color: "#a87", fontSize: 12.5, marginTop: 10, lineHeight: 1.4 }}>{err}</p>}
         {voice && <audio ref={playRef} src={voice} />}
       </div>
