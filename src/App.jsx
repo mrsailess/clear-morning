@@ -401,37 +401,8 @@ function ThinkingIcon() {
         <span style={{ ...thinkingDot, animationDelay: "0.2s" }} />
         <span style={{ ...thinkingDot, animationDelay: "0.4s" }} />
       </span>
-      <span>reading what you wrote</span>
+      <span>Thinking...</span>
     </div>
-  );
-}
-
-function Typewriter({ text, style }) {
-  const [shown, setShown] = useState("");
-  const [done, setDone] = useState(false);
-  useEffect(() => {
-    if (text === shown) return;
-    setShown(""); setDone(false);
-    if (!text) { setDone(true); return; }
-    let i = 0;
-    let id;
-    const tick = () => {
-      i += Math.floor(Math.random() * 3) + 1;
-      setShown(text.slice(0, i));
-      if (i >= text.length) { setShown(text); setDone(true); return; }
-      id = setTimeout(tick, Math.floor(Math.random() * 20) + 12);
-    };
-    id = setTimeout(tick, Math.floor(Math.random() * 20) + 12);
-    return () => clearTimeout(id);
-  }, [text]);
-  return (
-    <p
-      style={style}
-      onClick={() => { setShown(text); setDone(true); }}
-    >
-      {shown}
-      {!done && <span style={{ opacity: 0.5 }}>▌</span>}
-    </p>
   );
 }
 
@@ -482,15 +453,35 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
       "Confidence": "a little prouder of yourself tomorrow",
       "Finances": "a little closer to where you want to be",
     }[reason];
+
+    // 2) THE REFRAME — pick ONE angle by weight, so the project is an occasional card, not the default.
+    // ~50% pattern/need, ~25% recent evidence, ~15% project/build, ~10% reminder-as-reframe.
+    const lastClear = memory.lastClearMorningCause;
+    const recentEvidence = [];
+    if (rw && urges.length >= 4) recentEvidence.push(`The last few times, this showed up ${ctxShort || `during your ${rw} stretch`} — and it passed.`);
+    if (lastClear) recentEvidence.push(`Last time you waited this out, you woke up clear.`);
+    if (memory.bestReplacement) recentEvidence.push(`${memory.bestReplacement} has worked for you before — better than you expect in the moment.`);
+
+    const needLine = seeking
+      ? `The pull right now is for ${seeking.toLowerCase()} — the ${bn} is just the closest thing. The feeling moves on its own if you let it.`
+      : `This feeling peaks and then drops on its own. You don't have to do anything with it.`;
+
+    const projectLine = project
+      ? `You're not really deciding about ${bn} — you're deciding whether tomorrow's energy goes toward ${project}, or toward recovering from tonight.`
+      : (build ? `Tonight isn't really about ${bn}. It's about ${areaObject(build)}.` : "");
+
+    const roll = Math.random();
     let buildingSentence = "";
-    if (project) {
-      buildingSentence = `You're not deciding about ${bn} tonight — you're deciding whether tomorrow's energy goes toward ${project}, or toward recovering from this.`;
+    if (roll < 0.50) {
+      buildingSentence = needLine; // pattern / emotional need
+    } else if (roll < 0.75 && recentEvidence.length) {
+      buildingSentence = pick(recentEvidence); // recent evidence
+    } else if (roll < 0.90 && projectLine && urges.length > 3) {
+      buildingSentence = projectLine; // project/build — occasional, only once they have history
     } else if (reasonClause) {
       buildingSentence = `Every time you don't fold, you wake up ${reasonClause}.`;
-    } else if (build) {
-      buildingSentence = `Tonight isn't really about ${bn}. It's about ${areaObject(build)}.`;
-    } else if (futureSelf) {
-      buildingSentence = `The version of you you're becoming doesn't need this moment to feel okay.`;
+    } else {
+      buildingSentence = needLine;
     }
 
     // 3) REMINDER — their own words, or a clean closing nudge
@@ -531,10 +522,9 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
       {loading ? (
         <ThinkingIcon />
       ) : (
-        <Typewriter
-          text={shownLine}
-          style={{ fontFamily: "'Fraunces',serif", color: "#e8ddcc", fontSize: 23, lineHeight: 1.38, margin: "4px 0 0", whiteSpace: "pre-line", cursor: "pointer" }}
-        />
+        <p style={{ fontFamily: "'Fraunces',serif", color: "#e8ddcc", fontSize: 23, lineHeight: 1.38, margin: "4px 0 0", whiteSpace: "pre-line" }}>
+          {shownLine}
+        </p>
       )}
       {!loading && source === "fallback" && DEBUG_AI && <p style={{ ...sub, fontSize: 11, opacity: 0.6 }}>[using fallback — {LAST_AI_ERROR || "no AI available"}]</p>}
       <div style={{ flex: 1 }} />
