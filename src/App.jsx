@@ -477,16 +477,21 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
     return () => { off = true; };
   }, []);
 
-  const shownLine = aiLine || personal;
+  const shownLine = loading ? "" : (aiLine || personal);
 
   return (
     <div className="fade" style={stepWrap}>
       <p style={kicker}>Reality check</p>
-      <p style={{ fontFamily: "'Fraunces',serif", color: "#e8ddcc", fontSize: 23, lineHeight: 1.38, margin: "4px 0 0", whiteSpace: "pre-line" }}>{shownLine}</p>
-      {loading && <p style={{ ...sub, fontStyle: "italic" }}>reading your moment…</p>}
+      {loading ? (
+        <p style={{ ...sub, fontStyle: "italic", fontSize: 16 }}>reading your moment…</p>
+      ) : (
+        <p style={{ fontFamily: "'Fraunces',serif", color: "#e8ddcc", fontSize: 23, lineHeight: 1.38, margin: "4px 0 0", whiteSpace: "pre-line" }}>
+          {shownLine}
+        </p>
+      )}
       {!loading && source === "fallback" && DEBUG_AI && <p style={{ ...sub, fontSize: 11, opacity: 0.6 }}>[using fallback — {LAST_AI_ERROR || "no AI available"}]</p>}
       <div style={{ flex: 1 }} />
-      <button style={primary} onClick={() => onNext(shownLine)}>Okay. What do I do? →</button>
+      <button style={primary} onClick={() => onNext(shownLine)} disabled={loading}>Okay. What do I do? →</button>
     </div>
   );
 }
