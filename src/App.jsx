@@ -111,7 +111,7 @@ const dayOfYear = () => Math.floor((Date.now() - new Date(new Date().getFullYear
    1. Make a free account at posthog.com, create a project, copy your Project API key.
    2. Paste it into POSTHOG_KEY below (replace the empty string).
    If the key is empty, tracking is silently off and the app works exactly the same. */
-const POSTHOG_KEY = ""; // <-- paste your PostHog project key here to enable
+const POSTHOG_KEY = "phc_mX8bazByE7BxvcjKXn4pwgTgGtTnb2qKJUFHz2gEaZvg"; // <-- paste your PostHog project key here to enable
 function initAnalytics() {
   if (!POSTHOG_KEY || typeof window === "undefined" || window.__phLoaded) return;
   window.__phLoaded = true;
