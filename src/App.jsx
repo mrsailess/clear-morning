@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef } from "react";
    A decision assistant + a friend that remembers you.
    Personality: calm friend / sharp older brother. No fake positivity. No therapy voice.
    Flow: I'm about to fold → behavior → trigger → what happened right before →
-         reality check (memory-driven) → 10-sec move → 10-min timer → did the pull drop → lock tomorrow.
+         reality check (memory-driven) → 10-sec move → 10-min timer → did the urge drop → lock tomorrow.
    Daily loop: morning proof · afternoon day check-in · night fold · weekly read.
    Reality checks use personal context when available.
    ─────────────────────────────────────────────── */
@@ -17,7 +17,7 @@ const TRIGGERS = ["Stress relief", "Reward", "Loneliness", "Boredom", "Escape", 
 const CONTEXTS = ["Work", "Argument", "Kids/family", "Scrolling", "Bored at home", "After dinner", "Late night alone", "Celebrating", "Other"];
 const FEELINGS = ["Foggy", "Okay", "Clear", "Amazing"];
 const TOMORROW = ["Clear", "Proud", "Present", "Focused", "Energized"];
-const DROP = ["The pull dropped", "I feel more in control", "Still there, but quieter", "No change"];
+const DROP = ["The urge dropped", "I feel more in control", "Still there, but quieter", "No change"];
 const DAYKIND = ["Draining", "Stressful", "Fine", "Good", "Great"];
 const CARRYING = ["Work", "An argument", "Loneliness", "Restlessness", "Nothing heavy"];
 const BASE_REPLACEMENTS = ["5-min walk", "Shower", "Journal", "Call someone", "Read"];
@@ -331,7 +331,7 @@ function behaviorPhrase(b) {
 }
 function onboardingCard(s) {
   const behavior = behaviorPhrase(s.primaryBehavior);
-  const when = s.usualWhen ? s.usualWhen.toLowerCase() : "when the pull shows up";
+  const when = s.usualWhen ? s.usualWhen.toLowerCase() : "when the urge shows up";
   return `You said you usually reach for ${behavior} ${when}. When that moment hits, open this before you decide.`;
 }
 
@@ -463,7 +463,7 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
     if (memory.bestReplacement) recentEvidence.push(`${memory.bestReplacement} has worked for you before — better than you expect in the moment.`);
 
     const needLine = seeking
-      ? `The pull right now is for ${seeking.toLowerCase()} — the ${bn} is just the closest thing. The feeling moves on its own if you let it.`
+      ? `The urge right now is for ${seeking.toLowerCase()} — the ${bn} is just the closest thing. The feeling moves on its own if you let it.`
       : `This feeling peaks and then drops on its own. You don't have to do anything with it.`;
 
     const projectLine = project
@@ -764,7 +764,7 @@ Return ONLY a JSON array of 3 short conversational insights (each under 22 words
             </div>
           )}
           <div style={miniRow}>
-            <div style={mini}><div style={miniNum}>{dropPct ?? "—"}%</div><div style={miniLbl}>the pull dropped when you waited</div></div>
+            <div style={mini}><div style={miniNum}>{dropPct ?? "—"}%</div><div style={miniLbl}>the urge dropped when you waited</div></div>
             <div style={mini}><div style={miniNum}>{clearPct ?? "—"}%</div><div style={miniLbl}>mornings clear</div></div>
           </div>
           {memory.bestReplacement && <Fact label="What works for you" value={memory.bestReplacement} />}
@@ -941,7 +941,7 @@ function firstUseLine(context, behavior, tone) {
     "Work": `Work didn't make you weak — it left you empty, and your brain's trying to fill the quiet fast. ${b === "drink" ? "The drink" : "This"} won't fill it. It'll just blur it.`,
     "Argument": `You're not reaching for ${b}. You're reaching for the off switch on a conversation that's still running in your head.`,
     "Kids/family": `You poured out all day. There's nothing left and you're trying to borrow some — but this charges interest you pay tomorrow.`,
-    "Scrolling": `Scrolling primed this. You fed your brain noise and now it wants the next hit. The pull isn't even yours — the screen handed it to you.`,
+    "Scrolling": `Scrolling primed this. You fed your brain noise and now it wants the next hit. The urge isn't even yours — the screen handed it to you.`,
     "Bored at home": `This isn't desire. It's empty time with no plan, and your brain hates a vacuum. Give it something to do for ten minutes.`,
     "After dinner": `That's a habit wearing the mask of a craving. The meal ended and your hand went looking for the ritual. You can keep the ritual without the fog.`,
     "Late night alone": `The house got quiet and the day finally caught up with you. You don't want ${b}. You want the day to stop pressing on you.`,
@@ -1052,7 +1052,7 @@ function buildRealityPrompt({ settings, memory, urges, mornings, days, feedback,
     ...(urges || []).map((u) => u.realityLine),
   ].filter(Boolean).slice(0, 5);
   const angle = REALITY_ANGLES[Math.floor(Math.random() * REALITY_ANGLES.length)];
-  // Moves that have worked for them before (chose a replacement and the pull dropped) — surface for relevance.
+  // Moves that have worked for them before (chose a replacement and the urge dropped) — surface for relevance.
   const workedMoves = [...new Set((urges || [])
     .filter((u) => u.replacement && u.dropped && u.dropped !== "No change")
     .map((u) => u.replacement))].slice(0, 4);
@@ -1183,7 +1183,7 @@ function holdGuidance(left, replacement) {
   }
   if (left > 180) {
     return {
-      title: "This is where the pull starts bargaining.",
+      title: "This is where the urge starts bargaining.",
       body: "It may tell you one time does not matter. That is the exact moment that does matter."
     };
   }
@@ -1201,7 +1201,7 @@ function holdGuidance(left, replacement) {
   }
   return {
     title: "That was the rep.",
-    body: "The pull showed up, you waited, and you proved it can pass without obeying it."
+    body: "The urge showed up, you waited, and you proved it can pass without obeying it."
   };
 }
 
