@@ -350,7 +350,7 @@ function Intervene({ settings, memory, urges, mornings, days, feedback, replacem
       <Progress step={step} total={9} />
 
       {voice && (
-        <button style={voiceBar} onClick={() => playRef.current && playRef.current.play()}>▶ Hear from your future self</button>
+        <button style={voiceBar} onClick={() => playRef.current && playRef.current.play()}>▶ Hear from clear-headed you</button>
       )}
       {voice && <audio ref={playRef} src={voice} />}
 
@@ -821,7 +821,7 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
         {!recording ? (
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <button style={{ ...primary, width: "auto", padding: "12px 18px", fontSize: 14 }} onClick={startRec}>{voice ? "Re-record" : "● Record"}</button>
-            {voice && <button style={{ ...secondary, width: "auto", padding: "12px 18px", fontSize: 14 }} onClick={() => playRef.current && playRef.current.play()}>Hear from your future self</button>}
+            {voice && <button style={{ ...secondary, width: "auto", padding: "12px 18px", fontSize: 14 }} onClick={() => playRef.current && playRef.current.play()}>Hear from clear-headed you</button>}
             {voice && <button style={{ ...secondary, width: "auto", padding: "12px 18px", fontSize: 14, borderColor: "#4a2a2a", color: "#a87" }} onClick={() => saveVoice(null)}>Delete</button>}
           </div>
         ) : (
