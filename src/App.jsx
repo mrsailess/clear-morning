@@ -70,7 +70,7 @@ const store = {
    response unchanged. In the artifact preview there is no backend, so askClaude returns ""
    and the deterministic fallback line is shown — that's expected. Real AI requires the route. */
 let LAST_AI_ERROR = "";
-const DEBUG_AI = false;
+const DEBUG_AI = false; // confirmed AI working; flip true only to debug again
 const AI_ENDPOINT = "/api/ask-claude";
 async function askClaude(userContent, maxTokens = 1000, temperature = 1) {
   try {
@@ -349,7 +349,7 @@ function Intervene({ settings, memory, urges, mornings, days, feedback, replacem
       <Progress step={step} total={9} />
 
       {voice && (
-        <button style={voiceBar} onClick={() => playRef.current && playRef.current.play()}>Listen to your own reminder</button>
+        <button style={voiceBar} onClick={() => playRef.current && playRef.current.play()}>Hear from clear-headed you</button>
       )}
       {voice && <audio ref={playRef} src={voice} />}
 
@@ -631,7 +631,7 @@ function Morning({ existing, onDone, onCancel }) {
           <p style={{ ...sub, color: "#7a5d44" }}>No judgment. This is how I learn what actually trips you up.</p>
           <div style={{ marginTop: 30 }}>
             <button onClick={() => onDone(feel, false)} style={{ ...choiceBase, border: "1px solid #d9c4a8", color: "#3a2a1c", background: "rgba(255,255,255,0.4)" }}>I stayed clear</button>
-            <button onClick={() => onDone(feel, true)} style={{ ...choiceBase, border: "1px solid #d9c4a8", color: "#3a2a1c", background: "rgba(255,255,255,0.4)" }}>I folded last night</button>
+            <button onClick={() => onDone(feel, true)} style={{ ...choiceBase, border: "1px solid #d9c4a8", color: "#3a2a1c", background: "rgba(255,255,255,0.4)" }}>I want to log what happened</button>
           </div>
         </div>
       )}
@@ -782,7 +782,7 @@ const Fact = ({ label, value }) => (
   </div>
 );
 
-/* ── YOU + Future Me ── */
+/* ── YOU + clear-headed you ── */
 function You({ settings, urges, voice, saveVoice, onChange }) {
   const [newRep, setNewRep] = useState("");
   const [recording, setRecording] = useState(false);
@@ -797,7 +797,12 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
       const mr = new MediaRecorder(stream); chunks.current = [];
       mr.ondataavailable = (e) => chunks.current.push(e.data);
       mr.onstop = () => { stream.getTracks().forEach((t) => t.stop()); const blob = new Blob(chunks.current, { type: "audio/webm" }); const r = new FileReader(); r.onload = () => saveVoice(r.result); r.readAsDataURL(blob); };
-      mr.start(); recRef.current = mr; setRecording(true); setElapsed(0); timerRef.current = setInterval(() => setElapsed((e) => e + 1), 1000);
+      mr.start(); recRef.current = mr; setRecording(true); setElapsed(0);
+      timerRef.current = setInterval(() => setElapsed((e) => {
+        const next = e + 1;
+        if (next >= 60) { stopRec(); return 60; }
+        return next;
+      }), 1000);
     } catch (e) { setErr("Mic isn't available in this preview — it works in the shipped app."); }
   };
   const stopRec = () => { try { recRef.current && recRef.current.stop(); } catch (_) {} clearInterval(timerRef.current); setRecording(false); };
@@ -808,7 +813,7 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
       <h2 style={h2}>Your setup</h2>
 
       <div style={{ ...aiCard, marginTop: 22 }}>
-        <p style={{ margin: "0 0 4px", color: "#c8b79a", fontSize: 15, fontWeight: 500 }}>Future Me</p>
+        <p style={{ margin: "0 0 4px", color: "#c8b79a", fontSize: 15, fontWeight: 500 }}>Clear-headed you</p>
         <p style={{ margin: "0 0 14px", color: "#7a6b58", fontSize: 13, lineHeight: 1.5 }}>Record a message to the version of you who's about to fold. It's the first thing you can hit in emergency mode.</p>
         {!recording ? (
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -1283,5 +1288,4 @@ const toggleRow = { display: "flex", justifyContent: "space-between", alignItems
 const tog = (on) => ({ width: 48, height: 28, borderRadius: 20, background: on ? "#9a7b4f" : "#2a2018", position: "relative", flexShrink: 0, transition: "background .2s" });
 const dot = (on) => ({ position: "absolute", top: 3, left: on ? 23 : 3, width: 22, height: 22, borderRadius: "50%", background: "#e8ddcc", transition: "left .2s" });
 const chip = { fontSize: 13, color: "#c8b79a", border: "1px solid #3a2f22", borderRadius: 20, padding: "6px 12px", cursor: "pointer" };
-const thinkingWrap = { display: "flex", alignItems: "center", gap: 10, marginTop: 18, color: "#8a7b66", fontSize: 13, letterSpacing: 0.4 };
 const thinkingDot = { width: 7, height: 7, borderRadius: "50%", background: "#c8b79a", display: "inline-block", animation: "pulseDot 1.2s infinite ease-in-out" };
