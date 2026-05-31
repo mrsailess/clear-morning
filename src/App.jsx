@@ -350,7 +350,7 @@ function Intervene({ settings, memory, urges, mornings, days, feedback, replacem
       <Progress step={step} total={9} />
 
       {voice && (
-        <button style={voiceBar} onClick={() => playRef.current && playRef.current.play()}>▶ Play what you told yourself</button>
+        <button style={voiceBar} onClick={() => playRef.current && playRef.current.play()}>Listen to your own reminder</button>
       )}
       {voice && <audio ref={playRef} src={voice} />}
 
@@ -373,12 +373,12 @@ function Feedback({ line, onDone }) {
   return (
     <div className="fade" style={stepWrap}>
       <p style={kicker}>One quick thing</p>
-      <h2 style={{ ...h2, marginBottom: 8 }}>Was that useful?</h2>
+      <h2 style={{ ...h2, marginBottom: 8 }}>Did this understand what was going on?</h2>
       {line && <p style={{ ...sub, fontStyle: "italic", marginTop: 4 }}>"{line}"</p>}
       {verdict !== "miss" ? (
         <div style={{ marginTop: 26 }}>
-          <button style={{ ...secondary, marginBottom: 12 }} onClick={() => onDone("hit")}>That hit</button>
-          <button style={secondary} onClick={() => setVerdict("miss")}>Not really</button>
+          <button style={{ ...secondary, marginBottom: 12 }} onClick={() => onDone("hit")}>Yes, that felt accurate</button>
+          <button style={secondary} onClick={() => setVerdict("miss")}>No, it missed something</button>
         </div>
       ) : (
         <div style={{ marginTop: 22 }}>
@@ -503,7 +503,7 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
     (async () => {
       setLoading(true);
       const startedAt = Date.now();
-      const txt = await askClaude(buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref }), 350, 1);
+      const txt = await askClaude(buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref }), 160, 1);
       // Keep the thinking dots on screen at least 700ms — instant replies feel fake.
       const elapsed = Date.now() - startedAt;
       if (elapsed < 700) await new Promise((r) => setTimeout(r, 700 - elapsed));
@@ -647,8 +647,8 @@ function DayCheckin({ existing, onDone, onCancel }) {
   return (
     <div style={{ ...pad, minHeight: "100%", display: "flex", flexDirection: "column", paddingTop: 54 }}>
       <button style={close} onClick={onCancel}>✕</button>
-      {step === 0 && <Step kick="Checking in" title="What kind of day was it?">{DAYKIND.map((x) => <Choice key={x} active={kind === x} onClick={() => { setKind(x); setTimeout(() => setStep(1), 150); }}>{x}</Choice>)}</Step>}
-      {step === 1 && <Step kick="Before tonight" title="What are you carrying into tonight?">{CARRYING.map((x) => <Choice key={x} active={carry === x} onClick={() => { setCarry(x); setTimeout(() => setStep(2), 150); }}>{x}</Choice>)}</Step>}
+      {step === 0 && <Step kick="Checking in" title="How has today felt so far?">{DAYKIND.map((x) => <Choice key={x} active={kind === x} onClick={() => { setKind(x); setTimeout(() => setStep(1), 150); }}>{x}</Choice>)}</Step>}
+      {step === 1 && <Step kick="Looking ahead" title="What could pull you off track later?">{CARRYING.map((x) => <Choice key={x} active={carry === x} onClick={() => { setCarry(x); setTimeout(() => setStep(2), 150); }}>{x}</Choice>)}</Step>}
       {step === 2 && (
         <div className="fade" style={stepWrap}>
           <p style={kicker}>In your own words</p>
@@ -656,7 +656,8 @@ function DayCheckin({ existing, onDone, onCancel }) {
           <p style={sub}>One line. This is what I'll remember about today.</p>
           <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="Work was a lot. I'm tired and I don't want to think." style={textArea} />
           <div style={{ height: 16 }} />
-          <button style={{ ...primary, marginBottom: 8 }} onClick={() => onDone(kind, carry, cleanUserText(note))}>Done</button>
+          <button style={{ ...primary, marginBottom: 8 }} onClick={() => onDone(kind, carry, cleanUserText(note))}>Save check-in</button>
+          <button style={secondary} onClick={() => onDone(kind, carry, "")}>Skip note</button>
         </div>
       )}
     </div>
@@ -801,7 +802,7 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
         {!recording ? (
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <button style={{ ...primary, width: "auto", padding: "12px 18px", fontSize: 14 }} onClick={startRec}>{voice ? "Re-record" : "● Record"}</button>
-            {voice && <button style={{ ...secondary, width: "auto", padding: "12px 18px", fontSize: 14 }} onClick={() => playRef.current && playRef.current.play()}>▶ Play</button>}
+            {voice && <button style={{ ...secondary, width: "auto", padding: "12px 18px", fontSize: 14 }} onClick={() => playRef.current && playRef.current.play()}>Listen</button>}
             {voice && <button style={{ ...secondary, width: "auto", padding: "12px 18px", fontSize: 14, borderColor: "#4a2a2a", color: "#a87" }} onClick={() => saveVoice(null)}>Delete</button>}
           </div>
         ) : (<button style={{ ...primary, width: "auto", padding: "12px 22px", fontSize: 14, background: "#b5483f" }} onClick={stopRec}>■ Stop ({elapsed}s)</button>)}
@@ -1059,13 +1060,12 @@ ${recentLines.length ? `Things you've ALREADY said on past nights (do NOT repeat
 FOCUS, in priority order: (1) the trigger, (2) the emotional need underneath it, (3) the pattern you've noticed, (4) what happened earlier today, (5) tomorrow morning.
 Do NOT bring up long-term goals, projects, or skills. Stay with what's happening right now, tonight. Understand the moment — don't recite what you remember about them.
 Response angle for this check: ${angle}
-Write 2 short paragraphs.
-Paragraph 1: name what is actually happening emotionally.
-Paragraph 2: tell them exactly what to do for the next 10 minutes.
-Make it feel personal, not generic.
-This person may open this many nights in a row — say something different each time, like a friend who doesn't repeat the same line twice. Vary your opening, your angle, and your image.
-No preamble.
-Do not write motivational quotes. Do not sound poetic. Sound like someone talking to them in the room.
+Keep the ENTIRE response under 90 words. Two short paragraphs only.
+Paragraph 1: one grounded observation about what's happening right now.
+Paragraph 2: one simple thing to do for the next 10 minutes.
+Avoid essays, overexplaining, life lessons, or motivational speeches. It should feel like a thoughtful observation from someone in the room, not a lecture.
+This person may open this many nights in a row — say something different each time. Vary your opening and angle.
+No preamble. No motivational quotes. Do not sound poetic.
 `.trim();
 }
 
