@@ -185,7 +185,7 @@ export default function App() {
       </div>
       {view !== "intervene" && view !== "morning" && view !== "day" && (
         <nav style={nav}>
-          {[["home", "Now"], ["insights", "Patterns"], ["you", "Build"]].map(([k, l]) => (
+          {[["home", "Now"], ["insights", "Patterns"], ["you", "Why"]].map(([k, l]) => (
             <button key={k} onClick={() => setView(k)} style={navBtn(view === k)}>{l}</button>
           ))}
         </nav>
@@ -395,13 +395,14 @@ function Feedback({ line, onDone }) {
 
 function ThinkingIcon() {
   return (
-    <div style={thinkingWrap}>
-      <span style={{ display: "inline-flex", gap: 5 }}>
-        <span style={{ ...thinkingDot, animationDelay: "0s" }} />
-        <span style={{ ...thinkingDot, animationDelay: "0.2s" }} />
-        <span style={{ ...thinkingDot, animationDelay: "0.4s" }} />
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, marginTop: 40, color: "#9a8a72", textAlign: "center" }}>
+      <span style={{ display: "inline-flex", gap: 9 }}>
+        <span style={{ ...thinkingDot, width: 11, height: 11, animationDelay: "0s" }} />
+        <span style={{ ...thinkingDot, width: 11, height: 11, animationDelay: "0.2s" }} />
+        <span style={{ ...thinkingDot, width: 11, height: 11, animationDelay: "0.4s" }} />
       </span>
-      <span>Thinking...</span>
+      <span style={{ fontFamily: "'Fraunces',serif", fontSize: 19, fontStyle: "italic", color: "#c8b79a" }}>Thinking through your moment</span>
+      <span style={{ fontSize: 13, maxWidth: 280, lineHeight: 1.5 }}>Looking at your patterns, what's worked before, and what you told yourself matters.</span>
     </div>
   );
 }
@@ -528,45 +529,45 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
       )}
       {!loading && source === "fallback" && DEBUG_AI && <p style={{ ...sub, fontSize: 11, opacity: 0.6 }}>[using fallback — {LAST_AI_ERROR || "no AI available"}]</p>}
       <div style={{ flex: 1 }} />
-      <button style={primary} onClick={() => onNext(shownLine)} disabled={loading}>Okay. What do I do? →</button>
+      <button style={primary} onClick={() => onNext(shownLine)} disabled={loading}>Choose your next 10 minutes →</button>
     </div>
   );
 }
 
+const MOVE_OPTIONS = ["Walk", "Shower", "Journal", "Make tea", "Call someone", "Clean something", "Custom"];
 function ImmediateAction({ behavior, context, replacements, onNext }) {
-  const [secs, setSecs] = useState(10);
   const [picked, setPicked] = useState(null);
-  const [familiarOpen, setFamiliarOpen] = useState(false);
-  useEffect(() => { if (secs <= 0) return; const t = setTimeout(() => setSecs((s) => s - 1), 1000); return () => clearTimeout(t); }, [secs]);
-  const move = movementLine(behavior, context);
-  const sliced = replacements.slice(0, 6);
-  const visibleReplacements = !replacements.includes("Pour something familiar") || sliced.includes("Pour something familiar")
-    ? sliced
-    : [...sliced.slice(0, 5), "Pour something familiar"];
+  const [customOpen, setCustomOpen] = useState(false);
+  const [customText, setCustomText] = useState("");
+  // Lead with any build-aligned replacement the user set up, then the standard moves.
+  const leadMoves = (replacements || []).filter((r) => r && !MOVE_OPTIONS.includes(r) && r !== "Pour something familiar").slice(0, 2);
+  const options = [...leadMoves, ...MOVE_OPTIONS];
+  if (customOpen) {
+    return (
+      <div className="fade" style={stepWrap}>
+        <p style={kicker}>Your move</p>
+        <h2 style={{ ...h2, marginBottom: 8 }}>What are you going to do for the next 10 minutes?</h2>
+        <input value={customText} onChange={(e) => setCustomText(e.target.value)} placeholder="Type it here — anything but the thing you came here to avoid." style={{ ...input, borderColor: "#9a7b4f" }} autoFocus />
+        <div style={{ height: 16 }} />
+        <button style={{ ...primary, marginBottom: 8 }} disabled={!customText.trim()} onClick={() => onNext(cleanUserText(customText) || "your own move")}>Start the 10 minutes</button>
+        <button style={secondary} onClick={() => setCustomOpen(false)}>← back</button>
+      </div>
+    );
+  }
   return (
     <div className="fade" style={stepWrap}>
-      <p style={kicker}>Do this now — 10 seconds</p>
-      <h2 style={{ ...h2, fontSize: 26, lineHeight: 1.25 }}>{move}</h2>
-      <p style={sub}>Movement first. You can't out-think a craving sitting in the same chair.</p>
-      <div style={{ textAlign: "center", margin: "26px 0 8px" }}>
-        <span style={{ fontFamily: "'Fraunces',serif", fontSize: 40, color: secs > 0 ? "#9a7b4f" : "#5a4d3d" }}>{secs > 0 ? secs : "✓"}</span>
-      </div>
+      <p style={kicker}>Your move</p>
+      <h2 style={{ ...h2, marginBottom: 8 }}>What's your move for the next 10 minutes?</h2>
+      <p style={sub}>Anything but the thing you came here to avoid. Pick one and start.</p>
       <div style={{ flex: 1 }} />
-      <p style={{ ...kicker, marginBottom: 12 }}>Then pick what fills the 10 minutes</p>
-      {!familiarOpen ? (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          {visibleReplacements.map((r) => (
-            <Choice key={r} grid active={picked === r} onClick={() => { if (r === "Pour something familiar") setFamiliarOpen(true); else { setPicked(r); setTimeout(() => onNext(r), 160); } }}>{r}</Choice>
-          ))}
-        </div>
-      ) : (
-        <>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            {FAMILIAR.map((f) => <Choice key={f} grid active={picked === f} onClick={() => { setPicked(f); setTimeout(() => onNext(f), 160); }}>{f}</Choice>)}
-          </div>
-          <button style={{ ...secondary, marginTop: 14 }} onClick={() => setFamiliarOpen(false)}>← back</button>
-        </>
-      )}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        {options.map((r) => (
+          <Choice key={r} grid active={picked === r} onClick={() => {
+            if (r === "Custom") { setCustomOpen(true); return; }
+            setPicked(r); setTimeout(() => onNext(r), 160);
+          }}>{r}</Choice>
+        ))}
+      </div>
     </div>
   );
 }
@@ -589,8 +590,8 @@ function Hold({ replacement, onNext }) {
         <div style={{ fontFamily: "'Fraunces',serif", fontSize: 66, color: "#9a7b4f", lineHeight: 1 }}>
           {m}:{String(s).padStart(2, "0")}
         </div>
-        <p style={{ ...sub, marginTop: 16, maxWidth: 280 }}>
-          {replacement ? `Go ${replacement.toLowerCase()}.` : "Do the other thing."}
+        <p style={{ ...sub, marginTop: 16, maxWidth: 300 }}>
+          Good choice. Just do this for 10 minutes. You don't need to decide anything else right now.
         </p>
         <div style={{ ...aiCard, marginTop: 24, width: "100%" }}>
           <p style={{ margin: 0, fontFamily: "'Fraunces',serif", fontSize: 20, lineHeight: 1.4, color: "#e8ddcc" }}>
@@ -630,8 +631,8 @@ function Morning({ existing, onDone, onCancel }) {
           <h2 style={{ fontFamily: "'Fraunces',serif", fontWeight: 400, fontSize: 30, color: "#2a1d12", margin: "4px 0 0" }}>How did last night go?</h2>
           <p style={{ ...sub, color: "#7a5d44" }}>No judgment. This is how I learn what actually trips you up.</p>
           <div style={{ marginTop: 30 }}>
-            <button onClick={() => onDone(feel, false)} style={{ ...choiceBase, border: "1px solid #d9c4a8", color: "#3a2a1c", background: "rgba(255,255,255,0.4)" }}>No — I stayed clear</button>
-            <button onClick={() => onDone(feel, true)} style={{ ...choiceBase, border: "1px solid #d9c4a8", color: "#3a2a1c", background: "rgba(255,255,255,0.4)" }}>Yes — log it honestly</button>
+            <button onClick={() => onDone(feel, false)} style={{ ...choiceBase, border: "1px solid #d9c4a8", color: "#3a2a1c", background: "rgba(255,255,255,0.4)" }}>I stayed clear</button>
+            <button onClick={() => onDone(feel, true)} style={{ ...choiceBase, border: "1px solid #d9c4a8", color: "#3a2a1c", background: "rgba(255,255,255,0.4)" }}>I folded last night</button>
           </div>
         </div>
       )}
@@ -648,7 +649,18 @@ function DayCheckin({ existing, onDone, onCancel }) {
     <div style={{ ...pad, minHeight: "100%", display: "flex", flexDirection: "column", paddingTop: 54 }}>
       <button style={close} onClick={onCancel}>✕</button>
       {step === 0 && <Step kick="Checking in" title="How has today felt so far?">{DAYKIND.map((x) => <Choice key={x} active={kind === x} onClick={() => { setKind(x); setTimeout(() => setStep(1), 150); }}>{x}</Choice>)}</Step>}
-      {step === 1 && <Step kick="Looking ahead" title="What could pull you off track later?">{CARRYING.map((x) => <Choice key={x} active={carry === x} onClick={() => { setCarry(x); setTimeout(() => setStep(2), 150); }}>{x}</Choice>)}</Step>}
+      {step === 1 && (
+        <div className="fade" style={stepWrap}>
+          <p style={kicker}>Looking ahead</p>
+          <h2 style={{ ...h2, marginBottom: 8 }}>What could pull you off track later?</h2>
+          <div style={{ marginTop: 6 }}>
+            {CARRYING.map((x) => <Choice key={x} active={carry === x} onClick={() => setCarry(x)}>{x}</Choice>)}
+          </div>
+          <div style={{ flex: 1 }} />
+          <button style={{ ...primary, marginBottom: 8 }} disabled={!carry} onClick={() => onDone(kind, carry, "")}>Save check-in</button>
+          <button style={secondary} disabled={!carry} onClick={() => setStep(2)}>Add a note</button>
+        </div>
+      )}
       {step === 2 && (
         <div className="fade" style={stepWrap}>
           <p style={kicker}>In your own words</p>
@@ -657,7 +669,7 @@ function DayCheckin({ existing, onDone, onCancel }) {
           <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="Work was a lot. I'm tired and I don't want to think." style={textArea} />
           <div style={{ height: 16 }} />
           <button style={{ ...primary, marginBottom: 8 }} onClick={() => onDone(kind, carry, cleanUserText(note))}>Save check-in</button>
-          <button style={secondary} onClick={() => onDone(kind, carry, "")}>Skip note</button>
+          <button style={secondary} onClick={() => setStep(1)}>← back</button>
         </div>
       )}
     </div>
@@ -1036,6 +1048,10 @@ function buildRealityPrompt({ settings, memory, urges, mornings, days, feedback,
     ...(urges || []).map((u) => u.realityLine),
   ].filter(Boolean).slice(0, 5);
   const angle = REALITY_ANGLES[Math.floor(Math.random() * REALITY_ANGLES.length)];
+  // Moves that have worked for them before (chose a replacement and the pull dropped) — surface for relevance.
+  const workedMoves = [...new Set((urges || [])
+    .filter((u) => u.replacement && u.dropped && u.dropped !== "No change")
+    .map((u) => u.replacement))].slice(0, 4);
   // Memory minus the long-term goal fields — those are supporting context only, not the focus.
   const m = { ...memory };
   delete m.project; delete m.build; delete m.skills; delete m.futureSelf; delete m.coreReasons;
@@ -1056,13 +1072,14 @@ Recent entries: ${summarize(urges)}
 ${yref ? `Yesterday: ${yref}` : ""}
 ${(feedback || []).filter((f) => f.verdict === "miss" && f.note).slice(0, 4).map((f) => `A past line missed; they wanted noticed: "${f.note}"`).join("\n")}
 ${recentLines.length ? `Things you've ALREADY said on past nights (do NOT repeat these — fresh angle, fresh words):\n- ${recentLines.join("\n- ")}` : ""}
+${workedMoves.length ? `Moves that have worked for them before when they felt this way: ${workedMoves.join(", ")}.` : ""}
 
 FOCUS, in priority order: (1) the trigger, (2) the emotional need underneath it, (3) the pattern you've noticed, (4) what happened earlier today, (5) tomorrow morning.
-Do NOT bring up long-term goals, projects, or skills. Stay with what's happening right now, tonight. Understand the moment — don't recite what you remember about them.
+Do NOT bring up long-term goals, projects, or skills. Stay with what's happening right now, tonight. Understand the moment — don't recite what you remember about them. Do not mention the user's project, skill, goal, business, or build category unless it is directly relevant to this exact moment — and in no more than 1 in 5 responses.
 Response angle for this check: ${angle}
 Keep the ENTIRE response under 90 words. Two short paragraphs only.
-Paragraph 1: one grounded observation about what's happening right now.
-Paragraph 2: one simple thing to do for the next 10 minutes.
+Paragraph 1: one grounded observation naming what's actually happening right now.
+Paragraph 2: one honest reframe — what this moment really is, or what it's really about. Do NOT tell them what to do or prescribe an action; they choose their own next move on the next screen.
 Avoid essays, overexplaining, life lessons, or motivational speeches. It should feel like a thoughtful observation from someone in the room, not a lecture.
 This person may open this many nights in a row — say something different each time. Vary your opening and angle.
 No preamble. No motivational quotes. Do not sound poetic.
@@ -1254,7 +1271,7 @@ const nav = {
   backdropFilter: "blur(12px)",
   paddingBottom: "env(safe-area-inset-bottom)"
 };
-const navBtn = (a) => ({ flex: 1, padding: "15px 0 22px", background: "none", border: "none", color: a ? "#c8b79a" : "#5a4d3d", fontSize: 12.5, letterSpacing: 1.5, textTransform: "uppercase" });
+const navBtn = (a) => ({ flex: 1, margin: "8px 6px", padding: "11px 0 12px", background: a ? "rgba(154,123,79,0.16)" : "none", borderRadius: 12, border: "none", color: a ? "#e8ddcc" : "#7a6b58", fontSize: 13.5, fontWeight: a ? 600 : 400, letterSpacing: 1.2, textTransform: "uppercase" });
 const close = { position: "absolute", top: 18, right: 22, background: "none", border: "none", color: "#5a4d3d", fontSize: 20, zIndex: 5 };
 const lbl = { display: "block", color: "#8a7b66", fontSize: 13, marginBottom: 9, marginTop: 18 };
 const input = { width: "100%", padding: 14, borderRadius: 12, border: "1px solid #5a4a36", background: "rgba(154,123,79,0.07)", color: "#e8ddcc", fontSize: 15, fontFamily: "'Jost',sans-serif", marginBottom: 8, appearance: "none" };
