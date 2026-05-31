@@ -104,6 +104,28 @@ const yesterdayKey = () => { const d = new Date(); d.setDate(d.getDate() - 1); r
 const hourNow = () => new Date().getHours();
 const dayOfYear = () => Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
 
+/* ── ANALYTICS ──
+   Lightweight, privacy-light usage tracking so you can see whether people open the app
+   AT NIGHT (the one behavior that matters) and whether they come back. No personal text
+   is ever sent — only event names + the hour of day. To turn on:
+   1. Make a free account at posthog.com, create a project, copy your Project API key.
+   2. Paste it into POSTHOG_KEY below (replace the empty string).
+   If the key is empty, tracking is silently off and the app works exactly the same. */
+const POSTHOG_KEY = ""; // <-- paste your PostHog project key here to enable
+function initAnalytics() {
+  if (!POSTHOG_KEY || typeof window === "undefined" || window.__phLoaded) return;
+  window.__phLoaded = true;
+  !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+  try { window.posthog.init(POSTHOG_KEY, { api_host: "https://us.i.posthog.com", capture_pageview: false }); } catch (_) {}
+}
+function track(event, props) {
+  try {
+    const hour = new Date().getHours();
+    const partOfDay = hour < 6 ? "overnight" : hour < 12 ? "morning" : hour < 17 ? "afternoon" : hour < 22 ? "evening" : "late_night";
+    if (window.posthog && window.posthog.capture) window.posthog.capture(event, { hour, partOfDay, ...props });
+  } catch (_) {}
+}
+
 export default function App() {
   const [view, setView] = useState("home");
   const [urges, setUrges] = useState([]);
@@ -115,6 +137,8 @@ export default function App() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    initAnalytics();
+    track("app_open");
     (async () => {
       for (const [key, set] of [[K.urges, setUrges], [K.mornings, setMornings], [K.days, setDays], [K.settings, setSettings], [K.feedback, setFeedback]]) {
         try {
@@ -157,7 +181,7 @@ export default function App() {
         <style>{FONT}{css}</style>
         <div style={grain} />
         <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", position: "relative", zIndex: 2 }}>
-          <Onboarding onDone={(o) => save(K.settings, { ...settings, ...o, onboarded: true }, setSettings)} />
+          <Onboarding onDone={(o) => { track("onboarding_complete"); save(K.settings, { ...settings, ...o, onboarded: true }, setSettings); }} />
         </div>
       </div>
     );
@@ -170,13 +194,13 @@ export default function App() {
       <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", position: "relative", zIndex: 2, paddingBottom: "calc(84px + env(safe-area-inset-bottom))" }}>
         {view === "home" && <Home settings={settings} memory={memory} urges={urges} mornings={mornings} days={days}
           needMorning={needMorning} needDay={needDay} voice={voice}
-          onFold={() => setView("intervene")} onMorning={() => setView("morning")} onDay={() => setView("day")} />}
+          onFold={() => { track("intervention_start"); setView("intervene"); }} onMorning={() => setView("morning")} onDay={() => setView("day")} />}
         {view === "intervene" && <Intervene settings={settings} memory={memory} urges={urges} mornings={mornings} days={days} feedback={feedback}
           replacements={replacements} voice={voice} onCancel={() => setView("home")}
           onFeedback={(f) => save(K.feedback, [{ ...f, ts: Date.now() }, ...feedback].slice(0, 50), setFeedback)}
-          onComplete={(e) => { save(K.urges, [{ ...e, id: Date.now(), ts: Date.now(), date: todayKey() }, ...urges], setUrges); setView("home"); }} />}
+          onComplete={(e) => { track("intervention_complete", { dropped: e.dropped, behavior: e.behavior }); save(K.urges, [{ ...e, id: Date.now(), ts: Date.now(), date: todayKey() }, ...urges], setUrges); setView("home"); }} />}
         {view === "morning" && <Morning existing={todayMorning} onCancel={() => setView("home")}
-          onDone={(feel, folded) => { const rest = mornings.filter((m) => m.date !== todayKey()); save(K.mornings, [{ date: todayKey(), feel, folded }, ...rest], setMornings); setView("home"); }} />}
+          onDone={(feel, folded) => { track("morning_checkin", { feel, folded }); const rest = mornings.filter((m) => m.date !== todayKey()); save(K.mornings, [{ date: todayKey(), feel, folded }, ...rest], setMornings); setView("home"); }} />}
         {view === "day" && <DayCheckin existing={todayDay} onCancel={() => setView("home")}
           onDone={(dayKind, carrying, note) => { const rest = days.filter((d) => d.date !== todayKey()); save(K.days, [{ date: todayKey(), dayKind, carrying, note }, ...rest], setDays); setView("home"); }} />}
         {view === "insights" && <Insights urges={urges} mornings={mornings} days={days} memory={memory} />}
