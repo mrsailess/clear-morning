@@ -70,7 +70,7 @@ const store = {
    response unchanged. In the artifact preview there is no backend, so askClaude returns ""
    and the deterministic fallback line is shown — that's expected. Real AI requires the route. */
 let LAST_AI_ERROR = "";
-const DEBUG_AI = true; // set true while testing to see why a fallback was used
+const DEBUG_AI = false; // confirmed AI working; flip true only to debug again
 const APP_VERSION = "v-test-002";
 const AI_ENDPOINT = "/api/ask-claude";
 async function askClaude(userContent, maxTokens = 1000, temperature = 1) {
@@ -79,7 +79,7 @@ async function askClaude(userContent, maxTokens = 1000, temperature = 1) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         max_tokens: maxTokens,
         temperature,
         messages: [{ role: "user", content: userContent }]
@@ -406,6 +406,35 @@ function ThinkingIcon() {
   );
 }
 
+function Typewriter({ text, style }) {
+  const [shown, setShown] = useState("");
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    if (text === shown) return;
+    setShown(""); setDone(false);
+    if (!text) { setDone(true); return; }
+    let i = 0;
+    let id;
+    const tick = () => {
+      i += Math.floor(Math.random() * 3) + 1;
+      setShown(text.slice(0, i));
+      if (i >= text.length) { setShown(text); setDone(true); return; }
+      id = setTimeout(tick, Math.floor(Math.random() * 20) + 12);
+    };
+    id = setTimeout(tick, Math.floor(Math.random() * 20) + 12);
+    return () => clearTimeout(id);
+  }, [text]);
+  return (
+    <p
+      style={style}
+      onClick={() => { setShown(text); setDone(true); }}
+    >
+      {shown}
+      {!done && <span style={{ opacity: 0.5 }}>▌</span>}
+    </p>
+  );
+}
+
 function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, onNext }) {
   const [aiLine, setAiLine] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -482,7 +511,11 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
     let off = false;
     (async () => {
       setLoading(true);
+      const startedAt = Date.now();
       const txt = await askClaude(buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref }), 350, 1);
+      // Keep the thinking dots on screen at least 700ms — instant replies feel fake.
+      const elapsed = Date.now() - startedAt;
+      if (elapsed < 700) await new Promise((r) => setTimeout(r, 700 - elapsed));
       if (!off && txt) { setAiLine(txt); setSource("ai"); }
       else if (!off) setSource("fallback");
       if (!off) setLoading(false);
@@ -498,9 +531,10 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
       {loading ? (
         <ThinkingIcon />
       ) : (
-        <p style={{ fontFamily: "'Fraunces',serif", color: "#e8ddcc", fontSize: 23, lineHeight: 1.38, margin: "4px 0 0", whiteSpace: "pre-line" }}>
-          {shownLine}
-        </p>
+        <Typewriter
+          text={shownLine}
+          style={{ fontFamily: "'Fraunces',serif", color: "#e8ddcc", fontSize: 23, lineHeight: 1.38, margin: "4px 0 0", whiteSpace: "pre-line", cursor: "pointer" }}
+        />
       )}
       {!loading && source === "fallback" && DEBUG_AI && <p style={{ ...sub, fontSize: 11, opacity: 0.6 }}>[using fallback — {LAST_AI_ERROR || "no AI available"}]</p>}
       <div style={{ flex: 1 }} />
@@ -1005,34 +1039,35 @@ function buildReplacement(settings) {
 }
 
 const REALITY_ANGLES = ["trigger", "need", "pattern", "tomorrow", "identity"];
-const REALITY_ANGLES = ["trigger", "need", "pattern", "tomorrow", "identity"];
 function buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref }) {
   const recentLines = [
     ...(feedback || []).map((f) => f.line),
     ...(urges || []).map((u) => u.realityLine),
   ].filter(Boolean).slice(0, 5);
   const angle = REALITY_ANGLES[Math.floor(Math.random() * REALITY_ANGLES.length)];
+  // Memory minus the long-term goal fields — those are supporting context only, not the focus.
+  const m = { ...memory };
+  delete m.project; delete m.build; delete m.skills; delete m.futureSelf; delete m.coreReasons;
   return `
 You are Clear Morning.
 Talk like a calm friend with backbone. Direct. Human. No therapy voice. No fake motivation.
 Never say: sober, recovery, addiction, quit, relapse, journey, healing.
-User is about to: ${d.behavior}
-They are reaching for: ${d.trigger}
+
+THE MOMENT (this is what matters most):
+About to: ${d.behavior}
+Reaching for: ${d.trigger}
 What happened right before: ${d.context}
 What they usually want from it: ${settings.seeking || memory.seeking || "unknown"}
-Their anchors:
-Reasons: ${(settings.coreReasons || []).join(", ") || "none"}
-Building: ${settings.build || "none"}
-Project: ${settings.project || "none"}
-Reminder in their own words: ${settings.reminder || "none"}
-Patterns:
-${JSON.stringify(memory)}
-Recent entries:
-${summarize(urges)}
+${settings.reminder ? `Their own words to remember: "${settings.reminder}"` : ""}
+
+Their patterns: ${JSON.stringify(m)}
+Recent entries: ${summarize(urges)}
 ${yref ? `Yesterday: ${yref}` : ""}
 ${(feedback || []).filter((f) => f.verdict === "miss" && f.note).slice(0, 4).map((f) => `A past line missed; they wanted noticed: "${f.note}"`).join("\n")}
-${recentLines.length ? `Things you've ALREADY said to them on past nights (do NOT repeat these — find a fresh angle, fresh words):\n- ${recentLines.join("\n- ")}` : ""}
-Do not mention the user's project, build, or skills in every response. Use them only when they clearly fit the current moment. Vary the angle. Sometimes focus on the trigger, sometimes the emotional need, sometimes the pattern, sometimes tomorrow morning, and only occasionally the bigger goal. Avoid repeating the same personal anchor across multiple checks in a row.
+${recentLines.length ? `Things you've ALREADY said on past nights (do NOT repeat these — fresh angle, fresh words):\n- ${recentLines.join("\n- ")}` : ""}
+
+FOCUS, in priority order: (1) the trigger, (2) the emotional need underneath it, (3) the pattern you've noticed, (4) what happened earlier today, (5) tomorrow morning.
+Do NOT bring up long-term goals, projects, or skills. Stay with what's happening right now, tonight. Understand the moment — don't recite what you remember about them.
 Response angle for this check: ${angle}
 Write 2 short paragraphs.
 Paragraph 1: name what is actually happening emotionally.
