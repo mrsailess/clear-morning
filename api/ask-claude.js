@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   try {
     // req.body may arrive as a string on some setups — parse defensively.
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
-    const { messages, max_tokens = 350 } = body;
+    const { messages, max_tokens = 350, temperature = 1 } = body;
 
     if (!messages) {
       return res.status(400).json({ error: "Missing messages" });
@@ -24,8 +24,9 @@ export default async function handler(req, res) {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-5-20251001",
+        model: "claude-sonnet-4-6",
         max_tokens,
+        temperature,
         messages,
       }),
     });

@@ -72,7 +72,7 @@ const store = {
 let LAST_AI_ERROR = "";
 const DEBUG_AI = false; // set true while testing to see why a fallback was used
 const AI_ENDPOINT = "/api/ask-claude";
-async function askClaude(userContent, maxTokens = 1000) {
+async function askClaude(userContent, maxTokens = 1000, temperature = 1) {
   try {
     const res = await fetch(AI_ENDPOINT, {
       method: "POST",
@@ -80,6 +80,7 @@ async function askClaude(userContent, maxTokens = 1000) {
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: maxTokens,
+        temperature,
         messages: [{ role: "user", content: userContent }]
       }),
     });
@@ -467,7 +468,7 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
     let off = false;
     (async () => {
       setLoading(true);
-      const txt = await askClaude(buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref }), 350);
+      const txt = await askClaude(buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref }), 350, 1);
       if (!off && txt) { setAiLine(txt); setSource("ai"); }
       else if (!off) setSource("fallback");
       if (!off) setLoading(false);
@@ -985,6 +986,10 @@ function buildReplacement(settings) {
 }
 
 function buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref }) {
+  const recentLines = [
+    ...(feedback || []).map((f) => f.line),
+    ...(urges || []).map((u) => u.realityLine),
+  ].filter(Boolean).slice(0, 5);
   return `
 You are Clear Morning.
 Talk like a calm friend with backbone. Direct. Human. No therapy voice. No fake motivation.
@@ -1004,10 +1009,12 @@ Recent entries:
 ${summarize(urges)}
 ${yref ? `Yesterday: ${yref}` : ""}
 ${(feedback || []).filter((f) => f.verdict === "miss" && f.note).slice(0, 4).map((f) => `A past line missed; they wanted noticed: "${f.note}"`).join("\n")}
+${recentLines.length ? `Things you've ALREADY said to them on past nights (do NOT repeat these — find a fresh angle, fresh words):\n- ${recentLines.join("\n- ")}` : ""}
 Write 2 short paragraphs.
 Paragraph 1: name what is actually happening emotionally.
 Paragraph 2: tell them exactly what to do for the next 10 minutes.
 Make it feel personal, not generic.
+This person may open this many nights in a row — say something different each time, like a friend who doesn't repeat the same line twice. Vary your opening, your angle, and your image.
 No preamble.
 Do not write motivational quotes. Do not sound poetic. Sound like someone talking to them in the room.
 `.trim();
