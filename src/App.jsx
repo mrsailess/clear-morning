@@ -70,7 +70,7 @@ const store = {
    response unchanged. In the artifact preview there is no backend, so askClaude returns ""
    and the deterministic fallback line is shown — that's expected. Real AI requires the route. */
 let LAST_AI_ERROR = "";
-const DEBUG_AI = false; // set true while testing to see why a fallback was used
+const DEBUG_AI = true; // set true while testing to see why a fallback was used
 const AI_ENDPOINT = "/api/ask-claude";
 async function askClaude(userContent, maxTokens = 1000, temperature = 1) {
   try {
