@@ -17,7 +17,7 @@ const TRIGGERS = ["Stress relief", "Reward", "Loneliness", "Boredom", "Escape", 
 const CONTEXTS = ["Work", "Argument", "Kids/family", "Scrolling", "Bored at home", "After dinner", "Late night alone", "Celebrating", "Other"];
 const FEELINGS = ["Foggy", "Okay", "Clear", "Amazing"];
 const TOMORROW = ["Clear", "Proud", "Present", "Focused", "Energized"];
-const DROP = ["The urge dropped", "I feel more in control", "Still there, but quieter", "No change"];
+const DROP = ["It passed", "It's weaker now", "It's still there", "It got stronger"];
 const DAYKIND = ["Draining", "Stressful", "Fine", "Good", "Great"];
 const CARRYING = ["Work", "An argument", "Loneliness", "Restlessness", "Nothing heavy"];
 const BASE_REPLACEMENTS = ["5-min walk", "Shower", "Journal", "Call someone", "Read"];
@@ -396,9 +396,9 @@ function Intervene({ settings, memory, urges, mornings, days, feedback, replacem
       {step === 3 && <RealityCheck settings={settings} memory={memory} urges={urges} mornings={mornings} days={days} feedback={feedback} d={d} onNext={(line) => { setD((p) => ({ ...p, realityLine: line })); setStep(4); }} />}
       {step === 4 && <ImmediateAction behavior={d.behavior} context={d.context} replacements={replacements} onNext={(replacement) => { setD((p) => ({ ...p, replacement })); setStep(5); }} />}
       {step === 5 && <Hold replacement={d.replacement} onNext={next} />}
-      {step === 6 && <Step kick="Proof" title="What changed?"><p style={{ ...sub, marginTop: -14, marginBottom: 22 }}>You didn't beat the urge by thinking harder. You changed state, waited, and proved the feeling could move.</p>{DROP.map((x) => <Choice key={x} active={d.dropped === x} onClick={() => set("dropped", x)}>{x}</Choice>)}</Step>}
+      {step === 6 && <Step kick="Proof" title="What happened to the urge?"><p style={{ ...sub, marginTop: -14, marginBottom: 22 }}>You didn't beat it by thinking harder. You changed state, waited, and gave the feeling room to move.</p>{DROP.map((x) => <Choice key={x} active={d.dropped === x} onClick={() => set("dropped", x)}>{x}</Choice>)}</Step>}
       {step === 7 && <Step kick="Lock it in" title="How do you want to wake up?">{TOMORROW.map((t) => <Choice key={t} active={d.tomorrow === t} onClick={() => { setD((p) => ({ ...p, tomorrow: t, completedAt: Date.now() })); setTimeout(() => setStep(8), 150); }}>{t}</Choice>)}</Step>}
-      {step === 8 && <Feedback line={d.realityLine} onDone={(verdict, note) => { if (onFeedback && verdict) onFeedback({ verdict, note, line: d.realityLine, behavior: d.behavior, context: d.context }); onComplete({ ...d }); }} />}
+      {step === 8 && <Feedback line={d.realityLine} onDone={(verdict, note) => { if (verdict) track("reality_check_rated", { rating: verdict }); if (onFeedback && verdict) onFeedback({ verdict, note, line: d.realityLine, behavior: d.behavior, context: d.context }); onComplete({ ...d }); }} />}
     </div>
   );
 }
@@ -409,17 +409,18 @@ function Feedback({ line, onDone }) {
   return (
     <div className="fade" style={stepWrap}>
       <p style={kicker}>One quick thing</p>
-      <h2 style={{ ...h2, marginBottom: 8 }}>Did this understand what was going on?</h2>
+      <h2 style={{ ...h2, marginBottom: 8 }}>Did this feel accurate?</h2>
       {line && <p style={{ ...sub, fontStyle: "italic", marginTop: 4 }}>"{line}"</p>}
       {verdict !== "miss" ? (
         <div style={{ marginTop: 26 }}>
-          <button style={{ ...secondary, marginBottom: 12 }} onClick={() => onDone("hit")}>Yes, that felt accurate</button>
-          <button style={secondary} onClick={() => setVerdict("miss")}>No, it missed something</button>
+          <button style={{ ...secondary, marginBottom: 12 }} onClick={() => onDone("very")}>Very accurate</button>
+          <button style={{ ...secondary, marginBottom: 12 }} onClick={() => onDone("somewhat")}>Somewhat</button>
+          <button style={secondary} onClick={() => setVerdict("miss")}>Not really — it missed something</button>
         </div>
       ) : (
         <div style={{ marginTop: 22 }}>
-          <p style={{ ...sub, margin: "0 0 8px" }}>What should I have noticed?</p>
-          <textarea value={missNote} onChange={(e) => setMissNote(e.target.value)} placeholder="Say what was actually going on." style={{ ...textArea, minHeight: 80, marginTop: 0 }} />
+          <p style={{ ...sub, margin: "0 0 8px" }}>What was actually going on?</p>
+          <textarea value={missNote} onChange={(e) => setMissNote(e.target.value)} placeholder="e.g. I wasn't stressed — I was bored. Or: I was avoiding work." style={{ ...textArea, minHeight: 80, marginTop: 0 }} />
           <button style={{ ...primary, marginTop: 10 }} onClick={() => onDone("miss", missNote.trim())}>Save</button>
         </div>
       )}
@@ -720,7 +721,7 @@ function Insights({ urges, mornings, days, memory }) {
   const clearThis = mornings.filter((m) => new Date(m.date + "T12:00").getMonth() === month && (m.feel === "Clear" || m.feel === "Amazing")).length;
   const clearPct = mornings.length ? Math.round(mornings.filter((m) => m.feel === "Clear" || m.feel === "Amazing").length / mornings.length * 100) : null;
   const waited = urges.filter((u) => u.dropped);
-  const dropPct = waited.length ? Math.round(waited.filter((u) => u.dropped !== "No change").length / waited.length * 100) : null;
+  const dropPct = waited.length ? Math.round(waited.filter((u) => u.dropped !== "It got stronger").length / waited.length * 100) : null;
   const wins = recentWins(urges, mornings);
   const foldByContext = foldRates(urges, mornings, "context");
   const foldByTrigger = foldRates(urges, mornings, "trigger");
@@ -1082,23 +1083,35 @@ function buildReplacement(settings) {
   return null;
 }
 
-const REALITY_ANGLES = ["trigger", "need", "pattern", "tomorrow", "identity"];
+const REALITY_LENSES = {
+  pattern: "PATTERN lens: Name the recurring shape of this moment — when it shows up, what precedes it. Not what they feel; the pattern itself. E.g. 'This keeps showing up after the day goes quiet, not when it's loud.'",
+  emotion: "EMOTION lens: Name the actual feeling underneath the urge — the one the behavior is trying to manage. Be precise, not generic. E.g. 'This isn't wanting. It's the day not having a clean ending.'",
+  environment: "ENVIRONMENT lens: Point out that nothing changed inside them — the situation around them did. E.g. 'Nothing happened in you. The house got quiet. That's a different thing.'",
+  self_deception: "SELF-DECEPTION lens: Name the small lie the urge tells in this moment — gently, without accusing. E.g. 'The story right now is that one won't matter. That's the story every time.'",
+  consequence: "FUTURE-CONSEQUENCE lens: Connect this ten minutes to the specific morning that follows — concrete, not preachy. E.g. 'The version of you that wakes up at 6 is the one paying for this, not the one deciding it.'",
+  evidence: "EVIDENCE lens: Use their own history as proof the feeling passes. Only if there's real data. E.g. 'The last times you waited this out, it dropped. Your own record says so.'",
+  identity: "IDENTITY lens: Frame it as a small vote for who they're becoming — without grand language. E.g. 'This is a small rep in becoming someone who doesn't auto-pilot at night.'",
+};
+const LENS_KEYS = Object.keys(REALITY_LENSES);
 function buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref }) {
   const recentLines = [
     ...(feedback || []).map((f) => f.line),
     ...(urges || []).map((u) => u.realityLine),
   ].filter(Boolean).slice(0, 5);
-  const angle = REALITY_ANGLES[Math.floor(Math.random() * REALITY_ANGLES.length)];
+  // Pick ONE lens. Avoid evidence lens until there's real history to cite.
+  const usable = LENS_KEYS.filter((k) => k !== "evidence" || urges.length >= 4);
+  const lensKey = usable[Math.floor(Math.random() * usable.length)];
+  const lensInstruction = REALITY_LENSES[lensKey];
   // Moves that have worked for them before (chose a replacement and the urge dropped) — surface for relevance.
   const workedMoves = [...new Set((urges || [])
-    .filter((u) => u.replacement && u.dropped && u.dropped !== "No change")
+    .filter((u) => u.replacement && u.dropped && u.dropped !== "It got stronger")
     .map((u) => u.replacement))].slice(0, 4);
   // Memory minus the long-term goal fields — those are supporting context only, not the focus.
   const m = { ...memory };
   delete m.project; delete m.build; delete m.skills; delete m.futureSelf; delete m.coreReasons;
   return `
 You are Clear Morning.
-Talk like a calm friend with backbone. Direct. Human. No therapy voice. No fake motivation.
+Talk like a perceptive friend with backbone. Direct. Human. No therapy voice. No fake motivation. No coaching clichés ("you got this", "stay strong", "remember your why").
 Never say: sober, recovery, addiction, quit, relapse, journey, healing.
 
 THE MOMENT (this is what matters most):
@@ -1111,19 +1124,15 @@ ${settings.reminder ? `Their own words to remember: "${settings.reminder}"` : ""
 Their patterns: ${JSON.stringify(m)}
 Recent entries: ${summarize(urges)}
 ${yref ? `Yesterday: ${yref}` : ""}
-${(feedback || []).filter((f) => f.verdict === "miss" && f.note).slice(0, 4).map((f) => `A past line missed; they wanted noticed: "${f.note}"`).join("\n")}
+${(feedback || []).filter((f) => f.verdict === "miss" && f.note).slice(0, 4).map((f) => `IMPORTANT — a past read missed; they said what was really going on: "${f.note}". Learn from this.`).join("\n")}
 ${recentLines.length ? `Things you've ALREADY said on past nights (do NOT repeat these — fresh angle, fresh words):\n- ${recentLines.join("\n- ")}` : ""}
-${workedMoves.length ? `Moves that have worked for them before when they felt this way: ${workedMoves.join(", ")}.` : ""}
+${workedMoves.length ? `Moves that have worked for them before: ${workedMoves.join(", ")}.` : ""}
 
-FOCUS, in priority order: (1) the trigger, (2) the emotional need underneath it, (3) the pattern you've noticed, (4) what happened earlier today, (5) tomorrow morning.
-Do NOT bring up long-term goals, projects, or skills. Stay with what's happening right now, tonight. Understand the moment — don't recite what you remember about them. Do not mention the user's project, skill, goal, business, or build category unless it is directly relevant to this exact moment — and in no more than 1 in 5 responses.
-Response angle for this check: ${angle}
-Keep the ENTIRE response under 90 words. Two short paragraphs only.
-Paragraph 1: one grounded observation naming what's actually happening right now.
-Paragraph 2: one honest reframe — what this moment really is, or what it's really about. Do NOT tell them what to do or prescribe an action; they choose their own next move on the next screen.
-Avoid essays, overexplaining, life lessons, or motivational speeches. It should feel like a thoughtful observation from someone in the room, not a lecture.
-This person may open this many nights in a row — say something different each time. Vary your opening and angle.
-No preamble. No motivational quotes. Do not sound poetic.
+USE EXACTLY ONE LENS for this reality check. Do not blend lenses. Do not list multiple observations. Commit fully to this single angle:
+${lensInstruction}
+
+Stay with what's happening right now, tonight. Understand the moment — don't recite what you remember about them. Use at most ONE personal reference total. Do not mention their project, business, or skill unless directly relevant to this exact moment, and almost never.
+Write under 70 words. One tight paragraph, or two very short ones. No preamble. No motivational quotes. Do not sound poetic. It should feel like one sharp, true observation from someone who sees what's going on — then stop.
 `.trim();
 }
 
