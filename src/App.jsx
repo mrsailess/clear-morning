@@ -111,7 +111,7 @@ const dayOfYear = () => Math.floor((Date.now() - new Date(new Date().getFullYear
    1. Make a free account at posthog.com, create a project, copy your Project API key.
    2. Paste it into POSTHOG_KEY below (replace the empty string).
    If the key is empty, tracking is silently off and the app works exactly the same. */
-const POSTHOG_KEY = "phc_mX8bazByE7BxvcjKXn4pwgTgGtTnb2qKJUFHz2gEaZvg"; // <-- paste your PostHog project key here to enable
+const POSTHOG_KEY = "phc_mX8bazByE7BxvcjKXn4pwgTgGtTnb2qKJUFHz2gEaZvg"; // PostHog project key (write-only, safe in frontend)
 function initAnalytics() {
   if (!POSTHOG_KEY || typeof window === "undefined" || window.__phLoaded) return;
   window.__phLoaded = true;
@@ -235,13 +235,26 @@ function Onboarding({ onDone }) {
     <div style={{ ...pad, minHeight: "100%", display: "flex", flexDirection: "column", paddingTop: 60 }}>
       {step > 0 && <Progress step={step - 1} total={6} />}
       {step === 0 && (
-        <div className="fade" style={{ ...stepWrap, justifyContent: "flex-start", paddingTop: 24 }}>
+        <div className="fade" style={{ ...stepWrap, justifyContent: "flex-start", paddingTop: 14 }}>
           <p style={{ ...kicker, letterSpacing: 4 }}>Clear Morning</p>
-          <h1 style={{ ...h1, fontSize: 38, marginTop: 8 }}>Stop folding.<br />Start building.</h1>
-          <p style={{ ...sub, fontSize: 16, marginTop: 18, maxWidth: 320 }}>
-            I'll learn what pulls you off track, what you're building, and what actually helps you wake up clear.
+          <h1 style={{ ...h1, fontSize: 30, marginTop: 6, lineHeight: 1.12 }}>Catch yourself before you do something you'll regret.</h1>
+          <p style={{ ...sub, fontSize: 15, marginTop: 12, maxWidth: 330, lineHeight: 1.45 }}>
+            Open it the moment you're about to drink, smoke, scroll, or make a call you'll wish you hadn't. It helps you pause and choose differently.
           </p>
-          <button style={{ ...primary, marginTop: 30 }} onClick={() => setStep(1)}>Start with one pattern</button>
+          <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 9 }}>
+            {[
+              "Understand what actually pulls you off track",
+              "Hear reminders from your clear-headed self",
+              "Build proof that you can trust yourself again",
+            ].map((t) => (
+              <div key={t} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                <span style={{ color: "#9a7b4f", fontSize: 15, lineHeight: 1.35 }}>✓</span>
+                <span style={{ ...sub, margin: 0, fontSize: 14.5, lineHeight: 1.35 }}>{t}</span>
+              </div>
+            ))}
+          </div>
+          <button style={{ ...primary, marginTop: 20, fontSize: 17 }} onClick={() => setStep(1)}>Before I decide</button>
+          <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 9, opacity: 0.7 }}>Takes about 60 seconds</p>
         </div>
       )}
       {step === 1 && (
