@@ -171,7 +171,7 @@ export default function App() {
   const todayDay = days.find((d) => d.date === todayKey());
   const h = hourNow();
   const needMorning = h >= 4 && h < 12 && !todayMorning;
-  const needDay = h >= 12 && h < 20 && !todayDay;
+  const needDay = h >= 12 && h <= 23 && !todayDay;
 
   if (!loaded) return <div style={{ ...wrap, alignItems: "center", justifyContent: "center" }}><style>{FONT}</style><span style={{ color: "#9a7b4f" }}>·</span></div>;
 
@@ -344,7 +344,7 @@ function Home({ settings, memory, urges, mornings, days, needMorning, needDay, v
       {needMorning && <button style={{ ...secondary, marginTop: 12 }} onClick={onMorning}>How did you wake up?</button>}
       {needDay
         ? <button style={{ ...secondary, marginTop: 12 }} onClick={onDay}>What kind of day are you having?</button>
-        : (days.find((dd) => dd.date === todayKey()) && (new Date().getHours() >= 12 && new Date().getHours() < 20)
+        : (days.find((dd) => dd.date === todayKey()) && new Date().getHours() >= 12
             ? <button style={{ ...secondary, marginTop: 12, opacity: 0.6 }} onClick={onDay}>Today's check-in saved · edit</button>
             : null)}
 
