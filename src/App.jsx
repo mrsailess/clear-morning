@@ -241,10 +241,12 @@ function Onboarding({ onDone }) {
           <p style={{ ...sub, fontSize: 15, marginTop: 12, maxWidth: 330, lineHeight: 1.5 }}>
             Open this before the drink. Before the text. Before the scroll. Before autopilot takes over.
           </p>
-          <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 11 }}>
+          <button style={{ ...primary, marginTop: 22, fontSize: 18, padding: "18px" }} onClick={() => setStep(1)}>Before I decide</button>
+          <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 9, opacity: 0.7 }}>Takes about a minute.</p>
+          <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 11 }}>
             {[
-              "Catch patterns you miss in the moment",
-              "Remember what matters before you act",
+              "See what's really driving the urge",
+              "Remember what matters",
               "Wake up with fewer regrets",
             ].map((t) => (
               <div key={t} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
@@ -253,8 +255,6 @@ function Onboarding({ onDone }) {
               </div>
             ))}
           </div>
-          <button style={{ ...primary, marginTop: 20, fontSize: 17 }} onClick={() => setStep(1)}>Before I decide</button>
-          <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 9, opacity: 0.7 }}>Takes about a minute.</p>
         </div>
       )}
       {step === 1 && (
