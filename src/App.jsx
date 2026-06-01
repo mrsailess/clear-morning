@@ -342,7 +342,11 @@ function Home({ settings, memory, urges, mornings, days, needMorning, needDay, v
       </button>
 
       {needMorning && <button style={{ ...secondary, marginTop: 12 }} onClick={onMorning}>How did you wake up?</button>}
-      {needDay && <button style={{ ...secondary, marginTop: 12 }} onClick={onDay}>What kind of day are you having?</button>}
+      {needDay
+        ? <button style={{ ...secondary, marginTop: 12 }} onClick={onDay}>What kind of day are you having?</button>
+        : (days.find((dd) => dd.date === todayKey()) && (new Date().getHours() >= 12 && new Date().getHours() < 20)
+            ? <button style={{ ...secondary, marginTop: 12, opacity: 0.6 }} onClick={onDay}>Today's check-in saved · edit</button>
+            : null)}
 
       <div style={miniRow}>
         <div style={mini}><div style={miniNum}>{clearThis}</div><div style={miniLbl}>clear mornings this month</div></div>
