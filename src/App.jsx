@@ -232,29 +232,29 @@ function Onboarding({ onDone }) {
   };
   const finish = () => onDone({ ...o, reminder: cleanUserText(o.reminder), project: cleanUserText(o.project) });
   return (
-    <div style={{ ...pad, minHeight: "100%", display: "flex", flexDirection: "column", paddingTop: 40 }}>
+    <div style={{ ...pad, minHeight: "100%", display: "flex", flexDirection: "column", paddingTop: 60 }}>
       {step > 0 && <Progress step={step - 1} total={6} />}
       {step === 0 && (
-        <div className="fade" style={{ ...stepWrap, justifyContent: "flex-start", paddingTop: 6 }}>
+        <div className="fade" style={{ ...stepWrap, justifyContent: "flex-start", paddingTop: 14 }}>
           <p style={{ ...kicker, letterSpacing: 4 }}>Clear Morning</p>
-          <h1 style={{ ...h1, fontSize: 28, marginTop: 4, lineHeight: 1.1 }}>Catch yourself before you do something you'll regret.</h1>
-          <p style={{ ...sub, fontSize: 14, marginTop: 8, maxWidth: 330, lineHeight: 1.6 }}>
+          <h1 style={{ ...h1, fontSize: 30, marginTop: 6, lineHeight: 1.12 }}>Catch yourself before you do something you'll regret.</h1>
+          <p style={{ ...sub, fontSize: 15, marginTop: 12, maxWidth: 330, lineHeight: 1.5 }}>
             Open this before the drink. Before the text. Before the scroll. Before autopilot takes over.
           </p>
-          <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 11 }}>
             {[
               "Catch patterns you miss in the moment",
-              "Remember what matters before autopilot takes over",
+              "Remember what matters before you act",
               "Wake up with fewer regrets",
             ].map((t) => (
               <div key={t} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                <span style={{ color: "#9a7b4f", fontSize: 14, lineHeight: 1.35 }}>✓</span>
-                <span style={{ ...sub, margin: 0, fontSize: 14, lineHeight: 1.35 }}>{t}</span>
+                <span style={{ color: "#9a7b4f", fontSize: 15, lineHeight: 1.35 }}>✓</span>
+                <span style={{ ...sub, margin: 0, fontSize: 14.5, lineHeight: 1.35 }}>{t}</span>
               </div>
             ))}
           </div>
-          <button style={{ ...primary, marginTop: 16, fontSize: 17 }} onClick={() => setStep(1)}>Before I decide</button>
-          <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 7, opacity: 0.7 }}>Takes about a minute.</p>
+          <button style={{ ...primary, marginTop: 20, fontSize: 17 }} onClick={() => setStep(1)}>Before I decide</button>
+          <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 9, opacity: 0.7 }}>Takes about a minute.</p>
         </div>
       )}
       {step === 1 && (
