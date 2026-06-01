@@ -238,14 +238,14 @@ function Onboarding({ onDone }) {
         <div className="fade" style={{ ...stepWrap, justifyContent: "flex-start", paddingTop: 6 }}>
           <p style={{ ...kicker, letterSpacing: 4 }}>Clear Morning</p>
           <h1 style={{ ...h1, fontSize: 28, marginTop: 4, lineHeight: 1.1 }}>Catch yourself before you do something you'll regret.</h1>
-          <p style={{ ...sub, fontSize: 14, marginTop: 8, maxWidth: 330, lineHeight: 1.4 }}>
-            Open it the moment you're about to drink, smoke, scroll, or make a call you'll wish you hadn't. It helps you pause and choose differently.
+          <p style={{ ...sub, fontSize: 14, marginTop: 8, maxWidth: 330, lineHeight: 1.6 }}>
+            Open this before the drink. Before the text. Before the scroll. Before autopilot takes over.
           </p>
           <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 6 }}>
             {[
               "Understand what actually pulls you off track",
               "Hear reminders from your clear-headed self",
-              "Build proof that you can trust yourself again",
+              "Spot the moments you're most likely to slip",
             ].map((t) => (
               <div key={t} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                 <span style={{ color: "#9a7b4f", fontSize: 14, lineHeight: 1.35 }}>✓</span>
@@ -253,7 +253,7 @@ function Onboarding({ onDone }) {
               </div>
             ))}
           </div>
-          <button style={{ ...primary, marginTop: 16, fontSize: 17 }} onClick={() => setStep(1)}>Before I decide</button>
+          <button style={{ ...primary, marginTop: 16, fontSize: 17 }} onClick={() => setStep(1)}>Pause before I decide</button>
           <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 7, opacity: 0.7 }}>Takes about 60 seconds</p>
         </div>
       )}
