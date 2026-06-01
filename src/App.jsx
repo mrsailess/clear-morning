@@ -172,6 +172,12 @@ export default function App() {
   const h = hourNow();
   const needMorning = h >= 4 && h < 12 && !todayMorning;
   const needDay = h >= 12 && h <= 23 && !todayDay;
+  // Last night isn't logged yet if there was an urge yesterday but no morning entry for today
+  // capturing it. Surface a catch-up prompt any time of day so fold/clear data is never lost.
+  const yKey = yesterdayKey();
+  const hadUrgeYesterday = urges.some((u) => u.date === yKey);
+  const loggedLastNight = !!todayMorning || mornings.some((m) => m.date === yKey && typeof m.folded === "boolean");
+  const needLastNight = !needMorning && hadUrgeYesterday && !loggedLastNight;
 
   if (!loaded) return <div style={{ ...wrap, alignItems: "center", justifyContent: "center" }}><style>{FONT}</style><span style={{ color: "#9a7b4f" }}>·</span></div>;
 
@@ -193,7 +199,7 @@ export default function App() {
       <div style={grain} />
       <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", position: "relative", zIndex: 2, paddingBottom: "calc(84px + env(safe-area-inset-bottom))" }}>
         {view === "home" && <Home settings={settings} memory={memory} urges={urges} mornings={mornings} days={days}
-          needMorning={needMorning} needDay={needDay} voice={voice}
+          needMorning={needMorning} needDay={needDay} needLastNight={needLastNight} voice={voice}
           onFold={() => { track("intervention_start"); setView("intervene"); }} onMorning={() => setView("morning")} onDay={() => setView("day")} />}
         {view === "intervene" && <Intervene settings={settings} memory={memory} urges={urges} mornings={mornings} days={days} feedback={feedback}
           replacements={replacements} voice={voice} onCancel={() => setView("home")}
@@ -318,7 +324,7 @@ function Onboarding({ onDone }) {
 }
 
 /* ── HOME ── */
-function Home({ settings, memory, urges, mornings, days, needMorning, needDay, voice, onFold, onMorning, onDay }) {
+function Home({ settings, memory, urges, mornings, days, needMorning, needDay, needLastNight, voice, onFold, onMorning, onDay }) {
   const month = new Date().getMonth();
   const clearThis = mornings.filter((m) => new Date(m.date + "T12:00").getMonth() === month && (m.feel === "Clear" || m.feel === "Amazing")).length;
   const checkins = urges.length + mornings.length + days.length;
@@ -342,6 +348,7 @@ function Home({ settings, memory, urges, mornings, days, needMorning, needDay, v
       </button>
 
       {needMorning && <button style={{ ...secondary, marginTop: 12 }} onClick={onMorning}>How did you wake up?</button>}
+      {needLastNight && <button style={{ ...secondary, marginTop: 12 }} onClick={onMorning}>How did last night go?</button>}
       {needDay
         ? <button style={{ ...secondary, marginTop: 12 }} onClick={onDay}>What kind of day are you having?</button>
         : (days.find((dd) => dd.date === todayKey()) && new Date().getHours() >= 12
