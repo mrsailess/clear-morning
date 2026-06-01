@@ -243,9 +243,9 @@ function Onboarding({ onDone }) {
           </p>
           <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 6 }}>
             {[
-              "Understand what actually pulls you off track",
-              "Hear reminders from your clear-headed self",
-              "Spot the moments you're most likely to slip",
+              "Catch patterns you miss in the moment",
+              "Remember what matters before autopilot takes over",
+              "Wake up with fewer regrets",
             ].map((t) => (
               <div key={t} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                 <span style={{ color: "#9a7b4f", fontSize: 14, lineHeight: 1.35 }}>✓</span>
@@ -253,8 +253,8 @@ function Onboarding({ onDone }) {
               </div>
             ))}
           </div>
-          <button style={{ ...primary, marginTop: 16, fontSize: 17 }} onClick={() => setStep(1)}>Pause before I decide</button>
-          <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 7, opacity: 0.7 }}>Takes about 60 seconds</p>
+          <button style={{ ...primary, marginTop: 16, fontSize: 17 }} onClick={() => setStep(1)}>Before I decide</button>
+          <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 7, opacity: 0.7 }}>Takes about a minute.</p>
         </div>
       )}
       {step === 1 && (
