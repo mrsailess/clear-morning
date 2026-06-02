@@ -18,6 +18,7 @@ const CONTEXTS = ["Work", "Argument", "Kids/family", "Scrolling", "Bored at home
 const FEELINGS = ["Foggy", "Okay", "Clear", "Amazing"];
 const TOMORROW = ["Clear", "Proud", "Present", "Focused", "Energized"];
 const DROP = ["It passed", "It's weaker now", "It's still there", "It got stronger"];
+const OUTCOMES = [{ v: "held", label: "No — I held off" }, { v: "folded", label: "Yes — I did it anyway" }, { v: "partial", label: "A little, but less than usual" }];
 const DAYKIND = ["Draining", "Stressful", "Fine", "Good", "Great"];
 const CARRYING = ["Work", "An argument", "Loneliness", "Restlessness", "Nothing heavy"];
 const BASE_REPLACEMENTS = ["5-min walk", "Shower", "Journal", "Call someone", "Read"];
@@ -187,7 +188,11 @@ export default function App() {
         <style>{FONT}{css}</style>
         <div style={grain} />
         <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", position: "relative", zIndex: 2 }}>
-          <Onboarding onDone={(o) => { track("onboarding_complete"); save(K.settings, { ...settings, ...o, onboarded: true }, setSettings); }} />
+          <Onboarding onDone={(o) => {
+            track("onboarding_complete");
+            save(K.settings, { ...settings, ...o, onboarded: true }, setSettings);
+            if (o.baselineFeel) save(K.mornings, [{ date: todayKey(), feel: o.baselineFeel, folded: null }, ...mornings], setMornings);
+          }} />
         </div>
       </div>
     );
@@ -204,7 +209,7 @@ export default function App() {
         {view === "intervene" && <Intervene settings={settings} memory={memory} urges={urges} mornings={mornings} days={days} feedback={feedback}
           replacements={replacements} voice={voice} onCancel={() => setView("home")}
           onFeedback={(f) => save(K.feedback, [{ ...f, ts: Date.now() }, ...feedback].slice(0, 50), setFeedback)}
-          onComplete={(e) => { track("intervention_complete", { dropped: e.dropped, behavior: e.behavior }); save(K.urges, [{ ...e, id: Date.now(), ts: Date.now(), date: todayKey() }, ...urges], setUrges); setView("home"); }} />}
+          onComplete={(e) => { track("intervention_complete", { dropped: e.dropped, outcome: e.outcome, behavior: e.behavior, replacement: e.replacement, lens: e.lens || "unknown" }); save(K.urges, [{ ...e, id: Date.now(), ts: Date.now(), date: todayKey() }, ...urges], setUrges); setView("home"); }} />}
         {view === "morning" && <Morning existing={todayMorning} onCancel={() => setView("home")}
           onDone={(feel, folded) => { track("morning_checkin", { feel, folded }); const rest = mornings.filter((m) => m.date !== todayKey()); save(K.mornings, [{ date: todayKey(), feel, folded }, ...rest], setMornings); setView("home"); }} />}
         {view === "day" && <DayCheckin existing={todayDay} onCancel={() => setView("home")}
@@ -215,7 +220,7 @@ export default function App() {
       {view !== "intervene" && view !== "morning" && view !== "day" && (
         <nav style={nav}>
           {[["home", "Now"], ["insights", "Patterns"], ["you", "Why"]].map(([k, l]) => (
-            <button key={k} onClick={() => setView(k)} style={navBtn(view === k)}>{l}</button>
+            <button key={k} onClick={() => setView(k)} style={{ ...navBtn(view === k), ...(k === "you" && !settings.build && !settings.project ? pulseNav : {}) }}>{l}</button>
           ))}
         </nav>
       )}
@@ -228,7 +233,7 @@ const WHEN = ["After work", "After dinner", "Late night", "When I'm alone", "Aft
 const SEEKING = ["Relief", "Quiet", "Confidence", "Escape", "A reward"];
 function Onboarding({ onDone }) {
   const [step, setStep] = useState(0);
-  const [o, setO] = useState({ primaryBehavior: "", seeking: "", usualWhen: "", reminder: "", coreReasons: [], build: "", project: "", futureSelf: "" });
+  const [o, setO] = useState({ primaryBehavior: "", seeking: "", usualWhen: "", reminder: "", coreReasons: [], build: "", project: "", futureSelf: "", baselineFeel: "" });
   const toggleReason = (reason) => {
     setO((p) => {
       const exists = p.coreReasons.includes(reason);
@@ -239,7 +244,11 @@ function Onboarding({ onDone }) {
   const finish = () => onDone({ ...o, reminder: cleanUserText(o.reminder), project: cleanUserText(o.project) });
   return (
     <div style={{ ...pad, minHeight: "100%", display: "flex", flexDirection: "column", paddingTop: 60 }}>
-      {step > 0 && <Progress step={step - 1} total={6} />}
+      {step > 0 && (
+        <div style={progressSticky}>
+          <Progress step={step - 1} total={4} />
+        </div>
+      )}
       {step === 0 && (
         <div className="fade" style={{ ...stepWrap, justifyContent: "flex-start", paddingTop: 14 }}>
           <p style={{ ...kicker, letterSpacing: 4 }}>Clear Morning</p>
@@ -269,55 +278,29 @@ function Onboarding({ onDone }) {
         </Step>
       )}
       {step === 2 && (
-        <Step kick="The real reach" title="What are you hoping it gives you?">
-          {SEEKING.map((s) => <Choice key={s} active={o.seeking === s} onClick={() => { setO((p) => ({ ...p, seeking: s })); setTimeout(() => setStep(3), 150); }}>{s}</Choice>)}
+        <Step kick="Your moment" title="When does it usually hit?">
+          {WHEN.map((w) => <Choice key={w} active={o.usualWhen === w} onClick={() => { setO((p) => ({ ...p, usualWhen: w })); setTimeout(() => setStep(3), 150); }}>{w}</Choice>)}
         </Step>
       )}
       {step === 3 && (
-        <Step kick="Your moment" title="When does it usually hit?">
-          {WHEN.map((w) => <Choice key={w} active={o.usualWhen === w} onClick={() => { setO((p) => ({ ...p, usualWhen: w })); setTimeout(() => setStep(4), 150); }}>{w}</Choice>)}
-        </Step>
-      )}
-      {step === 4 && (
         <div className="fade" style={stepWrap}>
-          <p style={kicker}>Why this matters</p>
-          <h2 style={{ ...h2, marginBottom: 8 }}>What gets better when you stop folding?</h2>
-          <p style={sub}>Folding means giving in to the thing you told yourself you didn't want tonight.</p>
+          <p style={kicker}>What gets better</p>
+          <h2 style={{ ...h2, marginBottom: 8 }}>What gets better when you don't fold?</h2>
           <p style={sub}>Pick up to 3. These become your anchors.</p>
-          <div style={{ marginTop: 24 }}>
+          <div style={{ marginTop: 20 }}>
             {CORE_REASONS.map((r) => <Choice key={r} active={o.coreReasons.includes(r)} onClick={() => toggleReason(r)}>{r}</Choice>)}
           </div>
           <div style={{ flex: 1 }} />
-          <button style={primary} onClick={() => setStep(5)}>Next</button>
+          <button style={primary} disabled={!o.coreReasons.length} onClick={() => setStep(4)}>Next</button>
         </div>
       )}
-      {step === 5 && (
-        <div className="fade" style={stepWrap}>
-          <p style={kicker}>Build</p>
-          <h2 style={{ ...h2, marginBottom: 8 }}>What are you building?</h2>
-          <div style={{ marginTop: 6 }}>
-            {BUILDS.map((b) => <Choice key={b} active={o.build === b} onClick={() => setO((p) => ({ ...p, build: b }))}>{b}</Choice>)}
-          </div>
-          {o.build && (
-            <>
-              <label style={{ ...lbl, marginTop: 20 }}>What's one thing you're actively working on right now?</label>
-              <input value={o.project} onChange={(e) => setO((p) => ({ ...p, project: e.target.value }))} placeholder="Type it here — a side business, jiu-jitsu…" style={{ ...input, borderColor: "#9a7b4f" }} />
-            </>
-          )}
-          {o.build ? <div style={{ height: 16 }} /> : <div style={{ flex: 1 }} />}
-          <button style={{ ...primary, marginBottom: 8 }} onClick={() => setStep(6)}>Next</button>
-        </div>
-      )}
-      {step === 6 && (
-        <div className="fade" style={stepWrap}>
-          <p style={kicker}>Last thing</p>
-          <h2 style={{ ...h2, marginBottom: 6 }}>What should I remind you when you're close?</h2>
-          <p style={sub}>I'll say this back to you in the moment.</p>
-          <textarea value={o.reminder} onChange={(e) => setO((p) => ({ ...p, reminder: e.target.value }))} placeholder={'"Tomorrow matters more." · "I hate waking up foggy." · "My kids deserve the present version of me."'} style={textArea} />
-          <div style={{ height: 16 }} />
-          <button style={primary} onClick={finish}>Start</button>
-          <button style={{ ...secondary, marginTop: 10, marginBottom: 8 }} onClick={finish}>Skip the reminder</button>
-        </div>
+      {step === 4 && (
+        <Step kick="Start point" title="How did you wake up this morning?">
+          <p style={{ ...sub, marginTop: -16, marginBottom: 18 }}>This gives us a starting point, so you can see if things improve over time.</p>
+          {FEELINGS.map((f) => (
+            <Choice key={f} active={o.baselineFeel === f} onClick={() => { setO((p) => ({ ...p, baselineFeel: f })); setTimeout(finish, 150); }}>{f}</Choice>
+          ))}
+        </Step>
       )}
     </div>
   );
@@ -377,6 +360,15 @@ function behaviorPhrase(b) {
   if (x === "text someone") return "your phone";
   return "the thing";
 }
+function behaviorPhrase2(b) {
+  const x = (b || "").toLowerCase();
+  if (x === "drink") return "drink";
+  if (x === "smoke") return "smoke";
+  if (x === "scroll") return "scroll";
+  if (x === "eat") return "eat";
+  if (x === "text someone") return "send the text";
+  return "do it";
+}
 function onboardingCard(s) {
   const behavior = behaviorPhrase(s.primaryBehavior);
   const when = s.usualWhen ? s.usualWhen.toLowerCase() : "when the urge shows up";
@@ -394,7 +386,9 @@ function Intervene({ settings, memory, urges, mornings, days, feedback, replacem
   return (
     <div style={{ ...pad, minHeight: "100%", display: "flex", flexDirection: "column", paddingTop: 54 }}>
       <button style={close} onClick={onCancel}>✕</button>
-      <Progress step={step} total={9} />
+      <div style={{ position: "sticky", top: 0, zIndex: 25, background: "linear-gradient(175deg,#1a130d,#0c0805)", paddingTop: 4, paddingBottom: 12, margin: "0 -2px" }}>
+        <Progress step={step} total={11} />
+      </div>
 
       {voice && (
         <button style={voiceBar} onClick={() => playRef.current && playRef.current.play()}>Hear from clear-headed you</button>
@@ -404,12 +398,40 @@ function Intervene({ settings, memory, urges, mornings, days, feedback, replacem
       {step === 0 && <Step kick="Right now" title="What are you about to do?">{BEHAVIORS.map((b) => <Choice key={b} active={d.behavior === b} onClick={() => set("behavior", b)}>{b}</Choice>)}</Step>}
       {step === 1 && <Step kick="Be honest" title="What are you actually reaching for?">{TRIGGERS.map((t) => <Choice key={t} active={d.trigger === t} onClick={() => set("trigger", t)}>{t}</Choice>)}</Step>}
       {step === 2 && <Step kick="One more thing" title="What happened right before this?">{CONTEXTS.map((c) => <Choice key={c} active={d.context === c} onClick={() => set("context", c)}>{c}</Choice>)}</Step>}
-      {step === 3 && <RealityCheck settings={settings} memory={memory} urges={urges} mornings={mornings} days={days} feedback={feedback} d={d} onNext={(line) => { setD((p) => ({ ...p, realityLine: line })); setStep(4); }} />}
-      {step === 4 && <ImmediateAction behavior={d.behavior} context={d.context} replacements={replacements} onNext={(replacement) => { setD((p) => ({ ...p, replacement })); setStep(5); }} />}
-      {step === 5 && <Hold replacement={d.replacement} onNext={next} />}
-      {step === 6 && <Step kick="Proof" title="What happened to the urge?"><p style={{ ...sub, marginTop: -14, marginBottom: 22 }}>You didn't beat it by thinking harder. You changed state, waited, and gave the feeling room to move.</p>{DROP.map((x) => <Choice key={x} active={d.dropped === x} onClick={() => set("dropped", x)}>{x}</Choice>)}</Step>}
-      {step === 7 && <Step kick="Lock it in" title="How do you want to wake up?">{TOMORROW.map((t) => <Choice key={t} active={d.tomorrow === t} onClick={() => { setD((p) => ({ ...p, tomorrow: t, completedAt: Date.now() })); setTimeout(() => setStep(8), 150); }}>{t}</Choice>)}</Step>}
-      {step === 8 && <Feedback line={d.realityLine} onDone={(verdict, note) => { if (verdict) track("reality_check_rated", { rating: verdict }); if (onFeedback && verdict) onFeedback({ verdict, note, line: d.realityLine, behavior: d.behavior, context: d.context }); onComplete({ ...d }); }} />}
+      {step === 3 && <LoudestThought d={d} setD={setD} onNext={() => setStep(4)} />}
+      {step === 4 && <RealityCheck settings={settings} memory={memory} urges={urges} mornings={mornings} days={days} feedback={feedback} d={d} onNext={(line, lens) => { setD((p) => ({ ...p, realityLine: line, lens })); setStep(5); }} />}
+      {step === 5 && <ImmediateAction behavior={d.behavior} context={d.context} replacements={replacements} onNext={(replacement) => { setD((p) => ({ ...p, replacement })); setStep(6); }} />}
+      {step === 6 && <Hold replacement={d.replacement} onNext={next} />}
+      {step === 7 && <Step kick="Proof" title="What happened to the urge?"><p style={{ ...sub, marginTop: -14, marginBottom: 22 }}>You didn't beat it by thinking harder. You changed state, waited, and gave the feeling room to move.</p>{DROP.map((x) => <Choice key={x} active={d.dropped === x} onClick={() => set("dropped", x)}>{x}</Choice>)}</Step>}
+      {step === 8 && <Step kick="Straight up" title={`Did you ${behaviorPhrase2(d.behavior)} anyway?`}><p style={{ ...sub, marginTop: -14, marginBottom: 22 }}>No judgment. This is how I learn what actually works — not just what feels good in the moment.</p>{OUTCOMES.map((x) => <Choice key={x.v} active={d.outcome === x.v} onClick={() => set("outcome", x.v)}>{x.label}</Choice>)}</Step>}
+      {step === 9 && <Step kick="Lock it in" title="How do you want to wake up?">{TOMORROW.map((t) => <Choice key={t} active={d.tomorrow === t} onClick={() => { setD((p) => ({ ...p, tomorrow: t, completedAt: Date.now() })); setTimeout(() => setStep(10), 150); }}>{t}</Choice>)}</Step>}
+      {step === 10 && <Feedback line={d.realityLine} onDone={(verdict, note) => { if (verdict) track("reality_check_rated", { rating: verdict, lens: d.lens || "unknown", outcome: d.outcome || "unknown" }); if (onFeedback && verdict) onFeedback({ verdict, note, line: d.realityLine, lens: d.lens, behavior: d.behavior, context: d.context }); onComplete({ ...d }); }} />}
+    </div>
+  );
+}
+
+const LOUD_THOUGHTS = ["I deserve it", "Today sucked", "One won't matter", "I'm bored", "I just want to shut my brain off", "I've earned this"];
+function LoudestThought({ d, setD, onNext }) {
+  const [custom, setCustom] = useState("");
+  const [typing, setTyping] = useState(false);
+  return (
+    <div className="fade" style={stepWrap}>
+      <p style={kicker}>The real story</p>
+      <h2 style={{ ...h2, marginBottom: 8 }}>What's the loudest thought in your head right now?</h2>
+      <p style={sub}>The thing you're actually telling yourself. No filter.</p>
+      {!typing ? (
+        <div style={{ marginTop: 18 }}>
+          {LOUD_THOUGHTS.map((t) => <Choice key={t} active={d.loudThought === t} onClick={() => { setD((p) => ({ ...p, loudThought: t })); setTimeout(onNext, 150); }}>{t}</Choice>)}
+          <button style={{ ...secondary, marginTop: 6 }} onClick={() => setTyping(true)}>Something else…</button>
+        </div>
+      ) : (
+        <div style={{ marginTop: 18 }}>
+          <input value={custom} onChange={(e) => setCustom(e.target.value)} placeholder="Say it in your own words." style={{ ...input, borderColor: "#9a7b4f" }} autoFocus />
+          <div style={{ height: 12 }} />
+          <button style={{ ...primary, marginBottom: 8 }} disabled={!custom.trim()} onClick={() => { setD((p) => ({ ...p, loudThought: cleanUserText(custom) })); onNext(); }}>Next</button>
+          <button style={secondary} onClick={() => setTyping(false)}>← back to options</button>
+        </div>
+      )}
     </div>
   );
 }
@@ -459,6 +481,12 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
   const [aiLine, setAiLine] = useState(null);
   const [loading, setLoading] = useState(true);
   const [source, setSource] = useState(null);
+  // Pick the lens here (once) so we can both send it to the prompt AND record which lens was used with the rating.
+  const lensRef = useRef(null);
+  if (!lensRef.current) {
+    const usable = LENS_KEYS.filter((k) => k !== "evidence" || urges.length >= 4);
+    lensRef.current = usable[Math.floor(Math.random() * usable.length)];
+  }
 
   // Guaranteed-personal line, built as COMPLETE thoughts (Pattern → Building → Reminder), never stitched fragments.
   const yref = yesterdayRef(urges, mornings, days);
@@ -552,7 +580,7 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
     (async () => {
       setLoading(true);
       const startedAt = Date.now();
-      const txt = await askClaude(buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref }), 160, 1);
+      const txt = await askClaude(buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref, lensKey: lensRef.current }), 160, 1);
       // Keep the thinking dots on screen at least 700ms — instant replies feel fake.
       const elapsed = Date.now() - startedAt;
       if (elapsed < 700) await new Promise((r) => setTimeout(r, 700 - elapsed));
@@ -577,7 +605,7 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
       )}
       {!loading && source === "fallback" && DEBUG_AI && <p style={{ ...sub, fontSize: 11, opacity: 0.6 }}>[using fallback — {LAST_AI_ERROR || "no AI available"}]</p>}
       <div style={{ flex: 1 }} />
-      <button style={primary} onClick={() => onNext(shownLine)} disabled={loading}>Choose your next 10 minutes →</button>
+      <button style={primary} onClick={() => onNext(shownLine, lensRef.current)} disabled={loading}>Choose your next 10 minutes →</button>
     </div>
   );
 }
@@ -838,6 +866,21 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
   const [elapsed, setElapsed] = useState(0);
   const [err, setErr] = useState("");
   const recRef = useRef(null); const chunks = useRef([]); const timerRef = useRef(null); const playRef = useRef(null);
+  const [holdPct, setHoldPct] = useState(0);
+  const holdRef = useRef(null);
+  const startHold = () => {
+    const start = Date.now();
+    holdRef.current = setInterval(async () => {
+      const pct = Math.min(100, ((Date.now() - start) / 3000) * 100);
+      setHoldPct(pct);
+      if (pct >= 100) {
+        clearInterval(holdRef.current);
+        await Promise.all(Object.values(K).map((key) => store.del(key)));
+        window.location.reload();
+      }
+    }, 30);
+  };
+  const cancelHold = () => { clearInterval(holdRef.current); setHoldPct(0); };
 
   const startRec = async () => {
     setErr("");
@@ -936,7 +979,16 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
         {(settings.custom || []).map((c) => <span key={c} style={chip} onClick={() => onChange({ ...settings, custom: settings.custom.filter((x) => x !== c) })}>{c} ✕</span>)}
       </div>
-      <p style={{ ...sub, marginTop: 30 }}>{urges.length} check-ins logged. Everything stays on this device.</p>
+      <button
+        style={{ ...secondary, marginTop: 28, borderColor: "#4a2a2a", color: "#a87", position: "relative", overflow: "hidden", touchAction: "none" }}
+        onMouseDown={startHold} onMouseUp={cancelHold} onMouseLeave={cancelHold}
+        onTouchStart={startHold} onTouchEnd={cancelHold} onTouchCancel={cancelHold}
+      >
+        <span style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${holdPct}%`, background: "rgba(181,72,63,0.35)", transition: holdPct === 0 ? "width .2s" : "none" }} />
+        <span style={{ position: "relative" }}>{holdPct > 0 ? "Keep holding to reset…" : "Hold to reset app and start over"}</span>
+      </button>
+      <p style={{ ...sub, textAlign: "center", fontSize: 11.5, marginTop: 8, opacity: 0.6 }}>Press and hold for 3 seconds. This erases everything.</p>
+      <p style={{ ...sub, marginTop: 22 }}>{urges.length} check-ins logged. Everything stays on this device.</p>
     </div>
   );
 }
@@ -1104,18 +1156,21 @@ const REALITY_LENSES = {
   identity: "IDENTITY lens: Frame it as a small vote for who they're becoming — without grand language. E.g. 'This is a small rep in becoming someone who doesn't auto-pilot at night.'",
 };
 const LENS_KEYS = Object.keys(REALITY_LENSES);
-function buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref }) {
+function buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref, lensKey }) {
   const recentLines = [
     ...(feedback || []).map((f) => f.line),
     ...(urges || []).map((u) => u.realityLine),
   ].filter(Boolean).slice(0, 5);
-  // Pick ONE lens. Avoid evidence lens until there's real history to cite.
-  const usable = LENS_KEYS.filter((k) => k !== "evidence" || urges.length >= 4);
-  const lensKey = usable[Math.floor(Math.random() * usable.length)];
+  // Lens is chosen by the caller (so it can be recorded with the rating); fall back if not passed.
+  if (!lensKey || !REALITY_LENSES[lensKey]) {
+    const usable = LENS_KEYS.filter((k) => k !== "evidence" || urges.length >= 4);
+    lensKey = usable[Math.floor(Math.random() * usable.length)];
+  }
   const lensInstruction = REALITY_LENSES[lensKey];
-  // Moves that have worked for them before (chose a replacement and the urge dropped) — surface for relevance.
+  // Moves that have worked for them before — prefer ones where they actually held off (new outcome signal),
+  // falling back to "urge dropped" for older entries without an outcome.
   const workedMoves = [...new Set((urges || [])
-    .filter((u) => u.replacement && u.dropped && u.dropped !== "It got stronger")
+    .filter((u) => u.replacement && (u.outcome === "held" || (!u.outcome && u.dropped && u.dropped !== "It got stronger")))
     .map((u) => u.replacement))].slice(0, 4);
   // Memory minus the long-term goal fields — those are supporting context only, not the focus.
   const m = { ...memory };
@@ -1129,6 +1184,7 @@ THE MOMENT (this is what matters most):
 About to: ${d.behavior}
 Reaching for: ${d.trigger}
 What happened right before: ${d.context}
+${d.loudThought ? `The loudest thought in their head right now (THIS IS THE REAL STORY — speak to it directly): "${d.loudThought}"` : ""}
 What they usually want from it: ${settings.seeking || memory.seeking || "unknown"}
 ${settings.reminder ? `Their own words to remember: "${settings.reminder}"` : ""}
 
@@ -1304,7 +1360,7 @@ function movementLine(behavior, context) {
 const wrap = { maxWidth: 440, width: "100%", margin: "0 auto", height: "100dvh", minHeight: 600, background: "linear-gradient(175deg,#1a130d,#0c0805 65%,#080503)", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", overflowX: "hidden", overscrollBehavior: "none", fontFamily: "'Jost',sans-serif" };
 const wrapMorning = { maxWidth: 440, margin: "0 auto", background: "linear-gradient(175deg,#f3e3cd,#e9cfa9 70%,#dcb886)", position: "relative" };
 const grain = { position: "absolute", inset: 0, zIndex: 1, opacity: 0.04, pointerEvents: "none", backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" };
-const css = `html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior:none}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}.fade{animation:fu .6s cubic-bezier(.2,.7,.2,1) both}@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes pulseDot{0%,80%,100%{transform:scale(0.6);opacity:0.35}40%{transform:scale(1);opacity:1}}input,textarea{outline:none}input:focus,textarea:focus{border-color:#9a7b4f!important}input::placeholder,textarea::placeholder{color:#6f6253;opacity:1}h1,h2,p{overflow-wrap:break-word;word-break:break-word}button{cursor:pointer;font-family:'Jost',sans-serif}`;
+const css = `html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior:none}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}.fade{animation:fu .6s cubic-bezier(.2,.7,.2,1) both}@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes pulseDot{0%,80%,100%{transform:scale(0.6);opacity:0.35}40%{transform:scale(1);opacity:1}}@keyframes pulseGlow{0%,100%{opacity:.65}50%{opacity:1}}input,textarea{outline:none}input:focus,textarea:focus{border-color:#9a7b4f!important}input::placeholder,textarea::placeholder{color:#6f6253;opacity:1}h1,h2,p{overflow-wrap:break-word;word-break:break-word}button{cursor:pointer;font-family:'Jost',sans-serif}`;
 const pad = { padding: "52px 26px 26px" };
 const stepWrap = { flex: 1, display: "flex", flexDirection: "column" };
 const kicker = { textTransform: "uppercase", letterSpacing: 3, fontSize: 11, color: "#6f6253", margin: "0 0 10px" };
@@ -1346,3 +1402,5 @@ const tog = (on) => ({ width: 48, height: 28, borderRadius: 20, background: on ?
 const dot = (on) => ({ position: "absolute", top: 3, left: on ? 23 : 3, width: 22, height: 22, borderRadius: "50%", background: "#e8ddcc", transition: "left .2s" });
 const chip = { fontSize: 13, color: "#c8b79a", border: "1px solid #3a2f22", borderRadius: 20, padding: "6px 12px", cursor: "pointer" };
 const thinkingDot = { width: 7, height: 7, borderRadius: "50%", background: "#c8b79a", display: "inline-block", animation: "pulseDot 1.2s infinite ease-in-out" };
+const progressSticky = { position: "sticky", top: 0, zIndex: 30, background: "linear-gradient(175deg,#1a130d,#0c0805)", paddingTop: 8, paddingBottom: 10 };
+const pulseNav = { color: "#e8ddcc", textShadow: "0 0 12px rgba(181,146,102,0.9)", animation: "pulseGlow 1.8s ease-in-out infinite" };
