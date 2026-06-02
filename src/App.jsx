@@ -256,6 +256,9 @@ function Onboarding({ onDone }) {
           <p style={{ ...sub, fontSize: 15, marginTop: 12, maxWidth: 330, lineHeight: 1.5 }}>
             Open this before the drink. Before the text. Before the scroll. Before autopilot takes over.
           </p>
+          <p style={{ ...sub, fontSize: 13.5, marginTop: 10, maxWidth: 330, lineHeight: 1.45, color: "#9a8a72", fontStyle: "italic" }}>
+            This only works if you're honest with yourself. It's just you here.
+          </p>
           <button style={{ ...primary, marginTop: 22, fontSize: 18, padding: "18px" }} onClick={() => setStep(1)}>Before I decide</button>
           <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 9, opacity: 0.7 }}>Takes about a minute.</p>
           <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 11 }}>
@@ -296,7 +299,7 @@ function Onboarding({ onDone }) {
       )}
       {step === 4 && (
         <Step kick="Start point" title="How did you wake up this morning?">
-          <p style={{ ...sub, marginTop: -16, marginBottom: 18 }}>This gives us a starting point, so you can see if things improve over time.</p>
+          <p style={{ ...sub, marginTop: -16, marginBottom: 18 }}>This gives us a starting point, so you can see if things improve over time. No right answers — honest ones just make the reality checks sharper.</p>
           {FEELINGS.map((f) => (
             <Choice key={f} active={o.baselineFeel === f} onClick={() => { setO((p) => ({ ...p, baselineFeel: f })); setTimeout(finish, 150); }}>{f}</Choice>
           ))}
@@ -849,6 +852,7 @@ Return ONLY a JSON array of 3 short conversational insights (each under 22 words
           {memory.commonTrigger && <Fact label="Real driver" value={memory.commonTrigger} />}
         </>
       )}
+      <p style={{ ...sub, fontSize: 12, marginTop: 28, opacity: 0.6, lineHeight: 1.5 }}>Everything here comes from your own check-ins. The more honest they are, the sharper this gets.</p>
     </div>
   );
 }
