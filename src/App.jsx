@@ -390,11 +390,11 @@ function Onboarding({ onDone, onStep, onTryNow }) {
             <p style={{ ...kicker, letterSpacing: 4, textAlign: "center", marginBottom: 14 }}>Clear Morning</p>
             <h1 style={{ ...h1, fontSize: 31, marginTop: 0, lineHeight: 1.14, textAlign: "center" }}>About to do something you already know you'll regret tomorrow?</h1>
             <p style={{ ...sub, fontSize: 16, margin: "16px auto 0", maxWidth: 342, lineHeight: 1.48, textAlign: "center", color: "#d8c8ad" }}>
-              Answer a few quick questions and get a straight answer based on what you're actually feeling.
+              Answer 3 quick questions and get a straight answer based on what you're actually feeling.
             </p>
             <button style={{ ...primary, marginTop: 26, fontSize: 19, padding: "19px", boxShadow: "0 0 38px rgba(181,146,102,0.26)" }} onClick={() => { track("first_screen_primary_clicked"); track("reality_check_cta_clicked"); onTryNow && onTryNow(); }}>Help me through it</button>
             <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 12, opacity: 0.75 }}>
-              No account. No lecture. Just the next honest minute.
+              No account. No lecture. Takes less than a minute.
             </p>
           </div>
         </div>
