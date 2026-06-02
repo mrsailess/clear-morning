@@ -392,7 +392,7 @@ function Onboarding({ onDone, onStep, onTryNow }) {
             <p style={{ ...sub, fontSize: 16, margin: "16px auto 0", maxWidth: 342, lineHeight: 1.48, textAlign: "center", color: "#d8c8ad" }}>
               Answer a few quick questions and get a straight answer based on what you're actually feeling.
             </p>
-            <button style={{ ...primary, marginTop: 26, fontSize: 19, padding: "19px", boxShadow: "0 0 38px rgba(181,146,102,0.26)" }} onClick={() => { track("first_screen_primary_clicked"); track("reality_check_cta_clicked"); onTryNow && onTryNow(); }}>Help me think first</button>
+            <button style={{ ...primary, marginTop: 26, fontSize: 19, padding: "19px", boxShadow: "0 0 38px rgba(181,146,102,0.26)" }} onClick={() => { track("first_screen_primary_clicked"); track("reality_check_cta_clicked"); onTryNow && onTryNow(); }}>Help me through it</button>
             <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 12, opacity: 0.75 }}>
               No account. No lecture. Just the next honest minute.
             </p>
