@@ -18,10 +18,10 @@ const CONTEXTS = ["Work", "Argument", "Kids/family", "Scrolling", "Bored at home
 const FEELINGS = ["Foggy", "Okay", "Clear", "Amazing"];
 const TOMORROW = ["Clear", "Proud", "Present", "Focused", "Energized"];
 const DROP = ["It passed", "It's weaker now", "It's still there", "It got stronger"];
-const OUTCOMES = [{ v: "held", label: "No — I held off" }, { v: "folded", label: "Yes — I did it anyway" }, { v: "partial", label: "A little, but less than usual" }];
+const OUTCOMES = [{ v: "held", label: "No, I held off" }, { v: "folded", label: "Yes, I did it anyway" }, { v: "partial", label: "A little, but less than usual" }];
 const DAYKIND = ["Draining", "Stressful", "Fine", "Good", "Great"];
 const CARRYING = ["Work", "An argument", "Loneliness", "Restlessness", "Nothing heavy"];
-const BASE_REPLACEMENTS = ["5-min walk", "Shower", "Journal", "Call someone", "Read"];
+const BASE_REPLACEMENTS = ["Go outside", "Take a shower", "Make tea", "Walk around the block", "Clean one small area", "Call someone", "Write what's true", "Read a few pages"];
 const FAMILIAR = ["Sparkling water", "Tea", "Coffee", "Kombucha"];
 const CORE_REASONS = ["Marriage", "Parenting", "Fitness", "Business", "Faith", "Mental health", "Sleep", "Confidence", "Finances"];
 const BUILDS = ["Better health", "Better marriage", "Better finances", "Better mental health", "Better relationship with my kids", "A business", "A career", "A skill", "Something else"];
@@ -129,7 +129,28 @@ function track(event, props) {
 
 export default function App() {
   const [view, setView] = useState("home");
+  const [shareStreak, setShareStreak] = useState(null);
+  const [tryNow, setTryNow] = useState(false);
   const [seenWhy, setSeenWhy] = useState(false);
+  const [rail, setRail] = useState({ visible: false, top: 0, height: 0 });
+  const scrollRef = useRef(null);
+  const railTimer = useRef(null);
+  const updateRail = (showAndFade) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const scrollable = el.scrollHeight - el.clientHeight > 8;
+    if (!scrollable) { setRail((r) => ({ ...r, visible: false })); return; }
+    const ratio = el.clientHeight / el.scrollHeight;
+    const height = Math.max(28, el.clientHeight * ratio);
+    const maxTop = el.clientHeight - height;
+    const top = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * maxTop;
+    setRail((r) => ({ visible: showAndFade ? true : r.visible, top, height }));
+    if (showAndFade) {
+      clearTimeout(railTimer.current);
+      railTimer.current = setTimeout(() => setRail((r) => ({ ...r, visible: false })), 900);
+    }
+  };
+  const onScroll = () => updateRail(true);
   const [urges, setUrges] = useState([]);
   const [mornings, setMornings] = useState([]);
   const [days, setDays] = useState([]);
@@ -137,6 +158,13 @@ export default function App() {
   const [voice, setVoice] = useState(null);
   const [feedback, setFeedback] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  // Recompute rail thumb when view changes, after load, and when data height changes; start at top.
+  useEffect(() => {
+    if (!loaded) return;
+    if (scrollRef.current) scrollRef.current.scrollTop = 0;
+    const t = setTimeout(() => updateRail(false), 80);
+    return () => clearTimeout(t);
+  }, [view, loaded, settings.onboarded, urges.length, mornings.length, days.length]);
 
   useEffect(() => {
     initAnalytics();
@@ -183,17 +211,20 @@ export default function App() {
 
   if (!loaded) return <div style={{ ...wrap, alignItems: "center", justifyContent: "center" }}><style>{FONT}</style><span style={{ color: "#9a7b4f" }}>·</span></div>;
 
-  if (!settings.onboarded) {
+  if (!settings.onboarded && !tryNow) {
     return (
       <div style={wrap}>
         <style>{FONT}{css}</style>
         <div style={grain} />
-        <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", position: "relative", zIndex: 2 }}>
-          <Onboarding onDone={(o) => {
+        <div ref={scrollRef} onScroll={onScroll} style={{ flex: 1, overflowY: "auto", overflowX: "hidden", position: "relative", zIndex: 2 }}>
+          <Onboarding onTryNow={() => { track("first_reality_check_started"); setTryNow(true); setView("intervene"); }} onDone={(o) => {
             track("onboarding_complete");
             save(K.settings, { ...settings, ...o, onboarded: true }, setSettings);
             if (o.baselineFeel) save(K.mornings, [{ date: todayKey(), feel: o.baselineFeel, folded: null }, ...mornings], setMornings);
-          }} />
+          }} onStep={() => { if (scrollRef.current) scrollRef.current.scrollTop = 0; setTimeout(() => updateRail(false), 80); setTimeout(() => updateRail(false), 350); }} />
+        </div>
+        <div style={{ ...scrollRail, opacity: rail.visible ? 1 : 0, bottom: 12 }}>
+          <div style={{ ...scrollThumb, height: rail.height, transform: `translateY(${rail.top}px)` }} />
         </div>
       </div>
     );
@@ -203,22 +234,46 @@ export default function App() {
     <div style={wrap}>
       <style>{FONT}{css}</style>
       <div style={grain} />
-      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", position: "relative", zIndex: 2, paddingBottom: "calc(84px + env(safe-area-inset-bottom))" }}>
+      <div ref={scrollRef} onScroll={onScroll} style={{ flex: 1, overflowY: "auto", overflowX: "hidden", position: "relative", zIndex: 2, paddingBottom: "calc(84px + env(safe-area-inset-bottom))" }}>
         {view === "home" && <Home settings={settings} memory={memory} urges={urges} mornings={mornings} days={days}
           needMorning={needMorning} needDay={needDay} needLastNight={needLastNight} voice={voice}
-          onFold={() => { track("intervention_start"); setView("intervene"); }} onMorning={() => setView("morning")} onDay={() => setView("day")} />}
+          onFold={() => { track("intervention_start"); setView("intervene"); }} onMorning={() => setView("morning")} onDay={() => setView("day")}
+          onShare={() => { const cm = clearMorningStreak(mornings); const ms = clearMorningMilestone(cm); track("clear_mornings_card_opened", { clearMornings: cm, isMilestone: !!ms, milestoneTitle: ms?.title }); setShareStreak(cm); setView("shareClearMornings"); }}
+          loggedClearStatusToday={mornings.some((m) => m.date === todayKey() && typeof m.folded === "boolean")} />}
         {view === "intervene" && <Intervene settings={settings} memory={memory} urges={urges} mornings={mornings} days={days} feedback={feedback}
-          replacements={replacements} voice={voice} onCancel={() => setView("home")}
+          replacements={replacements} voice={voice} onCancel={() => setView(tryNow && !settings.onboarded ? "tryNowPrompt" : "home")}
           onFeedback={(f) => save(K.feedback, [{ ...f, ts: Date.now() }, ...feedback].slice(0, 50), setFeedback)}
-          onComplete={(e) => { track("intervention_complete", { dropped: e.dropped, outcome: e.outcome, behavior: e.behavior, replacement: e.replacement, lens: e.lens || "unknown" }); save(K.urges, [{ ...e, id: Date.now(), ts: Date.now(), date: todayKey() }, ...urges], setUrges); setView("home"); }} />}
+          onComplete={(e) => { track("intervention_complete", { dropped: e.dropped, outcome: e.outcome, behavior: e.behavior, replacement: e.replacement, lens: e.lens || "unknown" }); save(K.urges, [{ ...e, id: Date.now(), ts: Date.now(), date: todayKey() }, ...urges], setUrges); setView(tryNow && !settings.onboarded ? "tryNowPrompt" : "home"); }} />}
+        {view === "tryNowPrompt" && <TryNowPrompt onSetup={() => { track("setup_prompt_accepted"); setView("quickSetup"); }} onSkip={() => { track("setup_prompt_skipped"); save(K.settings, { ...settings, onboarded: true }, setSettings); setTryNow(false); setView("home"); }} />}
+        {view === "quickSetup" && <QuickSetup firstUrge={urges[0]} onDone={(o) => { track("quick_setup_complete"); save(K.settings, { ...settings, ...o, onboarded: true }, setSettings); setTryNow(false); setView("home"); }} />}
         {view === "morning" && <Morning existing={todayMorning} onCancel={() => setView("home")}
-          onDone={(feel, folded) => { track("morning_checkin", { feel, folded }); const rest = mornings.filter((m) => m.date !== todayKey()); save(K.mornings, [{ date: todayKey(), feel, folded }, ...rest], setMornings); setView("home"); }} />}
+          onDone={(feel, folded) => {
+            track("morning_checkin", { feel, folded });
+            const rest = mornings.filter((m) => m.date !== todayKey());
+            const updatedMornings = [{ date: todayKey(), feel, folded }, ...rest];
+            save(K.mornings, updatedMornings, setMornings);
+            if (folded === false) {
+              const newStreak = clearMorningStreak(updatedMornings);
+              const ms = clearMorningMilestone(newStreak);
+              if (ms) {
+                track("milestone_earned", { clearMornings: newStreak, milestoneTitle: ms.title, confettiShown: ms.confetti });
+                setShareStreak(newStreak);
+                setView("shareClearMornings");
+                return;
+              }
+            }
+            setView("home");
+          }} />}
         {view === "day" && <DayCheckin existing={todayDay} onCancel={() => setView("home")}
           onDone={(dayKind, carrying, note) => { const rest = days.filter((d) => d.date !== todayKey()); save(K.days, [{ date: todayKey(), dayKind, carrying, note }, ...rest], setDays); setView("home"); }} />}
+        {view === "shareClearMornings" && <ClearMorningsShare clearMornings={shareStreak ?? clearMorningStreak(mornings)} onBack={() => { setShareStreak(null); setView("home"); }} />}
         {view === "insights" && <Insights urges={urges} mornings={mornings} days={days} memory={memory} />}
         {view === "you" && <You settings={settings} urges={urges} voice={voice} saveVoice={saveVoice} onChange={(s) => save(K.settings, s, setSettings)} />}
       </div>
-      {view !== "intervene" && view !== "morning" && view !== "day" && (
+      <div style={{ ...scrollRail, opacity: rail.visible ? 1 : 0, bottom: (view !== "intervene" && view !== "morning" && view !== "day" && view !== "shareClearMornings") ? "calc(72px + env(safe-area-inset-bottom))" : 12 }}>
+        <div style={{ ...scrollThumb, height: rail.height, transform: `translateY(${rail.top}px)` }} />
+      </div>
+      {view !== "intervene" && view !== "morning" && view !== "day" && view !== "shareClearMornings" && (
         <nav style={nav}>
           {[["home", "Now"], ["insights", "Patterns"], ["you", "Why"]].map(([k, l]) => {
             const needsBuild = k === "you" && !settings.build && !settings.project && !seenWhy;
@@ -238,8 +293,81 @@ export default function App() {
 /* ── ONBOARDING ── */
 const WHEN = ["After work", "After dinner", "Late night", "When I'm alone", "After scrolling"];
 const SEEKING = ["Relief", "Quiet", "Confidence", "Escape", "A reward"];
-function Onboarding({ onDone }) {
+function TryNowPrompt({ onSetup, onSkip }) {
+  return (
+    <div className="fade" style={{ ...pad, minHeight: "100%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+      <div style={{ width: "100%", maxWidth: 360 }}>
+        <p style={{ ...kicker, letterSpacing: 4 }}>That was without knowing you</p>
+        <h1 style={{ ...h1, fontSize: 27, marginTop: 8, lineHeight: 1.15 }}>Want the next one to actually know you?</h1>
+        <p style={{ ...sub, fontSize: 15, margin: "14px auto 0", maxWidth: 320, lineHeight: 1.5 }}>
+          Answer a few quick questions so the next reality check can use your reasons, your patterns, and your words.
+        </p>
+        <button style={{ ...primary, marginTop: 24, fontSize: 17, padding: "17px" }} onClick={onSetup}>Make it personal</button>
+        <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 9, opacity: 0.7 }}>Takes about a minute.</p>
+        <button style={{ background: "none", border: "none", color: "#7a6b58", fontSize: 13, marginTop: 18, textDecoration: "underline", textUnderlineOffset: 3 }} onClick={onSkip}>Maybe later</button>
+      </div>
+    </div>
+  );
+}
+const PROTECT = ["Sleep", "Mental health", "Fitness", "Marriage", "Parenting", "Business", "Confidence", "Faith", "Finances"];
+function QuickSetup({ firstUrge, onDone }) {
   const [step, setStep] = useState(0);
+  const [o, setO] = useState({
+    primaryBehavior: firstUrge?.behavior || "",
+    coreReasons: [],
+    usualWhen: "",
+    reminder: "",
+  });
+  return (
+    <div style={{ ...pad, minHeight: "100%", display: "flex", flexDirection: "column", paddingTop: 54 }}>
+      <div style={progressSticky}><Progress step={step} total={3} /></div>
+      {step === 0 && (
+        <div className="fade" style={stepWrap}>
+          <p style={kicker}>What this protects</p>
+          <h2 style={{ ...h2, marginBottom: 8 }}>What do you want this to protect?</h2>
+          <p style={sub}>Pick up to 3. These become your anchors.</p>
+          <div style={{ marginTop: 20 }}>
+            {PROTECT.map((r) => {
+              const active = o.coreReasons.includes(r);
+              return (
+                <Choice key={r} active={active} onClick={() => {
+                  setO((p) => {
+                    const next = active ? p.coreReasons.filter((x) => x !== r) : [...p.coreReasons, r].slice(0, 3);
+                    return { ...p, coreReasons: next };
+                  });
+                }}>{r}</Choice>
+              );
+            })}
+          </div>
+          <div style={{ flex: 1 }} />
+          <button style={primary} disabled={!o.coreReasons.length} onClick={() => setStep(1)}>Next</button>
+        </div>
+      )}
+      {step === 1 && (
+        <Step kick="Your pattern" title="When does this usually hit?">
+          {WHEN.map((w) => <Choice key={w} active={o.usualWhen === w} onClick={() => { setO((p) => ({ ...p, usualWhen: w })); setTimeout(() => setStep(2), 150); }}>{w}</Choice>)}
+        </Step>
+      )}
+      {step === 2 && (
+        <div className="fade" style={stepWrap}>
+          <p style={kicker}>Your words</p>
+          <h2 style={{ ...h2, marginBottom: 6 }}>What should I remind you when you're close?</h2>
+          <p style={sub}>I'll say this back to you in the moment.</p>
+          <textarea value={o.reminder} onChange={(e) => setO((p) => ({ ...p, reminder: e.target.value }))}
+            placeholder={'"Tomorrow matters more." · "I hate waking up foggy." · "My kids deserve the present version of me."'}
+            style={textArea} />
+          <div style={{ height: 16 }} />
+          <button style={primary} onClick={() => onDone({ ...o, reminder: cleanUserText(o.reminder) })}>Done</button>
+          <button style={{ ...secondary, marginTop: 10, marginBottom: 8 }} onClick={() => onDone({ ...o, reminder: "" })}>Skip the reminder</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Onboarding({ onDone, onStep, onTryNow }) {
+  const [step, setStep] = useState(0);
+  useEffect(() => { if (onStep) onStep(); }, [step]);
   const [o, setO] = useState({ primaryBehavior: "", seeking: "", usualWhen: "", reminder: "", coreReasons: [], build: "", project: "", futureSelf: "", baselineFeel: "" });
   const toggleReason = (reason) => {
     setO((p) => {
@@ -257,25 +385,17 @@ function Onboarding({ onDone }) {
         </div>
       )}
       {step === 0 && (
-        <div className="fade" style={{ ...stepWrap, justifyContent: "flex-start", paddingTop: 14 }}>
-          <p style={{ ...kicker, letterSpacing: 4 }}>Clear Morning</p>
-          <h1 style={{ ...h1, fontSize: 30, marginTop: 6, lineHeight: 1.12 }}>About to do something you already know you'll regret tomorrow?</h1>
-          <p style={{ ...sub, fontSize: 15, marginTop: 12, maxWidth: 330, lineHeight: 1.5 }}>
-            Answer a few quick questions and get a straight answer based on what you're actually feeling.
-          </p>
-          <button style={{ ...primary, marginTop: 22, fontSize: 18, padding: "18px" }} onClick={() => setStep(1)}>Help me think first</button>
-          <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 9, opacity: 0.7 }}>No account. No lecture. Just the next honest minute.</p>
-          <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 11 }}>
-            {[
-              "See what's really driving the urge",
-              "Remember what matters",
-              "Wake up with fewer regrets",
-            ].map((t) => (
-              <div key={t} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                <span style={{ color: "#9a7b4f", fontSize: 15, lineHeight: 1.35 }}>✓</span>
-                <span style={{ ...sub, margin: 0, fontSize: 14.5, lineHeight: 1.35 }}>{t}</span>
-              </div>
-            ))}
+        <div className="fade" style={{ ...stepWrap, alignItems: "center", textAlign: "center", justifyContent: "center", paddingTop: 6 }}>
+          <div style={{ width: "100%", maxWidth: 388, margin: "0 auto" }}>
+            <p style={{ ...kicker, letterSpacing: 4, textAlign: "center", marginBottom: 14 }}>Clear Morning</p>
+            <h1 style={{ ...h1, fontSize: 31, marginTop: 0, lineHeight: 1.14, textAlign: "center" }}>About to do something you already know you'll regret tomorrow?</h1>
+            <p style={{ ...sub, fontSize: 16, margin: "16px auto 0", maxWidth: 342, lineHeight: 1.48, textAlign: "center", color: "#d8c8ad" }}>
+              Answer a few quick questions and get a straight answer based on what you're actually feeling.
+            </p>
+            <button style={{ ...primary, marginTop: 26, fontSize: 19, padding: "19px", boxShadow: "0 0 38px rgba(181,146,102,0.26)" }} onClick={() => { track("first_screen_primary_clicked"); track("reality_check_cta_clicked"); onTryNow && onTryNow(); }}>Help me think first</button>
+            <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 12, opacity: 0.75 }}>
+              No account. No lecture. Just the next honest minute.
+            </p>
           </div>
         </div>
       )}
@@ -303,7 +423,7 @@ function Onboarding({ onDone }) {
       )}
       {step === 4 && (
         <Step kick="Start point" title="How did you wake up this morning?">
-          <p style={{ ...sub, marginTop: -16, marginBottom: 18 }}>This gives us a starting point, so you can see if things improve over time. No right answers — honest ones just make the reality checks sharper.</p>
+          <p style={{ ...sub, marginTop: -16, marginBottom: 18 }}>This gives us a starting point, so you can see if things improve over time. No right answers. Honest ones just make the reality checks sharper.</p>
           {FEELINGS.map((f) => (
             <Choice key={f} active={o.baselineFeel === f} onClick={() => { setO((p) => ({ ...p, baselineFeel: f })); setTimeout(finish, 150); }}>{f}</Choice>
           ))}
@@ -314,9 +434,22 @@ function Onboarding({ onDone }) {
 }
 
 /* ── HOME ── */
-function Home({ settings, memory, urges, mornings, days, needMorning, needDay, needLastNight, voice, onFold, onMorning, onDay }) {
-  const month = new Date().getMonth();
-  const clearThis = mornings.filter((m) => new Date(m.date + "T12:00").getMonth() === month && (m.feel === "Clear" || m.feel === "Amazing")).length;
+function clearMorningStreak(mornings) {
+  const byDate = {};
+  mornings.forEach((m) => { if (typeof m.folded === "boolean") byDate[m.date] = m.folded; });
+  let streak = 0;
+  const d = new Date();
+  for (let i = 0; i < 365; i++) {
+    const key = d.toISOString().slice(0, 10);
+    if (byDate[key] === false) { streak++; d.setDate(d.getDate() - 1); continue; }
+    if (i === 0 && byDate[key] === undefined) { d.setDate(d.getDate() - 1); continue; }
+    break;
+  }
+  return streak;
+}
+
+function Home({ settings, memory, urges, mornings, days, needMorning, needDay, needLastNight, voice, onFold, onMorning, onDay, onShare, loggedClearStatusToday }) {
+  const clearMornings = clearMorningStreak(mornings);
   const checkins = urges.length + mornings.length + days.length;
   const homeTitle = checkins < 3 ? "You don't need to\nfigure out your whole\nlife tonight." : checkins < 6 ? "I'm starting to\nnotice a few things." : "Here's what I'm\nnoticing about you.";
   const cardLabel = checkins < 3 ? "Your pattern" : checkins < 6 ? "What you told me" : "What I know so far";
@@ -330,18 +463,23 @@ function Home({ settings, memory, urges, mornings, days, needMorning, needDay, n
       </div>
       <h1 style={{ ...h1, whiteSpace: "pre-line", marginTop: 16 }}>{homeTitle}</h1>
 
-      <div style={brandCard}>
-        <p style={{ margin: 0, color: "#7a6b58", fontSize: 11, letterSpacing: 2, textTransform: "uppercase" }}>{cardLabel}</p>
-        <p style={{ margin: "10px 0 0", fontFamily: "'Fraunces',serif", color: "#e8ddcc", fontSize: 18, lineHeight: 1.45 }}>{cardBody}</p>
-      </div>
-
-      <button style={foldBtn} onClick={onFold}>
+      <button style={{ ...foldBtn, marginTop: 22 }} onClick={onFold}>
         <span style={{ fontSize: 21, fontWeight: 500 }}>I need a reality check</span>
         <span style={{ fontSize: 13, opacity: 0.7, marginTop: 5 }}>get through the next 10 minutes</span>
       </button>
 
-      {needMorning && <button style={{ ...secondary, marginTop: 12 }} onClick={onMorning}>How did you wake up?</button>}
-      {needLastNight && <button style={{ ...secondary, marginTop: 12 }} onClick={onMorning}>How did last night go?</button>}
+      <div style={{ ...brandCard, marginTop: 18 }}>
+        <p style={{ margin: 0, color: "#7a6b58", fontSize: 11, letterSpacing: 2, textTransform: "uppercase" }}>{cardLabel}</p>
+        <p style={{ margin: "10px 0 0", fontFamily: "'Fraunces',serif", color: "#e8ddcc", fontSize: 18, lineHeight: 1.45 }}>{cardBody}</p>
+      </div>
+
+      {!loggedClearStatusToday && (
+        <button style={{ ...secondary, marginTop: 12, display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }} onClick={onMorning}>
+          <span>Log last night</span>
+          <span style={{ fontSize: 11, opacity: 0.6, fontWeight: 400 }}>Did you hold the line?</span>
+        </button>
+      )}
+      {needLastNight && !loggedClearStatusToday && <button style={{ ...secondary, marginTop: 12 }} onClick={onMorning}>How did last night go?</button>}
       {needDay
         ? <button style={{ ...secondary, marginTop: 12 }} onClick={onDay}>What kind of day are you having?</button>
         : (days.find((dd) => dd.date === todayKey()) && new Date().getHours() >= 12
@@ -349,8 +487,17 @@ function Home({ settings, memory, urges, mornings, days, needMorning, needDay, n
             : null)}
 
       <div style={miniRow}>
-        <div style={mini}><div style={miniNum}>{clearThis}</div><div style={miniLbl}>clear mornings this month</div></div>
-        <div style={mini}><div style={miniNum}>{urges.length}</div><div style={miniLbl}>urges interrupted</div></div>
+        <MiniTapCard onClick={loggedClearStatusToday ? onShare : onMorning}>
+          <div style={miniNum}>{clearMornings}</div>
+          <div style={miniLbl}>clear mornings</div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 7 }}>
+            <span style={{ fontSize: 10.5, color: "#9a7b4f", opacity: 0.65, letterSpacing: 0.3 }}>
+              {loggedClearStatusToday ? "Tap to view milestone" : "Tap to log last night"}
+            </span>
+            <span style={{ fontSize: 12, color: "#9a7b4f", opacity: 0.65, lineHeight: 1 }}>›</span>
+          </div>
+        </MiniTapCard>
+        <div style={mini}><div style={miniNum}>{urges.length}</div><div style={miniLbl}>reality checks</div></div>
       </div>
       {memory.commonTrigger && (
         <p style={{ ...sub, textAlign: "center", marginTop: 18, fontSize: 12.5, letterSpacing: 0.5 }}>
@@ -393,27 +540,30 @@ function Intervene({ settings, memory, urges, mornings, days, feedback, replacem
   const next = () => setStep((s) => s + 1);
   const playRef = useRef(null);
 
+  const showProgress = step <= 4;
   return (
-    <div style={{ ...pad, minHeight: "100%", display: "flex", flexDirection: "column", paddingTop: 54 }}>
+    <div style={{ ...pad, minHeight: "100%", display: "flex", flexDirection: "column", paddingTop: showProgress ? 88 : 54 }}>
+      {showProgress && (
+        <div style={progressHud}>
+          <Progress step={Math.min(step, 4)} total={5} />
+        </div>
+      )}
       <button style={close} onClick={onCancel}>✕</button>
-      <div style={{ position: "sticky", top: 0, zIndex: 25, background: "linear-gradient(175deg,#1a130d,#0c0805)", paddingTop: 4, paddingBottom: 12, margin: "0 -2px" }}>
-        <Progress step={step} total={11} />
-      </div>
 
       {voice && (
         <button style={voiceBar} onClick={() => playRef.current && playRef.current.play()}>Hear from clear-headed you</button>
       )}
       {voice && <audio ref={playRef} src={voice} />}
 
-      {step === 0 && <Step kick="Right now" title="What are you about to do?">{BEHAVIORS.map((b) => <Choice key={b} active={d.behavior === b} onClick={() => set("behavior", b)}>{b}</Choice>)}</Step>}
+      {step === 0 && <Step kick="Right now" title="What are you about to do?"><p style={{ ...sub, marginTop: -14, marginBottom: 20, fontStyle: "italic", color: "#9a8a72" }}>Be honest. The more honest you are, the better this works.</p>{BEHAVIORS.map((b) => <Choice key={b} active={d.behavior === b} onClick={() => set("behavior", b)}>{b}</Choice>)}</Step>}
       {step === 1 && <Step kick="Be honest" title="What are you actually reaching for?">{TRIGGERS.map((t) => <Choice key={t} active={d.trigger === t} onClick={() => set("trigger", t)}>{t}</Choice>)}</Step>}
       {step === 2 && <Step kick="One more thing" title="What happened right before this?">{CONTEXTS.map((c) => <Choice key={c} active={d.context === c} onClick={() => set("context", c)}>{c}</Choice>)}</Step>}
       {step === 3 && <LoudestThought d={d} setD={setD} onNext={() => setStep(4)} />}
       {step === 4 && <RealityCheck settings={settings} memory={memory} urges={urges} mornings={mornings} days={days} feedback={feedback} d={d} onNext={(line, lens) => { setD((p) => ({ ...p, realityLine: line, lens })); setStep(5); }} />}
-      {step === 5 && <ImmediateAction behavior={d.behavior} context={d.context} replacements={replacements} onNext={(replacement) => { setD((p) => ({ ...p, replacement })); setStep(6); }} />}
+      {step === 5 && <ImmediateAction behavior={d.behavior} context={d.context} trigger={d.trigger} replacements={replacements} onNext={(replacement) => { setD((p) => ({ ...p, replacement })); setStep(6); }} />}
       {step === 6 && <Hold replacement={d.replacement} onNext={next} />}
       {step === 7 && <Step kick="Proof" title="What happened to the urge?"><p style={{ ...sub, marginTop: -14, marginBottom: 22 }}>You didn't beat it by thinking harder. You changed state, waited, and gave the feeling room to move.</p>{DROP.map((x) => <Choice key={x} active={d.dropped === x} onClick={() => set("dropped", x)}>{x}</Choice>)}</Step>}
-      {step === 8 && <Step kick="Straight up" title={`Did you ${behaviorPhrase2(d.behavior)} anyway?`}><p style={{ ...sub, marginTop: -14, marginBottom: 22 }}>No judgment. This is how I learn what actually works — not just what feels good in the moment.</p>{OUTCOMES.map((x) => <Choice key={x.v} active={d.outcome === x.v} onClick={() => set("outcome", x.v)}>{x.label}</Choice>)}</Step>}
+      {step === 8 && <Step kick="Straight up" title={`Did you ${behaviorPhrase2(d.behavior)} anyway?`}><p style={{ ...sub, marginTop: -14, marginBottom: 22 }}>No judgment. This is how I learn what actually works. Not just what feels good in the moment.</p>{OUTCOMES.map((x) => <Choice key={x.v} active={d.outcome === x.v} onClick={() => set("outcome", x.v)}>{x.label}</Choice>)}</Step>}
       {step === 9 && <Step kick="Lock it in" title="How do you want to wake up?">{TOMORROW.map((t) => <Choice key={t} active={d.tomorrow === t} onClick={() => { setD((p) => ({ ...p, tomorrow: t, completedAt: Date.now() })); setTimeout(() => setStep(10), 150); }}>{t}</Choice>)}</Step>}
       {step === 10 && <Feedback line={d.realityLine} onDone={(verdict, note) => { if (verdict) track("reality_check_rated", { rating: verdict, lens: d.lens || "unknown", outcome: d.outcome || "unknown" }); if (onFeedback && verdict) onFeedback({ verdict, note, line: d.realityLine, lens: d.lens, behavior: d.behavior, context: d.context }); onComplete({ ...d }); }} />}
     </div>
@@ -458,12 +608,12 @@ function Feedback({ line, onDone }) {
         <div style={{ marginTop: 26 }}>
           <button style={{ ...secondary, marginBottom: 12 }} onClick={() => onDone("very")}>Very accurate</button>
           <button style={{ ...secondary, marginBottom: 12 }} onClick={() => onDone("somewhat")}>Somewhat</button>
-          <button style={secondary} onClick={() => setVerdict("miss")}>Not really — it missed something</button>
+          <button style={secondary} onClick={() => setVerdict("miss")}>Not really, it missed something</button>
         </div>
       ) : (
         <div style={{ marginTop: 22 }}>
           <p style={{ ...sub, margin: "0 0 8px" }}>What was actually going on?</p>
-          <textarea value={missNote} onChange={(e) => setMissNote(e.target.value)} placeholder="e.g. I wasn't stressed — I was bored. Or: I was avoiding work." style={{ ...textArea, minHeight: 80, marginTop: 0 }} />
+          <textarea value={missNote} onChange={(e) => setMissNote(e.target.value)} placeholder="e.g. I was bored, not stressed. Or: I was avoiding work." style={{ ...textArea, minHeight: 80, marginTop: 0 }} />
           <button style={{ ...primary, marginTop: 10 }} onClick={() => onDone("miss", missNote.trim())}>Save</button>
         </div>
       )}
@@ -525,7 +675,7 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
     const seeking = (settings.seeking || "").trim();
     const realReach = seeking ? ` What you're really after is ${seeking.toLowerCase()}, not ${bn}.` : "";
     const patternSentence = ((urges.length >= 3 && rw
-      ? `This is your ${rw} stretch — the one where your brain starts negotiating.`
+      ? `This is your ${rw} stretch. The one where your brain starts negotiating.`
       : (ctxShort ? `This tends to hit ${ctxShort}.` : "")) + realReach).trim();
 
     // 2) BUILDING — the identity reframe, complete sentence, project first
@@ -545,16 +695,16 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
     // ~50% pattern/need, ~25% recent evidence, ~15% project/build, ~10% reminder-as-reframe.
     const lastClear = memory.lastClearMorningCause;
     const recentEvidence = [];
-    if (rw && urges.length >= 4) recentEvidence.push(`The last few times, this showed up ${ctxShort || `during your ${rw} stretch`} — and it passed.`);
+    if (rw && urges.length >= 4) recentEvidence.push(`The last few times, this showed up ${ctxShort || `during your ${rw} stretch`}. It passed.`);
     if (lastClear) recentEvidence.push(`Last time you waited this out, you woke up clear.`);
-    if (memory.bestReplacement) recentEvidence.push(`${memory.bestReplacement} has worked for you before — better than you expect in the moment.`);
+    if (memory.bestReplacement) recentEvidence.push(`${memory.bestReplacement} has worked for you before. Better than you expect in the moment.`);
 
     const needLine = seeking
-      ? `The urge right now is for ${seeking.toLowerCase()} — the ${bn} is just the closest thing. The feeling moves on its own if you let it.`
+      ? `The urge right now is for ${seeking.toLowerCase()}. The ${bn} is just the closest thing. The feeling moves on its own if you let it.`
       : `This feeling peaks and then drops on its own. You don't have to do anything with it.`;
 
     const projectLine = project
-      ? `You're not really deciding about ${bn} — you're deciding whether tomorrow's energy goes toward ${project}, or toward recovering from tonight.`
+      ? `You're not really deciding about ${bn}. You're deciding whether tomorrow's energy goes toward ${project}, or toward recovering from tonight.`
       : (build ? `Tonight isn't really about ${bn}. It's about ${areaObject(build)}.` : "");
 
     const roll = Math.random();
@@ -576,7 +726,7 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
       ? `Remember what you told me: "${settings.reminder}"`
       : pick([
           "Don't trade tomorrow for the next ten minutes.",
-          "Ten minutes from now this is quieter — and tomorrow you're glad.",
+          "Ten minutes from now this is quieter. Tomorrow you'll be glad.",
           "Don't hand tomorrow's clear morning to right now.",
         ]);
 
@@ -590,7 +740,7 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
     (async () => {
       setLoading(true);
       const startedAt = Date.now();
-      const txt = await askClaude(buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref, lensKey: lensRef.current }), 160, 1);
+      const txt = await askClaude(buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref, lensKey: lensRef.current }), 120, 1);
       // Keep the thinking dots on screen at least 700ms — instant replies feel fake.
       const elapsed = Date.now() - startedAt;
       if (elapsed < 700) await new Promise((r) => setTimeout(r, 700 - elapsed));
@@ -615,25 +765,34 @@ function RealityCheck({ settings, memory, urges, mornings, days, feedback, d, on
       )}
       {!loading && source === "fallback" && DEBUG_AI && <p style={{ ...sub, fontSize: 11, opacity: 0.6 }}>[using fallback — {LAST_AI_ERROR || "no AI available"}]</p>}
       <div style={{ flex: 1 }} />
-      <button style={primary} onClick={() => onNext(shownLine, lensRef.current)} disabled={loading}>Choose your next 10 minutes →</button>
+      <button style={primary} onClick={() => onNext(shownLine, lensRef.current)} disabled={loading}>Give me the next move →</button>
     </div>
   );
 }
 
-const MOVE_OPTIONS = ["Walk", "Shower", "Journal", "Make tea", "Call someone", "Clean something", "Custom"];
-function ImmediateAction({ behavior, context, replacements, onNext }) {
+const CONTEXT_MOVE_ORDER = {
+  "Stress relief":    ["Take a shower", "Go outside", "Clean one small area", "Walk around the block", "Make tea", "Call someone", "Write what's true", "Read a few pages"],
+  "Loneliness":       ["Call someone", "Go outside", "Make tea", "Walk around the block", "Write what's true", "Take a shower", "Clean one small area", "Read a few pages"],
+  "Boredom":          ["Go outside", "Clean one small area", "Walk around the block", "Read a few pages", "Make tea", "Take a shower", "Write what's true", "Call someone"],
+  "Late night alone": ["Make tea", "Take a shower", "Write what's true", "Read a few pages", "Clean one small area", "Call someone", "Go outside", "Walk around the block"],
+};
+function orderedMoves(trigger, context, userMoves) {
+  const base = CONTEXT_MOVE_ORDER[trigger] || CONTEXT_MOVE_ORDER[context] || BASE_REPLACEMENTS;
+  const lead = (userMoves || []).filter((r) => r && !BASE_REPLACEMENTS.includes(r) && r !== "Pour something familiar").slice(0, 2);
+  const deduped = [...new Set([...lead, ...base])].slice(0, 8);
+  return [...deduped, "Something else…"];
+}
+function ImmediateAction({ behavior, context, trigger, replacements, onNext }) {
   const [picked, setPicked] = useState(null);
   const [customOpen, setCustomOpen] = useState(false);
   const [customText, setCustomText] = useState("");
-  // Lead with any build-aligned replacement the user set up, then the standard moves.
-  const leadMoves = (replacements || []).filter((r) => r && !MOVE_OPTIONS.includes(r) && r !== "Pour something familiar").slice(0, 2);
-  const options = [...leadMoves, ...MOVE_OPTIONS];
+  const options = orderedMoves(trigger, context, replacements);
   if (customOpen) {
     return (
       <div className="fade" style={stepWrap}>
         <p style={kicker}>Your move</p>
         <h2 style={{ ...h2, marginBottom: 8 }}>What are you going to do for the next 10 minutes?</h2>
-        <input value={customText} onChange={(e) => setCustomText(e.target.value)} placeholder="Type it here — anything but the thing you came here to avoid." style={{ ...input, borderColor: "#9a7b4f" }} autoFocus />
+        <input value={customText} onChange={(e) => setCustomText(e.target.value)} placeholder="Type it. Anything that changes your state." style={{ ...input, borderColor: "#9a7b4f" }} autoFocus />
         <div style={{ height: 16 }} />
         <button style={{ ...primary, marginBottom: 8 }} disabled={!customText.trim()} onClick={() => onNext(cleanUserText(customText) || "your own move")}>Start the 10 minutes</button>
         <button style={secondary} onClick={() => setCustomOpen(false)}>← back</button>
@@ -644,12 +803,12 @@ function ImmediateAction({ behavior, context, replacements, onNext }) {
     <div className="fade" style={stepWrap}>
       <p style={kicker}>Your move</p>
       <h2 style={{ ...h2, marginBottom: 8 }}>What's your move for the next 10 minutes?</h2>
-      <p style={sub}>Anything but the thing you came here to avoid. Pick one and start.</p>
+      <p style={sub}>Pick one move for the next 10 minutes.</p>
       <div style={{ flex: 1 }} />
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         {options.map((r) => (
           <Choice key={r} grid active={picked === r} onClick={() => {
-            if (r === "Custom") { setCustomOpen(true); return; }
+            if (r === "Something else…") { setCustomOpen(true); return; }
             setPicked(r); setTimeout(() => onNext(r), 160);
           }}>{r}</Choice>
         ))}
@@ -697,28 +856,33 @@ function Hold({ replacement, onNext }) {
 
 /* ── DAILY CHECK-INS ── */
 function Morning({ existing, onDone, onCancel }) {
+  const [folded, setFolded] = useState(existing?.folded ?? null);
   const [feel, setFeel] = useState(existing?.feel ?? null);
   const [step, setStep] = useState(0);
+  const morningChoice = { ...choiceBase, border: "1px solid #d9c4a8", color: "#3a2a1c", background: "rgba(255,255,255,0.4)" };
   return (
     <div style={{ ...wrapMorning, minHeight: "100%", display: "flex", flexDirection: "column", padding: "54px 26px 26px" }}>
       <button style={{ ...close, color: "#a98" }} onClick={onCancel}>✕</button>
-      {step === 0 ? (
+      {step === 0 && (
         <div className="fade" style={stepWrap}>
           <p style={{ ...kicker, color: "#b89878" }}>This morning</p>
-          <h2 style={{ fontFamily: "'Fraunces',serif", fontWeight: 400, fontSize: 30, color: "#2a1d12", margin: "4px 0 0" }}>How did you wake up?</h2>
-          <p style={{ ...sub, color: "#7a5d44" }}>This is the proof your night-self was right.</p>
+          <h2 style={{ fontFamily: "'Fraunces',serif", fontWeight: 400, fontSize: 30, color: "#2a1d12", margin: "4px 0 0" }}>Did you hold the line last night?</h2>
+          <p style={{ ...sub, color: "#7a5d44" }}>This is what counts toward your clear mornings.</p>
           <div style={{ marginTop: 30 }}>
-            {FEELINGS.map((f) => <button key={f} onClick={() => { setFeel(f); setTimeout(() => setStep(1), 150); }} style={{ ...choiceBase, border: "1px solid #d9c4a8", color: "#3a2a1c", background: feel === f ? "rgba(154,123,79,0.22)" : "rgba(255,255,255,0.4)" }}>{f}</button>)}
+            <button onClick={() => { setFolded(false); setTimeout(() => setStep(1), 150); }} style={morningChoice}>Yes, add a clear morning</button>
+            <button onClick={() => { setFolded(true); setTimeout(() => setStep(1), 150); }} style={morningChoice}>No, log honestly</button>
           </div>
         </div>
-      ) : (
+      )}
+      {step === 1 && (
         <div className="fade" style={stepWrap}>
-          <p style={{ ...kicker, color: "#b89878" }}>Honest check</p>
-          <h2 style={{ fontFamily: "'Fraunces',serif", fontWeight: 400, fontSize: 30, color: "#2a1d12", margin: "4px 0 0" }}>How did last night go?</h2>
-          <p style={{ ...sub, color: "#7a5d44" }}>No judgment. This is how I learn what actually trips you up.</p>
+          <p style={{ ...kicker, color: "#b89878" }}>How you feel</p>
+          <h2 style={{ fontFamily: "'Fraunces',serif", fontWeight: 400, fontSize: 30, color: "#2a1d12", margin: "4px 0 0" }}>How did you wake up?</h2>
+          <p style={{ ...sub, color: "#7a5d44" }}>This helps the app learn what actually changes over time.</p>
           <div style={{ marginTop: 30 }}>
-            <button onClick={() => onDone(feel, false)} style={{ ...choiceBase, border: "1px solid #d9c4a8", color: "#3a2a1c", background: "rgba(255,255,255,0.4)" }}>I stayed clear</button>
-            <button onClick={() => onDone(feel, true)} style={{ ...choiceBase, border: "1px solid #d9c4a8", color: "#3a2a1c", background: "rgba(255,255,255,0.4)" }}>I want to log what happened</button>
+            {FEELINGS.map((f) => (
+              <button key={f} onClick={() => { setFeel(f); setTimeout(() => onDone(f, folded), 150); }} style={{ ...morningChoice, background: feel === f ? "rgba(154,123,79,0.22)" : "rgba(255,255,255,0.4)" }}>{f}</button>
+            ))}
           </div>
         </div>
       )}
@@ -786,7 +950,7 @@ function Insights({ urges, mornings, days, memory }) {
 `You write the weekly "here's what I noticed about you" for Clear Morning. Voice: calm friend / sharp older brother. No preaching, no therapy-speak, no "quit/sober," no "you got this."
 Their memory profile: ${JSON.stringify(memory)}.
 Raw: ${summarize(urges)}. Mornings: ${mornings.map((m) => m.feel).join(", ") || "none"}. Days: ${days.map((d) => d.dayKind + (d.note ? ` ("${d.note}")` : "/" + d.carrying)).join("; ") || "none"}.
-Return ONLY a JSON array of 3 short conversational insights (each under 22 words) that sound like a friend who's been watching — name the real driver, the risk moment, and what actually works for THEM. JSON array only.`
+Return ONLY a JSON array of 3 short conversational insights (each under 22 words) that sound like a friend who's been watching. Name the real driver, the risk moment, and what actually works for THEM. JSON array only.`
         )).replace(/```json|```/g, "").trim();
         const lines = JSON.parse(txt);
         if (!off && Array.isArray(lines)) { setAi(lines); try { await store.set(K.insight, JSON.stringify({ n: urges.length, lines })); } catch (_) {} }
@@ -804,13 +968,13 @@ Return ONLY a JSON array of 3 short conversational insights (each under 22 words
       <h2 style={h2}>What I've noticed about you</h2>
 
       <div style={{ ...miniRow, marginTop: 20 }}>
-        <div style={mini}><div style={miniNum}>{mornings.filter((m) => m.feel === "Clear" || m.feel === "Amazing").length}</div><div style={miniLbl}>clear mornings total</div></div>
-        <div style={mini}><div style={miniNum}>{urges.length}</div><div style={miniLbl}>urges interrupted</div></div>
+        <div style={mini}><div style={miniNum}>{mornings.filter((m) => m.feel === "Clear" || m.feel === "Amazing").length}</div><div style={miniLbl}>woke up feeling clear</div></div>
+        <div style={mini}><div style={miniNum}>{urges.length}</div><div style={miniLbl}>reality checks</div></div>
       </div>
       {memory.commonTrigger && <Fact label="Most common driver" value={memory.commonTrigger} />}
 
       {urges.length < 4 ? (
-        <p style={{ ...sub, marginTop: 20 }}>A few more check-ins and this gets sharp — the "this app actually knows me" moment lands around check-in 4 or 5.</p>
+        <p style={{ ...sub, marginTop: 20 }}>A few more check-ins and this gets sharp. The "this app actually knows me" moment lands around check-in 4 or 5.</p>
       ) : (
         <>
           <SectionLabel>The read</SectionLabel>
@@ -877,6 +1041,18 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
   const [elapsed, setElapsed] = useState(0);
   const [err, setErr] = useState("");
   const recRef = useRef(null); const chunks = useRef([]); const timerRef = useRef(null); const playRef = useRef(null);
+  const reminderRef = useRef(null);
+  const buildRef = useRef(null);
+  const reasonsRef = useRef(null);
+  const futureSelfRef = useRef(null);
+
+  const incomplete = !settings.reminder || !settings.build || !(settings.coreReasons || []).length || !settings.futureSelf;
+  const jumpToNext = () => {
+    if (!settings.reminder) { reminderRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    if (!settings.build) { buildRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    if (!(settings.coreReasons || []).length) { reasonsRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    if (!settings.futureSelf) { futureSelfRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); }
+  };
   const [holdPct, setHoldPct] = useState(0);
   const holdRef = useRef(null);
   const startHold = () => {
@@ -906,7 +1082,7 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
         if (next >= 60) { stopRec(); return 60; }
         return next;
       }), 1000);
-    } catch (e) { setErr("Mic isn't available in this preview — it works in the shipped app."); }
+    } catch (e) { setErr("Mic isn't available here. It works in the shipped app."); }
   };
   const stopRec = () => { try { recRef.current && recRef.current.stop(); } catch (_) {} clearInterval(timerRef.current); setRecording(false); };
 
@@ -914,6 +1090,16 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
     <div style={pad}>
       <p style={kicker}>You</p>
       <h2 style={h2}>Your setup</h2>
+
+      {incomplete && (
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 14, padding: "11px 14px", borderRadius: 12, border: "1px solid rgba(154,123,79,0.2)", background: "rgba(154,123,79,0.06)" }}>
+          <div>
+            <p style={{ margin: 0, fontSize: 13, color: "#c8b79a", fontWeight: 500 }}>Finish your setup</p>
+            <p style={{ margin: "2px 0 0", fontSize: 12, color: "#7a6b58", lineHeight: 1.4 }}>Add what matters so future reality checks hit harder.</p>
+          </div>
+          <button onClick={jumpToNext} style={{ background: "none", border: "none", color: "#9a7b4f", fontSize: 13, whiteSpace: "nowrap", marginLeft: 12, padding: 0, cursor: "pointer" }}>Jump to next step ↓</button>
+        </div>
+      )}
 
       <div style={{ ...aiCard, marginTop: 22 }}>
         <p style={{ margin: "0 0 4px", color: "#c8b79a", fontSize: 15, fontWeight: 500 }}>Clear-headed you</p>
@@ -929,15 +1115,15 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
         {voice && <audio ref={playRef} src={voice} />}
       </div>
 
-      <label style={{ ...lbl, marginTop: 22 }}>What should I remind you when you're close?</label>
+      <label ref={reminderRef} style={{ ...lbl, marginTop: 22 }}>What should I remind you when you're close?</label>
       <textarea value={settings.reminder || ""} onChange={(e) => onChange({ ...settings, reminder: e.target.value })} onBlur={(e) => onChange({ ...settings, reminder: cleanUserText(e.target.value) })} placeholder={'"Tomorrow matters more." · "My kids deserve the present version of me." · "I\'m not going back to that version."'} style={{ ...textArea, minHeight: 76, marginTop: 0 }} />
 
-      <label style={{ ...lbl, marginTop: 22 }}>What are you building?</label>
+      <label ref={buildRef} style={{ ...lbl, marginTop: 22 }}>What are you building?</label>
       <select value={settings.build || ""} onChange={(e) => onChange({ ...settings, build: e.target.value })} style={input}>
         <option value="">Choose one</option>
         {BUILDS.map((b) => <option key={b} value={b}>{b}</option>)}
       </select>
-      <label style={lbl}>Why does it matter?</label>
+      <label ref={reasonsRef} style={lbl}>Why does it matter?</label>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
         {CORE_REASONS.map((r) => {
           const active = (settings.coreReasons || []).includes(r);
@@ -950,7 +1136,7 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
           );
         })}
       </div>
-      <label style={{ ...lbl, marginTop: 22 }}>90 days from now</label>
+      <label ref={futureSelfRef} style={{ ...lbl, marginTop: 22 }}>90 days from now</label>
       <textarea value={settings.futureSelf || ""} onChange={(e) => onChange({ ...settings, futureSelf: e.target.value })} onBlur={(e) => onChange({ ...settings, futureSelf: cleanUserText(e.target.value) })} placeholder="More energy, better sleep, better workouts, more present at home." style={{ ...textArea, minHeight: 76, marginTop: 0 }} />
 
       <label style={lbl}>Skills I'm building</label>
@@ -999,13 +1185,29 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
         <span style={{ position: "relative" }}>{holdPct > 0 ? "Keep holding to reset…" : "Hold to reset app and start over"}</span>
       </button>
       <p style={{ ...sub, textAlign: "center", fontSize: 11.5, marginTop: 8, opacity: 0.6 }}>Press and hold for 3 seconds. This erases everything.</p>
-      <p style={{ ...sub, marginTop: 22 }}>{urges.length} check-ins logged. Everything stays on this device.</p>
+      <p style={{ ...sub, marginTop: 22 }}>{urges.length} check-ins logged. Your entries stay private and are only used to sharpen your own reality checks.</p>
     </div>
   );
 }
 
 /* ── shared ── */
-const Step = ({ kick, title, children }) => (<div className="fade" style={stepWrap}><div style={{ position: "sticky", top: 0, zIndex: 15, background: "linear-gradient(175deg,#1a130d,#0c0805)", paddingTop: 6, paddingBottom: 10, borderBottom: "1px solid rgba(181,146,102,0.12)", marginBottom: 14 }}><p style={{ ...kicker, marginBottom: 4 }}>{kick}</p><h2 style={{ fontFamily: "'Fraunces',serif", fontSize: 21, fontWeight: 500, color: "#f0e8da", lineHeight: 1.2, margin: 0 }}>{title}</h2></div>{children}</div>);
+function MiniTapCard({ children, onClick }) {
+  const [pressed, setPressed] = useState(false);
+  return (
+    <div
+      onClick={onClick}
+      onMouseDown={() => setPressed(true)}
+      onMouseUp={() => setPressed(false)}
+      onMouseLeave={() => setPressed(false)}
+      onTouchStart={() => setPressed(true)}
+      onTouchEnd={() => setPressed(false)}
+      style={{ ...mini, cursor: "pointer", transition: "opacity .12s, transform .12s", opacity: pressed ? 0.75 : 1, transform: pressed ? "scale(0.985)" : "scale(1)" }}
+    >
+      {children}
+    </div>
+  );
+}
+const Step = ({ kick, title, children }) => (<div className="fade" style={stepWrap}><div style={{ position: "sticky", top: 38, zIndex: 15, background: "linear-gradient(175deg,#1a130d,#0c0805)", paddingTop: 6, paddingBottom: 10, borderBottom: "1px solid rgba(181,146,102,0.12)", marginBottom: 14 }}><p style={{ ...kicker, marginBottom: 4 }}>{kick}</p><h2 style={{ fontFamily: "'Fraunces',serif", fontSize: 21, fontWeight: 500, color: "#f0e8da", lineHeight: 1.2, margin: 0 }}>{title}</h2></div>{children}</div>);
 const Choice = ({ children, active, onClick, grid }) => (
   <button onClick={onClick} style={{ ...choiceBase, ...(grid ? { marginBottom: 0, textAlign: "center", padding: "20px 8px" } : {}), border: `1px solid ${active ? "#9a7b4f" : "#2a2018"}`, background: active ? "rgba(154,123,79,0.14)" : "transparent", color: active ? "#e8ddcc" : "#8a7b66" }}>{children}</button>
 );
@@ -1050,15 +1252,15 @@ function firstUseLine(context, behavior, tone) {
   const b = (behavior || "the thing").toLowerCase();
   const sharp = tone === "Sharp older brother";
   const map = {
-    "Work": `Work didn't make you weak — it left you empty, and your brain's trying to fill the quiet fast. ${b === "drink" ? "The drink" : "This"} won't fill it. It'll just blur it.`,
+    "Work": `Work didn't make you weak. It left you empty, and your brain is trying to fill the quiet fast. ${b === "drink" ? "The drink" : "This"} won't fill it. It'll just blur it.`,
     "Argument": `You're not reaching for ${b}. You're reaching for the off switch on a conversation that's still running in your head.`,
-    "Kids/family": `You poured out all day. There's nothing left and you're trying to borrow some — but this charges interest you pay tomorrow.`,
-    "Scrolling": `Scrolling primed this. You fed your brain noise and now it wants the next hit. The urge isn't even yours — the screen handed it to you.`,
+    "Kids/family": `You poured out all day. There's nothing left and you're trying to borrow some. This charges interest you pay tomorrow.`,
+    "Scrolling": `Scrolling primed this. You fed your brain noise and now it wants the next hit. The urge isn't even yours. The screen handed it to you.`,
     "Bored at home": `This isn't desire. It's empty time with no plan, and your brain hates a vacuum. Give it something to do for ten minutes.`,
     "After dinner": `That's a habit wearing the mask of a craving. The meal ended and your hand went looking for the ritual. You can keep the ritual without the fog.`,
     "Late night alone": `The house got quiet and the day finally caught up with you. You don't want ${b}. You want the day to stop pressing on you.`,
-    "Celebrating": `You earned the mood. ${b === "drink" ? "The drink" : "This"} won't add to it — it borrows from tomorrow's version of it. Keep the win clean.`,
-    "Other": sharp ? `Be honest. You're not craving the thing — you're craving a way to stop feeling the day.` : `You're not really craving ${b}. You're craving a way to stop feeling the day.`,
+    "Celebrating": `You earned the mood. ${b === "drink" ? "The drink" : "This"} won't add to it. It borrows from tomorrow's version of it. Keep the win clean.`,
+    "Other": sharp ? `Be honest. You're not craving the thing. You're craving a way to stop feeling the day.` : `You're not really craving ${b}. You're craving a way to stop feeling the day.`,
   };
   return map[context] || map["Other"];
 }
@@ -1069,7 +1271,7 @@ function yesterdayRef(urges, mornings, days) {
   const yUrge = urges.find((u) => u.date === yk && u.replacement);
   const yDay = days.find((d) => d.date === yk);
   if (yDay && yUrge && yMorn) return `Last night you said it was a ${String(yDay.dayKind).toLowerCase()} day, chose ${yUrge.replacement.toLowerCase()}, and woke up ${yMorn.feel.toLowerCase()}. That's probably your play tonight too.`;
-  if (yUrge && yMorn) return `Last night you chose ${yUrge.replacement.toLowerCase()} and woke up ${yMorn.feel.toLowerCase()} — that worked.`;
+  if (yUrge && yMorn) return `Last night you chose ${yUrge.replacement.toLowerCase()} and woke up ${yMorn.feel.toLowerCase()}. That worked.`;
   if (yDay) return `You came in off a ${String(yDay.dayKind).toLowerCase()} day carrying ${String(yDay.carrying || "").toLowerCase()}.`;
   return null;
 }
@@ -1096,7 +1298,7 @@ function noticedToday(mem, urges, mornings, days) {
   if ((t && (t.dayKind === "Draining" || t.dayKind === "Stressful")) || mem.commonTrigger === "Stress relief") {
     parts.push(`That means tonight probably isn't about wanting ${b}. It's about needing the day to end.`);
   } else if (mem.commonContext === "Bored at home" || mem.commonTrigger === "Boredom") {
-    parts.push(`That means tonight isn't desire — it's empty time looking for something to do.`);
+    parts.push(`That means tonight isn't desire. It's empty time looking for something to do.`);
   } else if (mem.bestReplacement) {
     parts.push(`${mem.bestReplacement} is what's worked for you before.`);
   }
@@ -1115,7 +1317,7 @@ function dailyNote(mem) {
   if (mem.commonContext === "Scrolling") n.push(`Your hardest nights usually start after scrolling. Watch the phone tonight.`);
   if (mem.commonContext === "Bored at home" || mem.commonTrigger === "Boredom") n.push(`You don't need motivation tonight. You need a plan before boredom gets a vote.`);
   if (mem.bestReplacement) n.push(`On your clear mornings, ${mem.bestReplacement.toLowerCase()} usually came first. Keep it close tonight.`);
-  if (mem.lastClearMorningCause) n.push(`${mem.lastClearMorningCause} — and you woke up clear. Same move's available tonight.`);
+  if (mem.lastClearMorningCause) n.push(`${mem.lastClearMorningCause}. You woke up clear. Same move is available tonight.`);
   if (mem.project) n.push(`This isn't about being perfect tonight. It's about whether tomorrow's energy goes toward ${mem.project}.`);
   else if (mem.build) n.push(`This isn't about being perfect tonight. It's about ${areaObject(mem.build)}.`);
   if (mem.coreReasons?.length) n.push(`${mem.coreReasons[0]} is one of the reasons this matters tonight.`);
@@ -1158,13 +1360,13 @@ function buildReplacement(settings) {
 }
 
 const REALITY_LENSES = {
-  pattern: "PATTERN lens: Name the recurring shape of this moment — when it shows up, what precedes it. Not what they feel; the pattern itself. E.g. 'This keeps showing up after the day goes quiet, not when it's loud.'",
-  emotion: "EMOTION lens: Name the actual feeling underneath the urge — the one the behavior is trying to manage. Be precise, not generic. E.g. 'This isn't wanting. It's the day not having a clean ending.'",
-  environment: "ENVIRONMENT lens: Point out that nothing changed inside them — the situation around them did. E.g. 'Nothing happened in you. The house got quiet. That's a different thing.'",
-  self_deception: "SELF-DECEPTION lens: Name the small lie the urge tells in this moment — gently, without accusing. E.g. 'The story right now is that one won't matter. That's the story every time.'",
-  consequence: "FUTURE-CONSEQUENCE lens: Connect this ten minutes to the specific morning that follows — concrete, not preachy. E.g. 'The version of you that wakes up at 6 is the one paying for this, not the one deciding it.'",
+  pattern: "PATTERN lens: Name the recurring shape of this moment. When it shows up, what precedes it. Not what they feel. The pattern itself. E.g. 'This keeps showing up after the day goes quiet, not when it's loud.'",
+  emotion: "EMOTION lens: Name the actual feeling underneath the urge. The one the behavior is trying to manage. Be precise, not generic. E.g. 'This isn't wanting. It's the day not having a clean ending.'",
+  environment: "ENVIRONMENT lens: Point out that nothing changed inside them. The situation around them did. E.g. 'Nothing happened in you. The house got quiet. That's a different thing.'",
+  self_deception: "SELF-DECEPTION lens: Name the small lie the urge tells in this moment. Gently, without accusing. E.g. 'The story right now is that one won't matter. That's the story every time.'",
+  consequence: "FUTURE-CONSEQUENCE lens: Connect this ten minutes to the specific morning that follows. Concrete, not preachy. E.g. 'The version of you that wakes up at 6 is the one paying for this, not the one deciding it.'",
   evidence: "EVIDENCE lens: Use their own history as proof the feeling passes. Only if there's real data. E.g. 'The last times you waited this out, it dropped. Your own record says so.'",
-  identity: "IDENTITY lens: Frame it as a small vote for who they're becoming — without grand language. E.g. 'This is a small rep in becoming someone who doesn't auto-pilot at night.'",
+  identity: "IDENTITY lens: Frame it as a small vote for who they're becoming. Without grand language. E.g. 'This is a small rep in becoming someone who doesn't auto-pilot at night.'",
 };
 const LENS_KEYS = Object.keys(REALITY_LENSES);
 function buildRealityPrompt({ settings, memory, urges, mornings, days, feedback, d, yref, lensKey }) {
@@ -1195,22 +1397,22 @@ THE MOMENT (this is what matters most):
 About to: ${d.behavior}
 Reaching for: ${d.trigger}
 What happened right before: ${d.context}
-${d.loudThought ? `The loudest thought in their head right now (THIS IS THE REAL STORY — speak to it directly): "${d.loudThought}"` : ""}
+${d.loudThought ? `The loudest thought in their head right now. THIS IS THE REAL STORY. Speak to it directly: "${d.loudThought}"` : ""}
 What they usually want from it: ${settings.seeking || memory.seeking || "unknown"}
 ${settings.reminder ? `Their own words to remember: "${settings.reminder}"` : ""}
 
 Their patterns: ${JSON.stringify(m)}
 Recent entries: ${summarize(urges)}
 ${yref ? `Yesterday: ${yref}` : ""}
-${(feedback || []).filter((f) => f.verdict === "miss" && f.note).slice(0, 4).map((f) => `IMPORTANT — a past read missed; they said what was really going on: "${f.note}". Learn from this.`).join("\n")}
-${recentLines.length ? `Things you've ALREADY said on past nights (do NOT repeat these — fresh angle, fresh words):\n- ${recentLines.join("\n- ")}` : ""}
+${(feedback || []).filter((f) => f.verdict === "miss" && f.note).slice(0, 4).map((f) => `IMPORTANT: a past read missed. They said what was really going on: "${f.note}". Learn from this.`).join("\n")}
+${recentLines.length ? `Things you've ALREADY said on past nights. Do NOT repeat these. Fresh angle, fresh words:\n- ${recentLines.join("\n- ")}` : ""}
 ${workedMoves.length ? `Moves that have worked for them before: ${workedMoves.join(", ")}.` : ""}
 
 USE EXACTLY ONE LENS for this reality check. Do not blend lenses. Do not list multiple observations. Commit fully to this single angle:
 ${lensInstruction}
 
-Stay with what's happening right now, tonight. Understand the moment — don't recite what you remember about them. Use at most ONE personal reference total. Do not mention their project, business, or skill unless directly relevant to this exact moment, and almost never.
-Write under 70 words. One tight paragraph, or two very short ones. No preamble. No motivational quotes. Do not sound poetic. It should feel like one sharp, true observation from someone who sees what's going on — then stop.
+Stay with what is happening right now, tonight. Be specific to what they are about to do, what they are reaching for, and what happened right before. Use at most ONE personal reference. Do not mention their project or skill unless it directly fits this exact moment.
+Write 25 to 40 words. Two or three short sentences. No em dashes. No bullets. No labels. No preamble. No motivational quotes. Do not sound like therapy or a poster. Sound like a calm older brother who sees exactly what is going on and says one true thing. Direct, grounded, human. Then stop.
 `.trim();
 }
 
@@ -1367,11 +1569,152 @@ function movementLine(behavior, context) {
   return "Stand up. Change rooms. Give your brain a new scene.";
 }
 
+/* ── CLEAR MORNINGS SHARE ── */
+function clearMorningMilestone(n) {
+  const milestones = {
+    1: { title: "Day 1", headline: "You broke the automatic loop.", body: "One clear morning matters because it proves the moment can pass without obeying it. Tonight, keep it simple.", move: "Keep the promise small.", confetti: true },
+    4: { title: "Day 4", headline: "This is where the pattern can get loud.", body: "For some people, this is when the first rush of motivation starts to fade and the old habit begins sounding reasonable again. That does not mean you are failing. It means the loop may be looking for a way back in.", move: "Decide early.", confetti: false },
+    7: { title: "Day 7", headline: "You have proof now.", body: "A full week means this is no longer just an idea. You have real evidence that you can pause, choose differently, and wake up without carrying the same regret.", move: "Repeat what worked.", confetti: true },
+    14: { title: "Day 14", headline: "Your evenings are starting to tell the truth.", body: "By now, you may be noticing the difference between wanting the thing and wanting relief, quiet, reward, or escape. That awareness is power.", move: "Name the real reach.", confetti: false },
+    30: { title: "Day 30", headline: "This is becoming part of who you are.", body: "Thirty clear mornings is not perfection. It is repeated proof that you can protect tomorrow when tonight gets loud.", move: "Protect the identity.", confetti: true },
+  };
+  return milestones[n] || null;
+}
+
+function GoldConfetti({ intensity = "medium" }) {
+  const count = intensity === "high" ? 38 : intensity === "low" ? 14 : 22;
+  const particles = Array.from({ length: count }, (_, i) => {
+    const left = 5 + Math.random() * 90;
+    const delay = Math.random() * 1.8;
+    const dur = 2.2 + Math.random() * 1.4;
+    const size = 4 + Math.random() * 5;
+    const colors = ["#c8a96e", "#e8d5a3", "#b59266", "#f0e4c0", "#9a7b4f"];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    return { left, delay, dur, size, color, key: i };
+  });
+  return (
+    <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 100, overflow: "hidden" }}>
+      {particles.map((p) => (
+        <div key={p.key} style={{
+          position: "absolute", top: -12, left: `${p.left}%`,
+          width: p.size, height: p.size * 0.55, borderRadius: 2,
+          background: p.color, opacity: 0,
+          animation: `confettiFall ${p.dur}s ${p.delay}s ease-in forwards`,
+        }} />
+      ))}
+    </div>
+  );
+}
+
+function ClearMorningsShare({ clearMornings, onBack }) {
+  const milestone = clearMorningMilestone(clearMornings);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [cleanMode, setCleanMode] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  const safetyRef = useRef(null);
+  const hintRef = useRef(null);
+  const seenKey = "cm:seenMilestones";
+
+  useEffect(() => {
+    if (!milestone || !milestone.confetti) return;
+    (async () => {
+      try {
+        const r = await store.get(seenKey);
+        const seen = r?.value ? JSON.parse(r.value) : [];
+        if (seen.includes(clearMornings)) return;
+        setShowConfetti(true);
+        await store.set(seenKey, JSON.stringify([...seen, clearMornings]));
+        track("milestone_viewed", { clearMornings, milestoneTitle: milestone.title, confettiShown: true });
+        setTimeout(() => setShowConfetti(false), 3200);
+      } catch (_) {}
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (milestone && !milestone.confetti) {
+      track("milestone_viewed", { clearMornings, milestoneTitle: milestone.title, confettiShown: false });
+    }
+  }, []);
+
+  // Safety timeout: auto-exit clean mode after 12 seconds
+  useEffect(() => {
+    clearTimeout(safetyRef.current);
+    clearTimeout(hintRef.current);
+    if (cleanMode) {
+      setShowHint(true);
+      hintRef.current = setTimeout(() => setShowHint(false), 2000);
+      safetyRef.current = setTimeout(() => setCleanMode(false), 4000);
+    }
+    return () => { clearTimeout(safetyRef.current); clearTimeout(hintRef.current); };
+  }, [cleanMode]);
+
+  const enterClean = () => setCleanMode(true);
+  const exitClean = () => setCleanMode(false);
+
+  return (
+    <div onClick={cleanMode ? exitClean : undefined} style={{ maxWidth: 440, width: "100%", margin: "0 auto", height: "100dvh", background: "linear-gradient(175deg,#1a130d,#0c0805 65%,#080503)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", fontFamily: "'Jost',sans-serif", padding: "0 20px", cursor: cleanMode ? "pointer" : "default" }}>
+      {showConfetti && <GoldConfetti intensity={clearMornings === 30 ? "high" : "low"} />}
+
+      {/* Controls — fade out in clean mode */}
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 22px", opacity: cleanMode ? 0 : 1, transition: "opacity 0.25s", pointerEvents: cleanMode ? "none" : "auto" }}>
+        <button onClick={(e) => { e.stopPropagation(); onBack(); }} style={{ background: "none", border: "none", color: "#7a6b58", fontSize: 14, cursor: "pointer", padding: 0 }}>← Back</button>
+        <span style={{ fontSize: 11, color: "#5a4d3d", letterSpacing: 0.4 }}>Tap card for clean screenshot</span>
+      </div>
+
+      {/* Temporary hint when entering clean mode */}
+      <div style={{ position: "absolute", bottom: 36, left: 0, right: 0, textAlign: "center", opacity: showHint ? 0.45 : 0, transition: "opacity 0.4s", pointerEvents: "none" }}>
+        <span style={{ fontSize: 11, color: "#c8b79a", letterSpacing: 0.3 }}>Tap to exit clean view</span>
+      </div>
+
+      {/* Card — tap to enter clean mode */}
+      <div
+        onClick={(e) => { if (!cleanMode) { e.stopPropagation(); enterClean(); } }}
+        style={{
+          width: "100%", maxWidth: 340,
+          background: "linear-gradient(160deg, #1e1508 0%, #110d06 100%)",
+          border: "1px solid rgba(181,146,102,0.25)",
+          borderRadius: 22, padding: "28px 24px 22px",
+          boxShadow: "0 0 60px rgba(154,123,79,0.12)",
+          cursor: cleanMode ? "pointer" : "pointer",
+        }}
+      >
+        {/* Number */}
+        <div style={{ textAlign: "center", marginBottom: 2 }}>
+          <div style={{ fontFamily: "'Fraunces',serif", fontSize: 66, lineHeight: 1, color: "#c8a96e", fontWeight: 300 }}>{clearMornings}</div>
+          <div style={{ fontFamily: "'Jost',sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase", color: "#9a7b4f", marginTop: 3 }}>clear mornings</div>
+        </div>
+
+        <div style={{ height: 1, background: "rgba(181,146,102,0.15)", margin: "18px 0" }} />
+
+        {milestone ? (
+          <>
+            <p style={{ margin: "0 0 4px", color: "#9a7b4f", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase" }}>{milestone.title}</p>
+            <p style={{ fontFamily: "'Fraunces',serif", fontSize: 18, color: "#f0e8da", lineHeight: 1.3, margin: "0 0 10px", fontWeight: 400 }}>{milestone.headline}</p>
+            <p style={{ fontSize: 13, color: "#a89880", lineHeight: 1.55, margin: "0 0 14px" }}>{milestone.body}</p>
+            <div style={{ background: "rgba(154,123,79,0.1)", border: "1px solid rgba(154,123,79,0.18)", borderRadius: 10, padding: "10px 12px", marginBottom: 14 }}>
+              <p style={{ margin: 0, fontSize: 10, color: "#9a7b4f", letterSpacing: 2, textTransform: "uppercase", marginBottom: 2 }}>Tonight's move</p>
+              <p style={{ margin: 0, fontFamily: "'Fraunces',serif", fontSize: 15, color: "#e8ddcc" }}>{milestone.move}</p>
+            </div>
+            <p style={{ margin: "0 0 14px", fontSize: 10, color: "#5a4d3d", lineHeight: 1.4, fontStyle: "italic" }}>What you may notice, not a promise. Everyone's pattern is different.</p>
+          </>
+        ) : (
+          <p style={{ fontFamily: "'Fraunces',serif", fontSize: 19, color: "#e8ddcc", lineHeight: 1.4, margin: "0 0 18px", fontWeight: 400 }}>I held the line last night.</p>
+        )}
+
+        <div style={{ height: 1, background: "rgba(181,146,102,0.1)", marginBottom: 12 }} />
+        <p style={{ margin: 0, fontSize: 10, color: "#5a4d3d", letterSpacing: 1.5, textTransform: "uppercase" }}>Clear Morning</p>
+        <p style={{ margin: "2px 0 0", fontSize: 10, color: "#3d3326" }}>Reality checks before regret.</p>
+      </div>
+
+    </div>
+  );
+}
+
 /* ── styles ── */
 const wrap = { maxWidth: 440, width: "100%", margin: "0 auto", height: "100dvh", minHeight: 600, background: "linear-gradient(175deg,#1a130d,#0c0805 65%,#080503)", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", overflowX: "hidden", overscrollBehavior: "none", fontFamily: "'Jost',sans-serif" };
 const wrapMorning = { maxWidth: 440, margin: "0 auto", background: "linear-gradient(175deg,#f3e3cd,#e9cfa9 70%,#dcb886)", position: "relative" };
 const grain = { position: "absolute", inset: 0, zIndex: 1, opacity: 0.04, pointerEvents: "none", backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" };
-const css = `html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior:none}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}.fade{animation:fu .6s cubic-bezier(.2,.7,.2,1) both}@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes pulseDot{0%,80%,100%{transform:scale(0.6);opacity:0.35}40%{transform:scale(1);opacity:1}}@keyframes pulseGlow{0%,100%{opacity:.5}50%{opacity:1}}input,textarea{outline:none}input:focus,textarea:focus{border-color:#9a7b4f!important}input::placeholder,textarea::placeholder{color:#6f6253;opacity:1}h1,h2,p{overflow-wrap:break-word;word-break:break-word}button{cursor:pointer;font-family:'Jost',sans-serif}`;
+const css = `html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior:none}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}.fade{animation:fu .6s cubic-bezier(.2,.7,.2,1) both}@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes pulseDot{0%,80%,100%{transform:scale(0.6);opacity:0.35}40%{transform:scale(1);opacity:1}}@keyframes pulseGlow{0%,100%{opacity:.5}50%{opacity:1}}@keyframes confettiFall{0%{opacity:1;transform:translateY(0) rotate(0deg)}100%{opacity:0;transform:translateY(110vh) rotate(480deg)}}input,textarea{outline:none}input:focus,textarea:focus{border-color:#9a7b4f!important}input::placeholder,textarea::placeholder{color:#6f6253;opacity:1}h1,h2,p{overflow-wrap:break-word;word-break:break-word}button{cursor:pointer;font-family:'Jost',sans-serif}`;
 const pad = { padding: "52px 26px 26px" };
 const stepWrap = { flex: 1, display: "flex", flexDirection: "column" };
 const kicker = { textTransform: "uppercase", letterSpacing: 3, fontSize: 11, color: "#6f6253", margin: "0 0 10px" };
@@ -1389,6 +1732,8 @@ const miniNum = { fontFamily: "'Fraunces',serif", fontSize: 32, color: "#9a7b4f"
 const miniLbl = { color: "#7a6b58", fontSize: 12, marginTop: 6, lineHeight: 1.3 };
 const brandCard = { marginTop: 22, padding: "18px 20px", border: "1px solid rgba(154,123,79,0.15)", borderRadius: 14, background: "rgba(0,0,0,0.2)" };
 const aiCard = { padding: "18px 20px", marginBottom: 12, borderRadius: 14, border: "1px solid rgba(154,123,79,0.18)", background: "rgba(154,123,79,0.05)" };
+const scrollRail = { position: "absolute", top: 12, right: 4, width: 3, borderRadius: 999, background: "rgba(232,221,204,0.05)", zIndex: 60, pointerEvents: "none", transition: "opacity 240ms ease" };
+const scrollThumb = { width: "100%", borderRadius: 999, background: "rgba(232,221,204,0.28)", transition: "height 120ms ease, transform 80ms linear" };
 const nav = {
   position: "fixed",
   bottom: 0,
@@ -1414,4 +1759,5 @@ const dot = (on) => ({ position: "absolute", top: 3, left: on ? 23 : 3, width: 2
 const chip = { fontSize: 13, color: "#c8b79a", border: "1px solid #3a2f22", borderRadius: 20, padding: "6px 12px", cursor: "pointer" };
 const thinkingDot = { width: 7, height: 7, borderRadius: "50%", background: "#c8b79a", display: "inline-block", animation: "pulseDot 1.2s infinite ease-in-out" };
 const progressSticky = { position: "sticky", top: 0, zIndex: 30, background: "linear-gradient(175deg,#1a130d,#0c0805)", paddingTop: 8, paddingBottom: 10 };
+const progressHud = { position: "fixed", top: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 440, zIndex: 100, background: "linear-gradient(175deg,#1a130d,#0c0805)", padding: "10px 26px 12px", boxShadow: "0 12px 20px rgba(0,0,0,0.22)" };
 const pulseNav = { color: "#e8ddcc", background: "rgba(181,146,102,0.22)", textShadow: "0 0 16px rgba(181,146,102,1)", animation: "pulseGlow 1.4s ease-in-out infinite" };
