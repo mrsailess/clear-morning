@@ -129,6 +129,7 @@ function track(event, props) {
 
 export default function App() {
   const [view, setView] = useState("home");
+  const [seenWhy, setSeenWhy] = useState(false);
   const [urges, setUrges] = useState([]);
   const [mornings, setMornings] = useState([]);
   const [days, setDays] = useState([]);
@@ -219,9 +220,15 @@ export default function App() {
       </div>
       {view !== "intervene" && view !== "morning" && view !== "day" && (
         <nav style={nav}>
-          {[["home", "Now"], ["insights", "Patterns"], ["you", "Why"]].map(([k, l]) => (
-            <button key={k} onClick={() => setView(k)} style={{ ...navBtn(view === k), ...(k === "you" && !settings.build && !settings.project ? pulseNav : {}) }}>{l}</button>
-          ))}
+          {[["home", "Now"], ["insights", "Patterns"], ["you", "Why"]].map(([k, l]) => {
+            const needsBuild = k === "you" && !settings.build && !settings.project && !seenWhy;
+            return (
+              <button key={k} onClick={() => { if (k === "you") setSeenWhy(true); setView(k); }} style={{ ...navBtn(view === k), ...(needsBuild ? pulseNav : {}), position: "relative" }}>
+                {l}
+                {needsBuild && <span style={{ position: "absolute", top: 6, right: "50%", marginRight: -22, width: 7, height: 7, borderRadius: "50%", background: "#b59266", boxShadow: "0 0 8px #b59266" }} />}
+              </button>
+            );
+          })}
         </nav>
       )}
     </div>
@@ -254,12 +261,12 @@ function Onboarding({ onDone }) {
           <p style={{ ...kicker, letterSpacing: 4 }}>Clear Morning</p>
           <h1 style={{ ...h1, fontSize: 30, marginTop: 6, lineHeight: 1.12 }}>Catch yourself before you do something you'll regret.</h1>
           <p style={{ ...sub, fontSize: 15, marginTop: 12, maxWidth: 330, lineHeight: 1.5 }}>
-            Open this before the drink. Before the text. Before the scroll. Before autopilot takes over.
+            A 10-minute tool for the moment you're about to drink, smoke, scroll, or send the text. It helps you stop and think before you do.
           </p>
           <p style={{ ...sub, fontSize: 13.5, marginTop: 10, maxWidth: 330, lineHeight: 1.45, color: "#9a8a72", fontStyle: "italic" }}>
-            This only works if you're honest with yourself. It's just you here.
+            Be honest. It's the whole point.
           </p>
-          <button style={{ ...primary, marginTop: 22, fontSize: 18, padding: "18px" }} onClick={() => setStep(1)}>Before I decide</button>
+          <button style={{ ...primary, marginTop: 22, fontSize: 18, padding: "18px" }} onClick={() => setStep(1)}>Get started</button>
           <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 9, opacity: 0.7 }}>Takes about a minute.</p>
           <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 11 }}>
             {[
@@ -320,8 +327,11 @@ function Home({ settings, memory, urges, mornings, days, needMorning, needDay, n
 
   return (
     <div style={pad}>
-      <p style={kicker}>Clear Morning{settings.name ? ` · ${settings.name}` : ""}</p>
-      <h1 style={{ ...h1, whiteSpace: "pre-line" }}>{homeTitle}</h1>
+      <div style={{ position: "sticky", top: 0, zIndex: 20, background: "linear-gradient(175deg,#1a130d,#0c0805)", margin: "0 -26px", padding: "0 26px 12px" }}>
+        <p style={{ ...kicker, marginBottom: 0, paddingTop: 4 }}>Clear Morning{settings.name ? ` · ${settings.name}` : ""}</p>
+        <p style={{ ...sub, margin: "2px 0 0", fontSize: 12.5, opacity: 0.75 }}>Open this before the drink, the scroll, the text.</p>
+      </div>
+      <h1 style={{ ...h1, whiteSpace: "pre-line", marginTop: 16 }}>{homeTitle}</h1>
 
       <div style={brandCard}>
         <p style={{ margin: 0, color: "#7a6b58", fontSize: 11, letterSpacing: 2, textTransform: "uppercase" }}>{cardLabel}</p>
@@ -797,7 +807,7 @@ Return ONLY a JSON array of 3 short conversational insights (each under 22 words
       <h2 style={h2}>What I've noticed about you</h2>
 
       <div style={{ ...miniRow, marginTop: 20 }}>
-        <div style={mini}><div style={miniNum}>{mornings.filter((m) => m.feel === "Clear" || m.feel === "Amazing").length}</div><div style={miniLbl}>clear mornings</div></div>
+        <div style={mini}><div style={miniNum}>{mornings.filter((m) => m.feel === "Clear" || m.feel === "Amazing").length}</div><div style={miniLbl}>clear mornings total</div></div>
         <div style={mini}><div style={miniNum}>{urges.length}</div><div style={miniLbl}>urges interrupted</div></div>
       </div>
       {memory.commonTrigger && <Fact label="Most common driver" value={memory.commonTrigger} />}
@@ -998,7 +1008,7 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
 }
 
 /* ── shared ── */
-const Step = ({ kick, title, children }) => (<div className="fade" style={stepWrap}><p style={kicker}>{kick}</p><h2 style={{ ...h2, marginBottom: 24 }}>{title}</h2>{children}</div>);
+const Step = ({ kick, title, children }) => (<div className="fade" style={stepWrap}><div style={{ position: "sticky", top: 0, zIndex: 15, background: "linear-gradient(175deg,#1a130d,#0c0805)", paddingBottom: 14 }}><p style={kicker}>{kick}</p><h2 style={{ ...h2, marginBottom: 0 }}>{title}</h2></div>{children}</div>);
 const Choice = ({ children, active, onClick, grid }) => (
   <button onClick={onClick} style={{ ...choiceBase, ...(grid ? { marginBottom: 0, textAlign: "center", padding: "20px 8px" } : {}), border: `1px solid ${active ? "#9a7b4f" : "#2a2018"}`, background: active ? "rgba(154,123,79,0.14)" : "transparent", color: active ? "#e8ddcc" : "#8a7b66" }}>{children}</button>
 );
@@ -1364,7 +1374,7 @@ function movementLine(behavior, context) {
 const wrap = { maxWidth: 440, width: "100%", margin: "0 auto", height: "100dvh", minHeight: 600, background: "linear-gradient(175deg,#1a130d,#0c0805 65%,#080503)", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden", overflowX: "hidden", overscrollBehavior: "none", fontFamily: "'Jost',sans-serif" };
 const wrapMorning = { maxWidth: 440, margin: "0 auto", background: "linear-gradient(175deg,#f3e3cd,#e9cfa9 70%,#dcb886)", position: "relative" };
 const grain = { position: "absolute", inset: 0, zIndex: 1, opacity: 0.04, pointerEvents: "none", backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" };
-const css = `html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior:none}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}.fade{animation:fu .6s cubic-bezier(.2,.7,.2,1) both}@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes pulseDot{0%,80%,100%{transform:scale(0.6);opacity:0.35}40%{transform:scale(1);opacity:1}}@keyframes pulseGlow{0%,100%{opacity:.65}50%{opacity:1}}input,textarea{outline:none}input:focus,textarea:focus{border-color:#9a7b4f!important}input::placeholder,textarea::placeholder{color:#6f6253;opacity:1}h1,h2,p{overflow-wrap:break-word;word-break:break-word}button{cursor:pointer;font-family:'Jost',sans-serif}`;
+const css = `html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior:none}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}.fade{animation:fu .6s cubic-bezier(.2,.7,.2,1) both}@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes pulseDot{0%,80%,100%{transform:scale(0.6);opacity:0.35}40%{transform:scale(1);opacity:1}}@keyframes pulseGlow{0%,100%{opacity:.5}50%{opacity:1}}input,textarea{outline:none}input:focus,textarea:focus{border-color:#9a7b4f!important}input::placeholder,textarea::placeholder{color:#6f6253;opacity:1}h1,h2,p{overflow-wrap:break-word;word-break:break-word}button{cursor:pointer;font-family:'Jost',sans-serif}`;
 const pad = { padding: "52px 26px 26px" };
 const stepWrap = { flex: 1, display: "flex", flexDirection: "column" };
 const kicker = { textTransform: "uppercase", letterSpacing: 3, fontSize: 11, color: "#6f6253", margin: "0 0 10px" };
@@ -1407,4 +1417,4 @@ const dot = (on) => ({ position: "absolute", top: 3, left: on ? 23 : 3, width: 2
 const chip = { fontSize: 13, color: "#c8b79a", border: "1px solid #3a2f22", borderRadius: 20, padding: "6px 12px", cursor: "pointer" };
 const thinkingDot = { width: 7, height: 7, borderRadius: "50%", background: "#c8b79a", display: "inline-block", animation: "pulseDot 1.2s infinite ease-in-out" };
 const progressSticky = { position: "sticky", top: 0, zIndex: 30, background: "linear-gradient(175deg,#1a130d,#0c0805)", paddingTop: 8, paddingBottom: 10 };
-const pulseNav = { color: "#e8ddcc", textShadow: "0 0 12px rgba(181,146,102,0.9)", animation: "pulseGlow 1.8s ease-in-out infinite" };
+const pulseNav = { color: "#e8ddcc", background: "rgba(181,146,102,0.22)", textShadow: "0 0 16px rgba(181,146,102,1)", animation: "pulseGlow 1.4s ease-in-out infinite" };
