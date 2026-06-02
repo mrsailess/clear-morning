@@ -259,15 +259,12 @@ function Onboarding({ onDone }) {
       {step === 0 && (
         <div className="fade" style={{ ...stepWrap, justifyContent: "flex-start", paddingTop: 14 }}>
           <p style={{ ...kicker, letterSpacing: 4 }}>Clear Morning</p>
-          <h1 style={{ ...h1, fontSize: 30, marginTop: 6, lineHeight: 1.12 }}>Catch yourself before you do something you'll regret.</h1>
+          <h1 style={{ ...h1, fontSize: 30, marginTop: 6, lineHeight: 1.12 }}>About to do something you already know you'll regret tomorrow?</h1>
           <p style={{ ...sub, fontSize: 15, marginTop: 12, maxWidth: 330, lineHeight: 1.5 }}>
-            A 10-minute tool for the moment you're about to drink, smoke, scroll, or send the text. It helps you stop and think before you do.
+            Answer a few quick questions and get a straight answer based on what you're actually feeling.
           </p>
-          <p style={{ ...sub, fontSize: 13.5, marginTop: 10, maxWidth: 330, lineHeight: 1.45, color: "#9a8a72", fontStyle: "italic" }}>
-            Be honest. It's the whole point.
-          </p>
-          <button style={{ ...primary, marginTop: 22, fontSize: 18, padding: "18px" }} onClick={() => setStep(1)}>Get started</button>
-          <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 9, opacity: 0.7 }}>Takes about a minute.</p>
+          <button style={{ ...primary, marginTop: 22, fontSize: 18, padding: "18px" }} onClick={() => setStep(1)}>Help me think first</button>
+          <p style={{ ...sub, textAlign: "center", fontSize: 12.5, marginTop: 9, opacity: 0.7 }}>No account. No lecture. Just the next honest minute.</p>
           <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 11 }}>
             {[
               "See what's really driving the urge",
@@ -484,8 +481,8 @@ function ThinkingIcon() {
         <span style={{ ...thinkingDot, width: 11, height: 11, animationDelay: "0.2s" }} />
         <span style={{ ...thinkingDot, width: 11, height: 11, animationDelay: "0.4s" }} />
       </span>
-      <span style={{ fontFamily: "'Fraunces',serif", fontSize: 19, fontStyle: "italic", color: "#c8b79a" }}>Thinking through your moment</span>
-      <span style={{ fontSize: 13, maxWidth: 280, lineHeight: 1.5 }}>Looking at your patterns, what's worked before, and what you told yourself matters.</span>
+      <span style={{ fontFamily: "'Fraunces',serif", fontSize: 19, fontStyle: "italic", color: "#c8b79a" }}>Building this from what you told me</span>
+      <span style={{ fontSize: 13, maxWidth: 280, lineHeight: 1.5 }}>Your answer is based on what you're about to do, what triggered it, and what you're telling yourself.</span>
     </div>
   );
 }
