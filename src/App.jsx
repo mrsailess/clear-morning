@@ -327,7 +327,7 @@ function Home({ settings, memory, urges, mornings, days, needMorning, needDay, n
 
   return (
     <div style={pad}>
-      <div style={{ position: "sticky", top: 0, zIndex: 20, background: "linear-gradient(175deg,#1a130d,#0c0805)", margin: "0 -26px", padding: "0 26px 12px" }}>
+      <div style={{ position: "sticky", top: 0, zIndex: 20, background: "linear-gradient(175deg,#1a130d,#0c0805)", margin: "0 -26px", padding: "0 26px 10px", borderBottom: "1px solid rgba(181,146,102,0.1)" }}>
         <p style={{ ...kicker, marginBottom: 0, paddingTop: 4 }}>Clear Morning{settings.name ? ` · ${settings.name}` : ""}</p>
         <p style={{ ...sub, margin: "2px 0 0", fontSize: 12.5, opacity: 0.75 }}>Open this before the drink, the scroll, the text.</p>
       </div>
@@ -1008,7 +1008,7 @@ function You({ settings, urges, voice, saveVoice, onChange }) {
 }
 
 /* ── shared ── */
-const Step = ({ kick, title, children }) => (<div className="fade" style={stepWrap}><div style={{ position: "sticky", top: 0, zIndex: 15, background: "linear-gradient(175deg,#1a130d,#0c0805)", paddingBottom: 14 }}><p style={kicker}>{kick}</p><h2 style={{ ...h2, marginBottom: 0 }}>{title}</h2></div>{children}</div>);
+const Step = ({ kick, title, children }) => (<div className="fade" style={stepWrap}><div style={{ position: "sticky", top: 0, zIndex: 15, background: "linear-gradient(175deg,#1a130d,#0c0805)", paddingTop: 6, paddingBottom: 10, borderBottom: "1px solid rgba(181,146,102,0.12)", marginBottom: 14 }}><p style={{ ...kicker, marginBottom: 4 }}>{kick}</p><h2 style={{ fontFamily: "'Fraunces',serif", fontSize: 21, fontWeight: 500, color: "#f0e8da", lineHeight: 1.2, margin: 0 }}>{title}</h2></div>{children}</div>);
 const Choice = ({ children, active, onClick, grid }) => (
   <button onClick={onClick} style={{ ...choiceBase, ...(grid ? { marginBottom: 0, textAlign: "center", padding: "20px 8px" } : {}), border: `1px solid ${active ? "#9a7b4f" : "#2a2018"}`, background: active ? "rgba(154,123,79,0.14)" : "transparent", color: active ? "#e8ddcc" : "#8a7b66" }}>{children}</button>
 );
