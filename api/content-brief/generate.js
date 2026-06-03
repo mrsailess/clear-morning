@@ -16,17 +16,13 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Invalid JSON body" });
   }
 
-  const { moodLabel, topic, systemPrompt } = body;
+  const { messages, system } = body;
 
-  if (!moodLabel || !topic || !systemPrompt) {
+  if (!messages || !system) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  if (
-    typeof moodLabel !== "string" ||
-    typeof topic !== "string" ||
-    typeof systemPrompt !== "string"
-  ) {
+  if (!Array.isArray(messages) || typeof system !== "string") {
     return res.status(400).json({ error: "Invalid input types" });
   }
 
@@ -42,14 +38,8 @@ export default async function handler(req, res) {
         model: "claude-sonnet-4-6",
         max_tokens: 500,
         temperature: 0.8,
-        system: systemPrompt,
-        messages: [
-          {
-            role: "user",
-            content: `Generate a content brief for the topic "${topic}" with a ${moodLabel} energy. Return ONLY valid JSON in this exact format:
-{"hook":"...","caption":"...","cta":"..."}`
-          }
-        ],
+        system,
+        messages,
       }),
     });
 
