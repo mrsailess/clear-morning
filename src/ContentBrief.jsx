@@ -20,6 +20,13 @@ YOUR BEST-PERFORMING EXAMPLES:
 
 What makes those work: simple words, complete thought, true. The reader thinks "that's true" — not "that's deep."
 
+RECOGNITION, NOT CORRECTION: Write content that helps the reader recognize something — not content that tries to change them. The reader should feel understood, not corrected.
+- If a line sounds like "Here's what you're doing wrong" — delete it.
+- If a line sounds like "I never thought about it that way" — keep it.
+- No judgment. No calling people out. No telling people who they are.
+- Prefer: observations, realizations, truths people already suspect.
+- Sounds like a guy in his truck who figured something out the hard way — not an app.
+
 OPTIMIZE FOR: truth > insight. Clarity > depth. Shareability > poetry.
 
 THE HOOK IS THE POST. It carries 70–80% of the value. The caption just supports it.
@@ -66,6 +73,13 @@ YOUR BEST-PERFORMING EXAMPLES:
 
 What makes those work: simple words, complete thought, true. The reader thinks "that's true" — not "that's deep."
 
+RECOGNITION, NOT CORRECTION: Write content that helps the reader recognize something — not content that tries to change them. The reader should feel understood, not corrected.
+- If a line sounds like "Here's what you're doing wrong" — delete it.
+- If a line sounds like "I never thought about it that way" — keep it.
+- No judgment. No calling people out. No telling people who they are.
+- Prefer: observations, realizations, truths people already suspect.
+- Sounds like a guy in his truck who figured something out the hard way — not an app.
+
 OPTIMIZE FOR: truth > insight. Clarity > depth. Shareability > poetry.
 
 THE HOOK IS THE POST. It carries 70–80% of the value. The caption just supports it.
@@ -111,6 +125,13 @@ YOUR BEST-PERFORMING EXAMPLES:
 "I finally realized I wasn't tired. I was just not living the life I actually wanted."
 
 What makes those work: first person, simple, true, earned. Sounds like someone who lived it — not someone writing about it.
+
+RECOGNITION, NOT CORRECTION: Write content that helps the reader recognize something — not content that tries to change them. The reader should feel understood, not corrected.
+- If a line sounds like "Here's what you're doing wrong" — delete it.
+- If a line sounds like "I never thought about it that way" — keep it.
+- No judgment. No calling people out. No telling people who they are.
+- Prefer: observations, realizations, truths people already suspect.
+- Sounds like a guy in his truck who figured something out the hard way — not an app.
 
 OPTIMIZE FOR: truth > insight. Clarity > depth. Shareability > poetry.
 
