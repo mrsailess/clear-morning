@@ -104,6 +104,9 @@ const SITUATIONS = [
   "Starting over"
 ];
 
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const BRAND_KEYS = Object.keys(BRAND_CONFIGS);
+
 export default function ContentBrief() {
   const [brand, setBrand] = useState(null);
   const [feeling, setFeeling] = useState(null);
@@ -116,9 +119,22 @@ export default function ContentBrief() {
 
   const config = brand ? BRAND_CONFIGS[brand] : BRAND_CONFIGS.no86;
   const accent = config.accent;
+  const randBtn = { background: "transparent", border: "1px solid #333", color: "#555", padding: "4px 9px", borderRadius: "5px", cursor: "pointer", fontSize: "13px", fontFamily: "monospace", lineHeight: 1 };
 
-  const generateBrief = async () => {
-    if (!brand || !feeling || !situation) return;
+  const randomizeAll = () => {
+    const b = pick(BRAND_KEYS);
+    const f = pick(FEELINGS);
+    const s = pick(SITUATIONS);
+    setBrand(b); setFeeling(f); setSituation(s);
+    setBrief(null); setError(null); setStep(4);
+    generateBrief({ brand: b, feeling: f, situation: s });
+  };
+
+  const generateBrief = async (overrides = {}) => {
+    const b = overrides.brand ?? brand;
+    const f = overrides.feeling ?? feeling;
+    const s = overrides.situation ?? situation;
+    if (!b || !f || !s) return;
     setLoading(true);
     setBrief(null);
     setError(null);
@@ -128,10 +144,10 @@ export default function ContentBrief() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          system: BRAND_CONFIGS[brand].systemPrompt,
+          system: BRAND_CONFIGS[b].systemPrompt,
           messages: [{
             role: "user",
-            content: `Feeling: ${feeling}\nSituation: ${situation}\n\nWrite one piece of content anchored to this exact combination.`
+            content: `Feeling: ${f}\nSituation: ${s}\n\nWrite one piece of content anchored to this exact combination.`
           }]
         })
       });
@@ -177,16 +193,22 @@ export default function ContentBrief() {
           <div style={{ fontSize: "11px", letterSpacing: "3px", color: brand ? accent : "#666", textTransform: "uppercase", marginBottom: "4px", fontFamily: "monospace" }}>Daily Brief</div>
           <div style={{ fontSize: "20px", fontWeight: "700" }}>Content Generator</div>
         </div>
-        {step > 1 && (
-          <button onClick={reset} style={{ background: "transparent", border: `1px solid ${config.border}`, color: "#888", padding: "8px 14px", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontFamily: "monospace" }}>RESET</button>
-        )}
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <button onClick={randomizeAll} disabled={loading} style={{ background: "transparent", border: `1px solid ${accent}`, color: accent, padding: "8px 14px", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontFamily: "monospace", opacity: loading ? 0.5 : 1 }}>⚄ RANDOM</button>
+          {step > 1 && (
+            <button onClick={reset} style={{ background: "transparent", border: `1px solid ${config.border}`, color: "#888", padding: "8px 14px", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontFamily: "monospace" }}>RESET</button>
+          )}
+        </div>
       </div>
 
       <div style={{ maxWidth: "520px", margin: "0 auto", padding: "28px 20px" }}>
 
         {/* 01 Brand */}
         <div style={{ marginBottom: "28px" }}>
-          <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>01 — Select Brand</div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+            <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", fontFamily: "monospace" }}>01 — Select Brand</div>
+            <button onClick={() => { const b = pick(BRAND_KEYS); setBrand(b); setStep(Math.max(step, 2)); setBrief(null); setError(null); }} style={randBtn}>⚄</button>
+          </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {Object.entries(BRAND_CONFIGS).map(([key, cfg]) => (
               <button key={key}
@@ -205,7 +227,10 @@ export default function ContentBrief() {
         {/* 02 Feeling */}
         {step >= 2 && brand && (
           <div style={{ marginBottom: "28px" }}>
-            <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>02 — What Are You Feeling</div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+              <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", fontFamily: "monospace" }}>02 — What Are You Feeling</div>
+              <button onClick={() => { setFeeling(pick(FEELINGS)); setStep(Math.max(step, 3)); }} style={randBtn}>⚄</button>
+            </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
               {FEELINGS.map((f) => (
                 <button key={f}
@@ -221,7 +246,10 @@ export default function ContentBrief() {
         {/* 03 Situation */}
         {step >= 3 && brand && feeling && (
           <div style={{ marginBottom: "28px" }}>
-            <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>03 — Pick the Situation</div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+              <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", fontFamily: "monospace" }}>03 — Pick the Situation</div>
+              <button onClick={() => { setSituation(pick(SITUATIONS)); setBrief(null); setError(null); }} style={randBtn}>⚄</button>
+            </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               {SITUATIONS.map((s) => (
                 <button key={s}
