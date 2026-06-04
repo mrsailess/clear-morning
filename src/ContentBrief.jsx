@@ -13,22 +13,19 @@ const BRAND_CONFIGS = {
 Write like a private thought, not a post.
 Sound like someone confessing something to a friend at 10pm — not a brand talking to a customer.
 
-The goal is self-recognition. The reader should think "damn, that's me" — not "that's good advice."
+Structure: 70% the reader recognizing themselves. 30% a glimpse of who they want to become.
+First half: they see themselves. Second half: they see where they want to go.
+Never preach. Never coach. Show the destination as a feeling, not a lesson.
 
-Never teach. Never reframe out loud. Never use: "Here's the truth" / "The hard truth" / "That's the thing" / "What if" / "Presence matters" / "You deserve" / "Real men"
+Nobody buys the hole. They buy the bridge out of it. Your job is to show the bridge — quietly.
 
-Start from one specific moment:
-- Pouring a drink out of habit, not want
-- The first sip that doesn't taste like relief anymore
-- Standing at the cabinet at 9pm just because that's what you do
-- Waking up foggy and already knowing why
-- Finishing a drink and not remembering enjoying it
+Never use: "Here's the truth" / "The hard truth" / "What if" / "You deserve" / "Real men" / "Presence matters"
 
-Leave space. Don't finish the thought for them.
-90% relatability. 10% insight. Never the other way around.
+The feeling to leave them with: peace. Clarity. Feeling like themselves again.
+Not toxic positivity. Just a quiet glimpse of a calmer version of themselves.
 
 Hook: One sentence. Starts with "Imagine." Drop them into the moment. Max 35 words.
-Caption: 80–120 words. Stay inside the moment. No lesson. One quiet line at the end — "That's why we made No. 86." Then close with identity.
+Caption: 80–120 words. First half stays in the struggle. Second half opens toward something quieter. End with "That's why we made No. 86." Close with identity.
 CTA: Soft. Max 12 words.
 
 Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
@@ -40,30 +37,22 @@ Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
     surface: "#0A1520",
     border: "#102030",
     tagline: "A reality check before regret.",
-    systemPrompt: `You write for Clear Morning, a free app for adults 30–45. Audience is 50% men and 50% women.
+    systemPrompt: `You write for Clear Morning, a free app for adults 30–45 (50% men, 50% women) who lose the 8–11pm window to bad habits.
 
 Write like a private thought someone has but never says out loud.
 Sound like a confession, not content.
 
-The goal is self-recognition. Not advice. Not education.
-The reader should see themselves and feel less alone — before they ever think about an app.
+Structure: 70% the reader recognizing themselves. 30% a glimpse of who they want to become.
+First half: they see themselves. Second half: they see a calmer version of themselves — not a better version. A quieter one.
+Never preach. Show the outcome as a feeling, not a result.
 
-Never teach. Never use: "Here's the truth" / "The hard truth" / "What if" / "That's the thing" / "You deserve better"
+Never use: "Here's the truth" / "The hard truth" / "What if" / "You deserve better"
 
-Always start from one of these specific moments:
-- Sitting in the driveway before going inside
-- Opening the fridge three times not hungry
-- Scrolling in the bathroom at 10pm
-- Turning the TV on without caring what's on
-- Saying "I'm just tired" when you're actually overwhelmed
-- Standing in the kitchen after everyone goes to bed
-- Looking forward to bedtime more than tomorrow
+The feeling to leave them with: presence. Quiet. Feeling like yourself again.
+Not inspiration. Just: this is possible. And it's closer than you think.
 
-Leave space. The reader finishes the thought.
-90% relatability. 10% insight.
-
-Hook: One sentence. Starts with "Imagine." Put them in the moment. Max 35 words.
-Caption: 80–120 words. Stay in the scene. No lesson. Mention the app once, softly — "free" and "60 seconds."
+Hook: One sentence. Starts with "Imagine." Put them in the situation. Max 35 words.
+Caption: 80–120 words. First half stays in the struggle. Second half opens toward something quieter. Mention the app once, softly — "free" and "60 seconds."
 CTA: Drive to clear-morning-one.vercel.app. Max 12 words.
 
 Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
@@ -78,25 +67,19 @@ Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
     systemPrompt: `You write for Sean — Navy veteran, father, husband, entrepreneur, Jiu-Jitsu practitioner, 11.5K followers, 676K likes.
 
 Write like a private thought, not a post.
-Sound like someone who learned something the hard way and is telling one person — not performing for an audience.
+Sound like someone who learned something the hard way and is telling one person.
 
-The goal is self-recognition. The reader says "damn, that's me" — not "great advice."
+Structure: 70% the reader recognizing themselves. 30% a quiet glimpse of something better.
+First half: they feel seen. Second half: they feel like it's possible to be different.
+Never preach. Never coach. Let the destination live inside the observation — not above it.
 
-Never teach out loud. Never use: "Here's the truth" / "The hard truth" / "What if" / "That's the thing" / "Real talk" / "Most men"
+Never use: "Here's the truth" / "The hard truth" / "What if" / "Real talk" / "Most men"
 
-Start from one real moment:
-- Getting home with nothing left to give
-- Lying awake running numbers at 2am
-- Watching your kid and feeling proud and guilty at the same time
-- Training when you're empty because stopping feels like losing
-- Sitting in the car before a hard conversation
-- Nobody asking how you're doing because you always seem fine
-
-Leave space. Don't wrap it up. Let it sit.
-90% relatability. 10% insight. The silence does the work.
+The feeling to leave them with: clarity. Pride. The sense that they're still becoming something.
+Leave space. The silence does the work.
 
 Hook: One sentence. Max 35 words. Name a feeling they recognize but never say out loud.
-Caption: 80–120 words. Stay in the moment. One honest line — not a lesson. Close with identity. End: "If you can relate, maybe this account can help."
+Caption: 80–120 words. First half stays in the hard moment. Second half opens just slightly — one honest observation. Close with identity. End: "If you can relate, maybe this account can help."
 CTA: Soft. Community-building. Max 12 words.
 
 Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
@@ -108,23 +91,23 @@ const FEELINGS = [
   "Disconnected", "Restless", "Proud", "Numb"
 ];
 
-const MOMENTS = [
-  "Sitting in the driveway",
-  "Scrolling in the bathroom",
-  "Standing in the kitchen",
-  "Lying awake at 2am",
-  "Opening the fridge",
-  "Sitting on the couch",
-  "Walking into the gym",
-  "Looking at your kid",
-  "Pouring a drink",
-  "Cleaning up after everyone goes to bed"
+const SITUATIONS = [
+  "Finally sitting down",
+  "Getting home",
+  "Trying to relax",
+  "Lying awake",
+  "Looking at your phone",
+  "Drinking alone",
+  "Cleaning up after everyone",
+  "Driving somewhere",
+  "Watching your kids",
+  "Starting over"
 ];
 
 export default function ContentBrief() {
   const [brand, setBrand] = useState(null);
   const [feeling, setFeeling] = useState(null);
-  const [moment, setMoment] = useState(null);
+  const [situation, setSituation] = useState(null);
   const [loading, setLoading] = useState(false);
   const [brief, setBrief] = useState(null);
   const [error, setError] = useState(null);
@@ -135,7 +118,7 @@ export default function ContentBrief() {
   const accent = config.accent;
 
   const generateBrief = async () => {
-    if (!brand || !feeling || !moment) return;
+    if (!brand || !feeling || !situation) return;
     setLoading(true);
     setBrief(null);
     setError(null);
@@ -148,7 +131,7 @@ export default function ContentBrief() {
           system: BRAND_CONFIGS[brand].systemPrompt,
           messages: [{
             role: "user",
-            content: `Feeling: ${feeling}\nMoment: ${moment}\n\nWrite one piece of content anchored to this exact combination.`
+            content: `Feeling: ${feeling}\nSituation: ${situation}\n\nWrite one piece of content anchored to this exact combination.`
           }]
         })
       });
@@ -172,7 +155,7 @@ export default function ContentBrief() {
   };
 
   const reset = () => {
-    setBrand(null); setFeeling(null); setMoment(null);
+    setBrand(null); setFeeling(null); setSituation(null);
     setBrief(null); setError(null); setStep(1);
   };
 
@@ -235,21 +218,21 @@ export default function ContentBrief() {
           </div>
         )}
 
-        {/* 03 Moment */}
+        {/* 03 Situation */}
         {step >= 3 && brand && feeling && (
           <div style={{ marginBottom: "28px" }}>
-            <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>03 — Pick the Moment</div>
+            <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>03 — Pick the Situation</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              {MOMENTS.map((m) => (
-                <button key={m}
-                  onClick={() => { setMoment(m); setBrief(null); setError(null); }}
-                  style={{ background: moment === m ? config.surface : "transparent", border: `1px solid ${moment === m ? accent : "#222"}`, borderRadius: "8px", padding: "12px 16px", cursor: "pointer", textAlign: "left", fontSize: "14px", color: moment === m ? accent : "#888", fontWeight: moment === m ? "600" : "400" }}>
-                  {m}
+              {SITUATIONS.map((s) => (
+                <button key={s}
+                  onClick={() => { setSituation(s); setBrief(null); setError(null); }}
+                  style={{ background: situation === s ? config.surface : "transparent", border: `1px solid ${situation === s ? accent : "#222"}`, borderRadius: "8px", padding: "12px 16px", cursor: "pointer", textAlign: "left", fontSize: "14px", color: situation === s ? accent : "#888", fontWeight: situation === s ? "600" : "400" }}>
+                  {s}
                 </button>
               ))}
             </div>
 
-            {moment && !loading && !brief && (
+            {situation && !loading && !brief && (
               <button onClick={generateBrief} style={{ width: "100%", marginTop: "20px", background: accent, border: "none", borderRadius: "10px", padding: "16px", cursor: "pointer", fontSize: "14px", fontWeight: "700", color: "#000", letterSpacing: "1.5px", textTransform: "uppercase", fontFamily: "monospace" }}>Generate Brief</button>
             )}
 
