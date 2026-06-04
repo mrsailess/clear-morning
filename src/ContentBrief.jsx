@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const BRAND_CONFIGS = {
   no86: {
@@ -10,22 +10,22 @@ const BRAND_CONFIGS = {
     tagline: "Keep the ritual. Lose the fog.",
     systemPrompt: `You write for No. 86, a non-alcoholic whiskey for men 30–45.
 
-Write like a private thought, not a post.
-Sound like someone confessing something to a friend at 10pm — not a brand talking to a customer.
+Write like a real thought someone has at 10pm — not a post, not a brand message.
+The reader should think: "I do this." Not "that's poetic."
 
-Structure: 70% the reader recognizing themselves. 30% a glimpse of who they want to become.
-First half: they see themselves. Second half: they see where they want to go.
-Never preach. Never coach. Show the destination as a feeling, not a lesson.
+Do not write poetic therapy language. Do not use lines like "still hovering," "waiting to arrive," "holding space," "soft ache," or anything that sounds written. Write like a real thought someone would text to a friend.
 
-Nobody buys the hole. They buy the bridge out of it. Your job is to show the bridge — quietly.
+Structure: 70% the reader recognizing themselves. 30% a quiet glimpse of something different.
+First half: they see their own behavior. Second half: they see it doesn't have to be this way.
+Never preach. Never coach.
 
 Never use: "Here's the truth" / "The hard truth" / "What if" / "You deserve" / "Real men" / "Presence matters"
 
-The feeling to leave them with: peace. Clarity. Feeling like themselves again.
-Not toxic positivity. Just a quiet glimpse of a calmer version of themselves.
+The destination: peace. Clarity. Feeling like themselves again. Show it as a moment, not a lesson.
+End the caption with "That's why we made No. 86." Close with identity.
 
-Hook: One sentence. Starts with "Imagine." Drop them into the moment. Max 35 words.
-Caption: 80–120 words. First half stays in the struggle. Second half opens toward something quieter. End with "That's why we made No. 86." Close with identity.
+Hook: One sentence. Starts with "Imagine." Max 35 words.
+Caption: 80–120 words. Grounded, real, specific. No abstractions.
 CTA: Soft. Max 12 words.
 
 Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
@@ -37,22 +37,23 @@ Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
     surface: "#0A1520",
     border: "#102030",
     tagline: "A reality check before regret.",
-    systemPrompt: `You write for Clear Morning, a free app for adults 30–45 (50% men, 50% women) who lose the 8–11pm window to bad habits.
+    systemPrompt: `You write for Clear Morning, a free app for adults 30–45 (50% men, 50% women).
 
-Write like a private thought someone has but never says out loud.
-Sound like a confession, not content.
+Write like a real thought someone has at 9pm but never says out loud.
+The reader should think: "I do this." Not "that's a good observation."
 
-Structure: 70% the reader recognizing themselves. 30% a glimpse of who they want to become.
-First half: they see themselves. Second half: they see a calmer version of themselves — not a better version. A quieter one.
-Never preach. Show the outcome as a feeling, not a result.
+Do not write poetic therapy language. Do not use lines like "still hovering," "waiting to arrive," "holding space," "soft ache," or anything that sounds written. Write like a real thought someone would text to a friend.
+
+Structure: 70% the reader seeing their own behavior. 30% a quiet sense that it could be different.
+First half: they recognize themselves. Second half: they feel like something small is possible.
+Never preach. Never give advice.
 
 Never use: "Here's the truth" / "The hard truth" / "What if" / "You deserve better"
 
-The feeling to leave them with: presence. Quiet. Feeling like yourself again.
-Not inspiration. Just: this is possible. And it's closer than you think.
+Mention the app once, softly — "free" and "60 seconds."
 
-Hook: One sentence. Starts with "Imagine." Put them in the situation. Max 35 words.
-Caption: 80–120 words. First half stays in the struggle. Second half opens toward something quieter. Mention the app once, softly — "free" and "60 seconds."
+Hook: One sentence. Starts with "Imagine." Max 35 words.
+Caption: 80–120 words. Grounded, real, specific. No abstractions.
 CTA: Drive to clear-morning-one.vercel.app. Max 12 words.
 
 Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
@@ -64,58 +65,84 @@ Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
     surface: "#100E1A",
     border: "#1E1830",
     tagline: "Father. Veteran. Builder.",
-    systemPrompt: `You write for Sean — Navy veteran, father, husband, entrepreneur, Jiu-Jitsu practitioner, 11.5K followers, 676K likes.
+    systemPrompt: `You write for Sean — Navy veteran, father, husband, entrepreneur, Jiu-Jitsu practitioner.
 
-Write like a private thought, not a post.
-Sound like someone who learned something the hard way and is telling one person.
+Write like a real thought someone keeps to themselves.
+The reader should think: "I do this." Not "great writing."
 
-Structure: 70% the reader recognizing themselves. 30% a quiet glimpse of something better.
+Do not write poetic therapy language. Do not use lines like "still hovering," "waiting to arrive," "holding space," "soft ache," or anything that sounds written. Write like a real thought someone would text to a friend.
+
+Structure: 70% the reader seeing themselves. 30% a quiet sense that something could shift.
 First half: they feel seen. Second half: they feel like it's possible to be different.
-Never preach. Never coach. Let the destination live inside the observation — not above it.
+Never preach. Never coach. Leave space — don't finish the thought for them.
 
 Never use: "Here's the truth" / "The hard truth" / "What if" / "Real talk" / "Most men"
 
-The feeling to leave them with: clarity. Pride. The sense that they're still becoming something.
-Leave space. The silence does the work.
+Close with identity. End: "If you can relate, maybe this account can help."
 
-Hook: One sentence. Max 35 words. Name a feeling they recognize but never say out loud.
-Caption: 80–120 words. First half stays in the hard moment. Second half opens just slightly — one honest observation. Close with identity. End: "If you can relate, maybe this account can help."
+Hook: One sentence. Max 35 words. Name a behavior or moment they recognize.
+Caption: 80–120 words. Grounded, real, specific. No abstractions.
 CTA: Soft. Community-building. Max 12 words.
 
 Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
   }
 };
 
-const FEELINGS = [
-  "Overwhelmed", "Lonely", "Guilty", "Burned Out",
-  "Disconnected", "Restless", "Proud", "Numb"
+const STATES = [
+  "Can't relax",
+  "Looking for a distraction",
+  "Going through the motions",
+  "Mentally checked out",
+  "Overthinking",
+  "Avoiding something",
+  "Feeling behind",
+  "Running on empty",
+  "Wanting peace",
+  "Reaching for something you don't even want"
 ];
 
 const SITUATIONS = [
   "Finally sitting down",
   "Getting home",
-  "Trying to relax",
   "Lying awake",
   "Looking at your phone",
-  "Drinking alone",
-  "Cleaning up after everyone",
-  "Driving somewhere",
-  "Watching your kids",
+  "Making a drink",
+  "Watching TV",
+  "Cleaning up",
+  "Driving home",
+  "Waking up",
   "Starting over"
 ];
 
-const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const CONTENT_ANGLES = [
+  "observation",
+  "confession",
+  "internal dialogue",
+  "realization",
+  "hard moment",
+  "small habit",
+  "private thought",
+  "contradiction",
+  "uncomfortable truth",
+  "tiny regret"
+];
+
+const pick = (arr, exclude) => {
+  const pool = exclude ? arr.filter((x) => x !== exclude) : arr;
+  return pool[Math.floor(Math.random() * pool.length)];
+};
 const BRAND_KEYS = Object.keys(BRAND_CONFIGS);
 
 export default function ContentBrief() {
   const [brand, setBrand] = useState(null);
-  const [feeling, setFeeling] = useState(null);
+  const [state, setState] = useState(null);
   const [situation, setSituation] = useState(null);
   const [loading, setLoading] = useState(false);
   const [brief, setBrief] = useState(null);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(null);
   const [step, setStep] = useState(1);
+  const lastAngle = useRef(null);
 
   const config = brand ? BRAND_CONFIGS[brand] : BRAND_CONFIGS.no86;
   const accent = config.accent;
@@ -123,21 +150,24 @@ export default function ContentBrief() {
 
   const randomizeAll = () => {
     const b = pick(BRAND_KEYS);
-    const f = pick(FEELINGS);
-    const s = pick(SITUATIONS);
-    setBrand(b); setFeeling(f); setSituation(s);
+    const st = pick(STATES);
+    const si = pick(SITUATIONS);
+    setBrand(b); setState(st); setSituation(si);
     setBrief(null); setError(null); setStep(4);
-    generateBrief({ brand: b, feeling: f, situation: s });
+    generateBrief({ brand: b, state: st, situation: si });
   };
 
   const generateBrief = async (overrides = {}) => {
     const b = overrides.brand ?? brand;
-    const f = overrides.feeling ?? feeling;
-    const s = overrides.situation ?? situation;
-    if (!b || !f || !s) return;
+    const st = overrides.state ?? state;
+    const si = overrides.situation ?? situation;
+    if (!b || !st || !si) return;
     setLoading(true);
     setBrief(null);
     setError(null);
+
+    const angle = pick(CONTENT_ANGLES, lastAngle.current);
+    lastAngle.current = angle;
 
     try {
       const response = await fetch("/api/content-brief/generate", {
@@ -147,7 +177,7 @@ export default function ContentBrief() {
           system: BRAND_CONFIGS[b].systemPrompt,
           messages: [{
             role: "user",
-            content: `Feeling: ${f}\nSituation: ${s}\n\nWrite one piece of content anchored to this exact combination.`
+            content: `State: ${st}\nSituation: ${si}\nContent angle: ${angle}\n\nWrite from this angle. Never generate the same core idea twice in a row. If the previous output focused on one tension, choose a different one. Write one piece of content anchored to this exact combination.`
           }]
         })
       });
@@ -171,8 +201,9 @@ export default function ContentBrief() {
   };
 
   const reset = () => {
-    setBrand(null); setFeeling(null); setSituation(null);
+    setBrand(null); setState(null); setSituation(null);
     setBrief(null); setError(null); setStep(1);
+    lastAngle.current = null;
   };
 
   return (
@@ -224,19 +255,19 @@ export default function ContentBrief() {
           </div>
         </div>
 
-        {/* 02 Feeling */}
+        {/* 02 What's happening */}
         {step >= 2 && brand && (
           <div style={{ marginBottom: "28px" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
-              <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", fontFamily: "monospace" }}>02 — What Are You Feeling</div>
-              <button onClick={() => { setFeeling(pick(FEELINGS)); setStep(Math.max(step, 3)); }} style={randBtn}>⚄</button>
+              <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", fontFamily: "monospace" }}>02 — What's happening?</div>
+              <button onClick={() => { setState(pick(STATES)); setStep(Math.max(step, 3)); }} style={randBtn}>⚄</button>
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-              {FEELINGS.map((f) => (
-                <button key={f}
-                  onClick={() => { setFeeling(f); setStep(Math.max(step, 3)); }}
-                  style={{ background: feeling === f ? config.surface : "transparent", border: `1px solid ${feeling === f ? accent : "#222"}`, borderRadius: "20px", padding: "9px 16px", cursor: "pointer", fontSize: "13px", color: feeling === f ? accent : "#888", fontWeight: feeling === f ? "600" : "400" }}>
-                  {f}
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              {STATES.map((s) => (
+                <button key={s}
+                  onClick={() => { setState(s); setStep(Math.max(step, 3)); }}
+                  style={{ background: state === s ? config.surface : "transparent", border: `1px solid ${state === s ? accent : "#222"}`, borderRadius: "8px", padding: "12px 16px", cursor: "pointer", textAlign: "left", fontSize: "14px", color: state === s ? accent : "#888", fontWeight: state === s ? "600" : "400" }}>
+                  {s}
                 </button>
               ))}
             </div>
@@ -244,7 +275,7 @@ export default function ContentBrief() {
         )}
 
         {/* 03 Situation */}
-        {step >= 3 && brand && feeling && (
+        {step >= 3 && brand && state && (
           <div style={{ marginBottom: "28px" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
               <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", fontFamily: "monospace" }}>03 — Pick the Situation</div>
@@ -261,7 +292,7 @@ export default function ContentBrief() {
             </div>
 
             {situation && !loading && !brief && (
-              <button onClick={generateBrief} style={{ width: "100%", marginTop: "20px", background: accent, border: "none", borderRadius: "10px", padding: "16px", cursor: "pointer", fontSize: "14px", fontWeight: "700", color: "#000", letterSpacing: "1.5px", textTransform: "uppercase", fontFamily: "monospace" }}>Generate Brief</button>
+              <button onClick={() => generateBrief()} style={{ width: "100%", marginTop: "20px", background: accent, border: "none", borderRadius: "10px", padding: "16px", cursor: "pointer", fontSize: "14px", fontWeight: "700", color: "#000", letterSpacing: "1.5px", textTransform: "uppercase", fontFamily: "monospace" }}>Generate Brief</button>
             )}
 
             {loading && (
@@ -303,7 +334,7 @@ export default function ContentBrief() {
             ))}
 
             <div style={{ padding: "16px 20px", borderTop: `1px solid ${config.border}`, display: "flex", gap: "10px" }}>
-              <button onClick={generateBrief} style={{ flex: 1, background: "transparent", border: `1px solid ${config.border}`, color: "#555", padding: "8px", borderRadius: "6px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace" }}>↻ REGENERATE</button>
+              <button onClick={() => generateBrief()} style={{ flex: 1, background: "transparent", border: `1px solid ${config.border}`, color: "#555", padding: "8px", borderRadius: "6px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace" }}>↻ REGENERATE</button>
               <button onClick={reset} style={{ flex: 1, background: "transparent", border: `1px solid ${config.border}`, color: "#555", padding: "8px", borderRadius: "6px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace" }}>NEW BRIEF</button>
             </div>
           </div>
