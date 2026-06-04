@@ -8,27 +8,27 @@ const BRAND_CONFIGS = {
     surface: "#1A1408",
     border: "#2A2010",
     tagline: "Keep the ritual. Lose the fog.",
-    systemPrompt: `You write for No. 86, a non-alcoholic whiskey for men 30–45.
+    systemPrompt: `You write TikTok/Instagram content for No. 86, a non-alcoholic whiskey for men 30–45.
 
-Write like a real thought someone has at 10pm — not a post, not a brand message.
-The reader should think: "I do this." Not "that's poetic."
+Study these examples of high-performing content in this space:
+"Not one successful person got where they wanted by drinking more."
+"The goal isn't to never drink again. The goal is to never need to."
+"Nobody stops drinking because you made them feel bad about it."
 
-Do not write poetic therapy language. Do not use lines like "still hovering," "waiting to arrive," "holding space," "soft ache," or anything that sounds written. Write like a real thought someone would text to a friend.
+The reader should think: "That's true." and "That's interesting." — not "That's sad."
 
-Structure: 70% the reader recognizing themselves. 30% a quiet glimpse of something different.
-First half: they see their own behavior. Second half: they see it doesn't have to be this way.
-Never preach. Never coach.
+Write like someone who learned something and is telling a friend — not performing for an audience.
 
-Never use: "Here's the truth" / "The hard truth" / "What if" / "You deserve" / "Real men" / "Presence matters"
+NEVER use: "Imagine sitting" / "Imagine feeling" / "Imagine being" / "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "waiting to arrive" / "still hovering" / poetic therapy language
 
-The destination: peace. Clarity. Feeling like themselves again. Show it as a moment, not a lesson.
-End the caption with "That's why we made No. 86." Close with identity.
+Content should be built around beliefs people haven't questioned yet. Perspective shifts. Uncomfortable truths. Hard-earned realizations. Things that make people stop scrolling because they've never heard it said that way.
 
-Hook: One sentence. Starts with "Imagine." Max 35 words.
-Caption: 80–120 words. Grounded, real, specific. No abstractions.
+Hook: 25–35 words. Feels like a realization, a challenge, a perspective shift, or an uncomfortable truth. NOT "Imagine…". Should work as a spoken video opener.
+Caption: 80–120 words. Direct. Real. One or two short paragraphs. End with "That's why we made No. 86." Close with identity.
+Hashtags: 5–8 relevant hashtags as a single space-separated string.
 CTA: Soft. Max 12 words.
 
-Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
+Return ONLY valid JSON: {"hook":"...","caption":"...","hashtags":"...","cta":"..."}`
   },
   clearmorning: {
     label: "Clear Morning",
@@ -37,26 +37,29 @@ Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
     surface: "#0A1520",
     border: "#102030",
     tagline: "A reality check before regret.",
-    systemPrompt: `You write for Clear Morning, a free app for adults 30–45 (50% men, 50% women).
+    systemPrompt: `You write TikTok/Instagram content for Clear Morning, a free app for adults 30–45 (50% men, 50% women) who lose the 8–11pm window to bad habits.
 
-Write like a real thought someone has at 9pm but never says out loud.
-The reader should think: "I do this." Not "that's a good observation."
+Study these examples of high-performing content in this space:
+"Boredom isn't having nothing to do. It's feeling like something is missing."
+"Nobody folds in the morning. You fold at night, alone, when the day finally stops."
+"You don't even enjoy it anymore. You just don't know what to do with that hour."
 
-Do not write poetic therapy language. Do not use lines like "still hovering," "waiting to arrive," "holding space," "soft ache," or anything that sounds written. Write like a real thought someone would text to a friend.
+The reader should think: "That's true." and "That's interesting." — not "That's sad."
 
-Structure: 70% the reader seeing their own behavior. 30% a quiet sense that it could be different.
-First half: they recognize themselves. Second half: they feel like something small is possible.
-Never preach. Never give advice.
+Write like someone who has been there and is saying the quiet thing out loud.
 
-Never use: "Here's the truth" / "The hard truth" / "What if" / "You deserve better"
+NEVER use: "Imagine sitting" / "Imagine feeling" / "Imagine being" / "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "waiting to arrive" / "still hovering" / poetic therapy language
+
+Content should be built around beliefs people haven't questioned yet. Observations about nighttime behavior. Uncomfortable realizations. Things that make people stop and think "I've never heard it said like that."
 
 Mention the app once, softly — "free" and "60 seconds."
 
-Hook: One sentence. Starts with "Imagine." Max 35 words.
-Caption: 80–120 words. Grounded, real, specific. No abstractions.
+Hook: 25–35 words. Feels like a realization, a challenge, a perspective shift, or an uncomfortable truth. NOT "Imagine…". Should work as a spoken video opener.
+Caption: 80–120 words. Direct. Real. One or two short paragraphs.
+Hashtags: 5–8 relevant hashtags as a single space-separated string.
 CTA: Drive to clear-morning-one.vercel.app. Max 12 words.
 
-Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
+Return ONLY valid JSON: {"hook":"...","caption":"...","hashtags":"...","cta":"..."}`
   },
   personal: {
     label: "@mr.sailes",
@@ -65,54 +68,46 @@ Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
     surface: "#100E1A",
     border: "#1E1830",
     tagline: "Father. Veteran. Builder.",
-    systemPrompt: `You write for Sean — Navy veteran, father, husband, entrepreneur, Jiu-Jitsu practitioner.
+    systemPrompt: `You write TikTok/Instagram content for Sean's personal brand @mr.sailes — Navy veteran, father, husband, entrepreneur, Jiu-Jitsu practitioner, 11.5K followers, 676K likes.
 
-Write like a real thought someone keeps to themselves.
-The reader should think: "I do this." Not "great writing."
+Study these examples of high-performing content in this space:
+"I thought sobriety would make life boring. I was wrong about a lot of things back then."
+"I forgot who I was when I was sober."
+"I want to impress myself."
+"I finally realized I wasn't tired. I was just not living the life I actually wanted."
 
-Do not write poetic therapy language. Do not use lines like "still hovering," "waiting to arrive," "holding space," "soft ache," or anything that sounds written. Write like a real thought someone would text to a friend.
+The reader should think: "That's true." and "That's me." — not "That's deep."
 
-Structure: 70% the reader seeing themselves. 30% a quiet sense that something could shift.
-First half: they feel seen. Second half: they feel like it's possible to be different.
-Never preach. Never coach. Leave space — don't finish the thought for them.
+Write like someone who earned the perspective through hard experience, not someone performing insight.
 
-Never use: "Here's the truth" / "The hard truth" / "What if" / "Real talk" / "Most men"
+NEVER use: "Imagine sitting" / "Imagine feeling" / "Imagine being" / "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "Real talk" / "Most men" / poetic therapy language
+
+Content should be built around beliefs people haven't questioned yet. Hard-earned realizations. Identity shifts. Uncomfortable observations about how men actually live vs. how they want to live.
 
 Close with identity. End: "If you can relate, maybe this account can help."
 
-Hook: One sentence. Max 35 words. Name a behavior or moment they recognize.
-Caption: 80–120 words. Grounded, real, specific. No abstractions.
+Hook: 25–35 words. Feels like a realization, a challenge, a perspective shift, or an uncomfortable truth. NOT "Imagine…". Should work as a spoken video opener.
+Caption: 80–120 words. Direct. Real. First person. One or two short paragraphs.
+Hashtags: 5–8 relevant hashtags as a single space-separated string.
 CTA: Soft. Community-building. Max 12 words.
 
-Return ONLY valid JSON: {"hook":"...","caption":"...","cta":"..."}`
+Return ONLY valid JSON: {"hook":"...","caption":"...","hashtags":"...","cta":"..."}`
   }
 };
 
-const STATES = [
-  "Can't relax",
-  "Looking for a distraction",
-  "Going through the motions",
-  "Mentally checked out",
-  "Overthinking",
-  "Avoiding something",
-  "Feeling behind",
-  "Running on empty",
-  "Wanting peace",
-  "Reaching for something you don't even want"
+const POST_TYPES = [
+  "Contrarian truth",
+  "Perspective shift",
+  "Hard-earned realization",
+  "Identity statement",
+  "Specific observation"
 ];
 
-const SITUATIONS = [
-  "Finally sitting down",
-  "Getting home",
-  "Lying awake",
-  "Looking at your phone",
-  "Making a drink",
-  "Watching TV",
-  "Cleaning up",
-  "Driving home",
-  "Waking up",
-  "Starting over"
-];
+const SITUATIONS = {
+  no86: ["Drinking out of habit", "The pour ritual", "Waking up foggy", "Social pressure to drink", "The night cap", "Not enjoying it anymore"],
+  clearmorning: ["The 8–11pm window", "Phone at night", "Waking up with regret", "The habit loop", "Decision fatigue", "Trying to relax"],
+  personal: ["Coming home from work", "Training when empty", "Fatherhood moment", "Building something", "Hard conversation", "2am thoughts"]
+};
 
 const CONTENT_ANGLES = [
   "observation",
@@ -135,7 +130,7 @@ const BRAND_KEYS = Object.keys(BRAND_CONFIGS);
 
 export default function ContentBrief() {
   const [brand, setBrand] = useState(null);
-  const [state, setState] = useState(null);
+  const [postType, setPostType] = useState(null);
   const [situation, setSituation] = useState(null);
   const [loading, setLoading] = useState(false);
   const [brief, setBrief] = useState(null);
@@ -146,22 +141,23 @@ export default function ContentBrief() {
 
   const config = brand ? BRAND_CONFIGS[brand] : BRAND_CONFIGS.no86;
   const accent = config.accent;
+  const situations = brand ? SITUATIONS[brand] : [];
   const randBtn = { background: "transparent", border: "1px solid #333", color: "#555", padding: "4px 9px", borderRadius: "5px", cursor: "pointer", fontSize: "13px", fontFamily: "monospace", lineHeight: 1 };
 
   const randomizeAll = () => {
     const b = pick(BRAND_KEYS);
-    const st = pick(STATES);
-    const si = pick(SITUATIONS);
-    setBrand(b); setState(st); setSituation(si);
+    const pt = pick(POST_TYPES);
+    const si = pick(SITUATIONS[b]);
+    setBrand(b); setPostType(pt); setSituation(si);
     setBrief(null); setError(null); setStep(4);
-    generateBrief({ brand: b, state: st, situation: si });
+    generateBrief({ brand: b, postType: pt, situation: si });
   };
 
   const generateBrief = async (overrides = {}) => {
     const b = overrides.brand ?? brand;
-    const st = overrides.state ?? state;
+    const pt = overrides.postType ?? postType;
     const si = overrides.situation ?? situation;
-    if (!b || !st || !si) return;
+    if (!b || !pt || !si) return;
     setLoading(true);
     setBrief(null);
     setError(null);
@@ -177,7 +173,7 @@ export default function ContentBrief() {
           system: BRAND_CONFIGS[b].systemPrompt,
           messages: [{
             role: "user",
-            content: `State: ${st}\nSituation: ${si}\nContent angle: ${angle}\n\nWrite from this angle. Never generate the same core idea twice in a row. If the previous output focused on one tension, choose a different one. Write one piece of content anchored to this exact combination.`
+            content: `Post type: ${pt}\nSituation/topic: ${si}\nContent angle: ${angle}\n\nWrite one piece of content. Never generate the same core idea twice in a row — if the previous output focused on one tension, choose a different one.`
           }]
         })
       });
@@ -201,7 +197,7 @@ export default function ContentBrief() {
   };
 
   const reset = () => {
-    setBrand(null); setState(null); setSituation(null);
+    setBrand(null); setPostType(null); setSituation(null);
     setBrief(null); setError(null); setStep(1);
     lastAngle.current = null;
   };
@@ -243,7 +239,7 @@ export default function ContentBrief() {
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {Object.entries(BRAND_CONFIGS).map(([key, cfg]) => (
               <button key={key}
-                onClick={() => { setBrand(key); setStep(Math.max(step, 2)); setBrief(null); setError(null); }}
+                onClick={() => { setBrand(key); setSituation(null); setStep(Math.max(step, 2)); setBrief(null); setError(null); }}
                 style={{ background: brand === key ? cfg.surface : "transparent", border: `1px solid ${brand === key ? cfg.accent : "#222"}`, borderRadius: "10px", padding: "14px 18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", textAlign: "left" }}>
                 <div>
                   <div style={{ fontSize: "16px", fontWeight: "600", color: brand === key ? cfg.accent : "#CCC", marginBottom: "2px" }}>{cfg.label}</div>
@@ -255,34 +251,34 @@ export default function ContentBrief() {
           </div>
         </div>
 
-        {/* 02 What's happening */}
+        {/* 02 Post type */}
         {step >= 2 && brand && (
           <div style={{ marginBottom: "28px" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
-              <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", fontFamily: "monospace" }}>02 — What's happening?</div>
-              <button onClick={() => { setState(pick(STATES)); setStep(Math.max(step, 3)); }} style={randBtn}>⚄</button>
+              <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", fontFamily: "monospace" }}>02 — Post Type</div>
+              <button onClick={() => { setPostType(pick(POST_TYPES)); setStep(Math.max(step, 3)); }} style={randBtn}>⚄</button>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              {STATES.map((s) => (
-                <button key={s}
-                  onClick={() => { setState(s); setStep(Math.max(step, 3)); }}
-                  style={{ background: state === s ? config.surface : "transparent", border: `1px solid ${state === s ? accent : "#222"}`, borderRadius: "8px", padding: "12px 16px", cursor: "pointer", textAlign: "left", fontSize: "14px", color: state === s ? accent : "#888", fontWeight: state === s ? "600" : "400" }}>
-                  {s}
+              {POST_TYPES.map((pt) => (
+                <button key={pt}
+                  onClick={() => { setPostType(pt); setStep(Math.max(step, 3)); }}
+                  style={{ background: postType === pt ? config.surface : "transparent", border: `1px solid ${postType === pt ? accent : "#222"}`, borderRadius: "8px", padding: "12px 16px", cursor: "pointer", textAlign: "left", fontSize: "14px", color: postType === pt ? accent : "#888", fontWeight: postType === pt ? "600" : "400" }}>
+                  {pt}
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* 03 Situation */}
-        {step >= 3 && brand && state && (
+        {/* 03 Topic */}
+        {step >= 3 && brand && postType && (
           <div style={{ marginBottom: "28px" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
-              <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", fontFamily: "monospace" }}>03 — Pick the Situation</div>
-              <button onClick={() => { setSituation(pick(SITUATIONS)); setBrief(null); setError(null); }} style={randBtn}>⚄</button>
+              <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", fontFamily: "monospace" }}>03 — Topic</div>
+              <button onClick={() => { setSituation(pick(situations)); setBrief(null); setError(null); }} style={randBtn}>⚄</button>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              {SITUATIONS.map((s) => (
+              {situations.map((s) => (
                 <button key={s}
                   onClick={() => { setSituation(s); setBrief(null); setError(null); }}
                   style={{ background: situation === s ? config.surface : "transparent", border: `1px solid ${situation === s ? accent : "#222"}`, borderRadius: "8px", padding: "12px 16px", cursor: "pointer", textAlign: "left", fontSize: "14px", color: situation === s ? accent : "#888", fontWeight: situation === s ? "600" : "400" }}>
@@ -313,7 +309,7 @@ export default function ContentBrief() {
           <div style={{ background: config.surface, border: `1px solid ${config.border}`, borderRadius: "14px", overflow: "hidden" }}>
             <div style={{ padding: "16px 20px", borderBottom: `1px solid ${config.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div style={{ fontSize: "11px", letterSpacing: "2px", color: accent, textTransform: "uppercase", fontFamily: "monospace" }}>Today's Brief — {config.label}</div>
-              <button onClick={() => copy(`HOOK:\n${brief.hook}\n\nCAPTION:\n${brief.caption}\n\nCTA:\n${brief.cta}`, "all")}
+              <button onClick={() => copy(`HOOK:\n${brief.hook}\n\nCAPTION:\n${brief.caption}\n\nHASHTAGS:\n${brief.hashtags || ""}\n\nCTA:\n${brief.cta}`, "all")}
                 style={{ background: copied === "all" ? accent : "transparent", border: `1px solid ${copied === "all" ? accent : config.border}`, color: copied === "all" ? "#000" : "#666", padding: "5px 12px", borderRadius: "5px", cursor: "pointer", fontSize: "10px", fontFamily: "monospace" }}>
                 {copied === "all" ? "COPIED" : "COPY ALL"}
               </button>
@@ -322,8 +318,9 @@ export default function ContentBrief() {
             {[
               { key: "hook", label: "🎬 Hook", field: brief.hook, style: { fontSize: "16px", fontStyle: "italic" } },
               { key: "caption", label: "📝 Caption", field: brief.caption, style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
+              { key: "hashtags", label: "#  Hashtags", field: brief.hashtags, style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
               { key: "cta", label: "👉 CTA", field: brief.cta, style: { fontSize: "15px", fontWeight: "600", color: accent } }
-            ].map(({ key, label, field, style }, i, arr) => (
+            ].filter(({ field }) => field).map(({ key, label, field, style }, i, arr) => (
               <div key={key} style={{ padding: "20px", borderBottom: i < arr.length - 1 ? `1px solid ${config.border}` : "none" }}>
                 <div style={{ fontSize: "10px", letterSpacing: "2px", color: "#444", marginBottom: "10px", textTransform: "uppercase", fontFamily: "monospace" }}>{label}</div>
                 <div style={{ marginBottom: "12px", ...style }}>{field}</div>
