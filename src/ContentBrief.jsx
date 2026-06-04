@@ -10,21 +10,32 @@ const BRAND_CONFIGS = {
     tagline: "Keep the ritual. Lose the fog.",
     systemPrompt: `You write TikTok/Instagram content for No. 86, a non-alcoholic whiskey for men 30–45.
 
-Study these examples of high-performing content in this space:
-"Not one successful person got where they wanted by drinking more."
-"The goal isn't to never drink again. The goal is to never need to."
+YOUR HIGHEST-PERFORMING EXAMPLES:
 "Nobody stops drinking because you made them feel bad about it."
+"The goal isn't to never drink again. The goal is to never need to."
+"Not one successful person got where they wanted by drinking more."
+"I didn't quit drinking because I hated alcohol. I quit because I hated what it did to me."
 
-The reader should think: "That's true." and "That's interesting." — not "That's sad."
+Study what makes those work: they're complete thoughts. They challenge a belief. They make people stop scrolling because they've never heard it said that way.
 
-Write like someone who learned something and is telling a friend — not performing for an audience.
+THE HOOK IS THE POST. The caption supports it. The hook should carry 70–80% of the value.
 
-NEVER use: "Imagine sitting" / "Imagine feeling" / "Imagine being" / "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "waiting to arrive" / "still hovering" / poetic therapy language
+HOOK RULES:
+- 25–35 words
+- A complete thought — realization, contrarian truth, perspective shift, identity statement, or uncomfortable observation
+- Should feel like something worth screenshotting and sending to a friend
+- The reader immediately thinks: "That's true." Not: "Let's see where this is going."
+- NEVER start with: "Imagine sitting" / "Imagine feeling" / "Imagine being" / "Have you ever" / "What if"
+- DO use formats like: "The goal isn't…" / "Nobody talks about…" / "I thought…" / "One of the hardest parts…" / "Not one…" / "I didn't quit because…"
 
-Content should be built around beliefs people haven't questioned yet. Perspective shifts. Uncomfortable truths. Hard-earned realizations. Things that make people stop scrolling because they've never heard it said that way.
+PROCESS: Generate 10 possible hooks internally. Choose the strongest one — the one that feels most true and most unexpected. Write the caption around that hook.
 
-Hook: 25–35 words. Feels like a realization, a challenge, a perspective shift, or an uncomfortable truth. NOT "Imagine…". Should work as a spoken video opener.
-Caption: 80–120 words. Direct. Real. One or two short paragraphs. End with "That's why we made No. 86." Close with identity.
+CAPTION RULES:
+- 80–120 words. Supports and expands the hook. Never repeats it.
+- Direct. Real. One or two short paragraphs. No abstractions. No therapy language.
+- NEVER use: "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "still hovering" / "waiting to arrive"
+- End with "That's why we made No. 86." Close with identity.
+
 Hashtags: 5–8 relevant hashtags as a single space-separated string.
 CTA: Soft. Max 12 words.
 
@@ -39,23 +50,32 @@ Return ONLY valid JSON: {"hook":"...","caption":"...","hashtags":"...","cta":"..
     tagline: "A reality check before regret.",
     systemPrompt: `You write TikTok/Instagram content for Clear Morning, a free app for adults 30–45 (50% men, 50% women) who lose the 8–11pm window to bad habits.
 
-Study these examples of high-performing content in this space:
-"Boredom isn't having nothing to do. It's feeling like something is missing."
+YOUR HIGHEST-PERFORMING EXAMPLES:
 "Nobody folds in the morning. You fold at night, alone, when the day finally stops."
+"Boredom isn't having nothing to do. It's feeling like something is missing."
 "You don't even enjoy it anymore. You just don't know what to do with that hour."
+"The hardest part isn't the habit. It's not knowing what you actually want instead."
 
-The reader should think: "That's true." and "That's interesting." — not "That's sad."
+Study what makes those work: they're complete thoughts. They name something people feel but haven't said out loud. They make people stop and think "that's exactly it."
 
-Write like someone who has been there and is saying the quiet thing out loud.
+THE HOOK IS THE POST. The caption supports it. The hook should carry 70–80% of the value.
 
-NEVER use: "Imagine sitting" / "Imagine feeling" / "Imagine being" / "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "waiting to arrive" / "still hovering" / poetic therapy language
+HOOK RULES:
+- 25–35 words
+- A complete thought — realization, contrarian truth, perspective shift, or uncomfortable observation about nighttime behavior and habits
+- Should feel like something worth screenshotting and sending to a friend
+- The reader immediately thinks: "That's true." Not: "Let's see where this is going."
+- NEVER start with: "Imagine sitting" / "Imagine feeling" / "Imagine being" / "Have you ever" / "What if"
+- DO use formats like: "Nobody folds in the morning…" / "The hardest part isn't…" / "You don't even enjoy it…" / "Most people don't realize…" / "The goal isn't…"
 
-Content should be built around beliefs people haven't questioned yet. Observations about nighttime behavior. Uncomfortable realizations. Things that make people stop and think "I've never heard it said like that."
+PROCESS: Generate 10 possible hooks internally. Choose the strongest one — the one that feels most true and most unexpected. Write the caption around that hook.
 
-Mention the app once, softly — "free" and "60 seconds."
+CAPTION RULES:
+- 80–120 words. Supports and expands the hook. Never repeats it.
+- Direct. Real. One or two short paragraphs. No abstractions. No therapy language.
+- NEVER use: "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "still hovering"
+- Mention the app once, softly — "free" and "60 seconds."
 
-Hook: 25–35 words. Feels like a realization, a challenge, a perspective shift, or an uncomfortable truth. NOT "Imagine…". Should work as a spoken video opener.
-Caption: 80–120 words. Direct. Real. One or two short paragraphs.
 Hashtags: 5–8 relevant hashtags as a single space-separated string.
 CTA: Drive to clear-morning-one.vercel.app. Max 12 words.
 
@@ -70,24 +90,32 @@ Return ONLY valid JSON: {"hook":"...","caption":"...","hashtags":"...","cta":"..
     tagline: "Father. Veteran. Builder.",
     systemPrompt: `You write TikTok/Instagram content for Sean's personal brand @mr.sailes — Navy veteran, father, husband, entrepreneur, Jiu-Jitsu practitioner, 11.5K followers, 676K likes.
 
-Study these examples of high-performing content in this space:
-"I thought sobriety would make life boring. I was wrong about a lot of things back then."
+YOUR HIGHEST-PERFORMING EXAMPLES:
 "I forgot who I was when I was sober."
 "I want to impress myself."
+"I thought sobriety would make life boring. I was wrong about a lot of things back then."
 "I finally realized I wasn't tired. I was just not living the life I actually wanted."
 
-The reader should think: "That's true." and "That's me." — not "That's deep."
+Study what makes those work: first person, earned perspective, complete thought, challenges a common assumption. Sounds like someone who learned it the hard way — not someone performing insight.
 
-Write like someone who earned the perspective through hard experience, not someone performing insight.
+THE HOOK IS THE POST. The caption supports it. The hook should carry 70–80% of the value.
 
-NEVER use: "Imagine sitting" / "Imagine feeling" / "Imagine being" / "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "Real talk" / "Most men" / poetic therapy language
+HOOK RULES:
+- 25–35 words
+- A complete thought — hard-earned realization, identity statement, belief challenge, or uncomfortable truth about how men actually live vs. how they want to live
+- Should feel like something worth screenshotting and sending to a friend
+- The reader immediately thinks: "That's true." or "That's me."
+- NEVER start with: "Imagine sitting" / "Imagine feeling" / "Imagine being" / "Have you ever" / "What if"
+- DO use formats like: "I thought…" / "I finally realized…" / "I want to…" / "Nobody asks…" / "The version of me that…" / "I didn't know…"
 
-Content should be built around beliefs people haven't questioned yet. Hard-earned realizations. Identity shifts. Uncomfortable observations about how men actually live vs. how they want to live.
+PROCESS: Generate 10 possible hooks internally. Choose the strongest one — the one that feels most true and most earned. Write the caption around that hook.
 
-Close with identity. End: "If you can relate, maybe this account can help."
+CAPTION RULES:
+- 80–120 words. Supports and expands the hook. Never repeats it.
+- First person. Direct. Real. One or two short paragraphs. No abstractions. No therapy language.
+- NEVER use: "Here's the truth" / "The hard truth" / "Real talk" / "Most men" / "soft ache" / "holding space"
+- Close with identity. End: "If you can relate, maybe this account can help."
 
-Hook: 25–35 words. Feels like a realization, a challenge, a perspective shift, or an uncomfortable truth. NOT "Imagine…". Should work as a spoken video opener.
-Caption: 80–120 words. Direct. Real. First person. One or two short paragraphs.
 Hashtags: 5–8 relevant hashtags as a single space-separated string.
 CTA: Soft. Community-building. Max 12 words.
 
@@ -96,30 +124,22 @@ Return ONLY valid JSON: {"hook":"...","caption":"...","hashtags":"...","cta":"..
 };
 
 const POST_TYPES = [
-  "Contrarian truth",
-  "Perspective shift",
-  "Hard-earned realization",
-  "Identity statement",
-  "Specific observation"
+  "Contrarian Truth",
+  "Hard-Earned Realization",
+  "Perspective Shift",
+  "Identity",
+  "Observation"
 ];
 
-const SITUATIONS = {
-  no86: ["Drinking out of habit", "The pour ritual", "Waking up foggy", "Social pressure to drink", "The night cap", "Not enjoying it anymore"],
-  clearmorning: ["The 8–11pm window", "Phone at night", "Waking up with regret", "The habit loop", "Decision fatigue", "Trying to relax"],
-  personal: ["Coming home from work", "Training when empty", "Fatherhood moment", "Building something", "Hard conversation", "2am thoughts"]
-};
-
 const CONTENT_ANGLES = [
-  "observation",
-  "confession",
-  "internal dialogue",
-  "realization",
-  "hard moment",
-  "small habit",
-  "private thought",
-  "contradiction",
-  "uncomfortable truth",
-  "tiny regret"
+  "contrarian truth",
+  "perspective shift",
+  "hard-earned realization",
+  "identity statement",
+  "specific observation",
+  "belief challenge",
+  "lesson learned",
+  "mistake"
 ];
 
 const pick = (arr, exclude) => {
@@ -131,33 +151,20 @@ const BRAND_KEYS = Object.keys(BRAND_CONFIGS);
 export default function ContentBrief() {
   const [brand, setBrand] = useState(null);
   const [postType, setPostType] = useState(null);
-  const [situation, setSituation] = useState(null);
   const [loading, setLoading] = useState(false);
   const [brief, setBrief] = useState(null);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(null);
-  const [step, setStep] = useState(1);
   const lastAngle = useRef(null);
 
   const config = brand ? BRAND_CONFIGS[brand] : BRAND_CONFIGS.no86;
   const accent = config.accent;
-  const situations = brand ? SITUATIONS[brand] : [];
-  const randBtn = { background: "transparent", border: "1px solid #333", color: "#555", padding: "4px 9px", borderRadius: "5px", cursor: "pointer", fontSize: "13px", fontFamily: "monospace", lineHeight: 1 };
-
-  const randomizeAll = () => {
-    const b = pick(BRAND_KEYS);
-    const pt = pick(POST_TYPES);
-    const si = pick(SITUATIONS[b]);
-    setBrand(b); setPostType(pt); setSituation(si);
-    setBrief(null); setError(null); setStep(4);
-    generateBrief({ brand: b, postType: pt, situation: si });
-  };
+  const canGenerate = brand && postType;
 
   const generateBrief = async (overrides = {}) => {
     const b = overrides.brand ?? brand;
     const pt = overrides.postType ?? postType;
-    const si = overrides.situation ?? situation;
-    if (!b || !pt || !si) return;
+    if (!b || !pt) return;
     setLoading(true);
     setBrief(null);
     setError(null);
@@ -165,16 +172,15 @@ export default function ContentBrief() {
     const angle = pick(CONTENT_ANGLES, lastAngle.current);
     lastAngle.current = angle;
 
+    const userContent = `Post type: ${pt}\nContent angle: ${angle}\n\nGenerate a post. Every regeneration should explore a different tension or idea within this post type.`;
+
     try {
       const response = await fetch("/api/content-brief/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           system: BRAND_CONFIGS[b].systemPrompt,
-          messages: [{
-            role: "user",
-            content: `Post type: ${pt}\nSituation/topic: ${si}\nContent angle: ${angle}\n\nWrite one piece of content. Never generate the same core idea twice in a row — if the previous output focused on one tension, choose a different one.`
-          }]
+          messages: [{ role: "user", content: userContent }]
         })
       });
 
@@ -182,8 +188,7 @@ export default function ContentBrief() {
       const parsed = await response.json();
       if (parsed.error) throw new Error(parsed.error);
       setBrief(parsed);
-      setStep(4);
-    } catch (err) {
+    } catch {
       setError("Failed to generate. Check ANTHROPIC_API_KEY in Vercel env vars.");
     } finally {
       setLoading(false);
@@ -197,49 +202,33 @@ export default function ContentBrief() {
   };
 
   const reset = () => {
-    setBrand(null); setPostType(null); setSituation(null);
-    setBrief(null); setError(null); setStep(1);
+    setBrand(null); setPostType(null); setBrief(null); setError(null);
     lastAngle.current = null;
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: brand ? config.bg : "#080808",
-      fontFamily: "'Georgia', serif",
-      color: "#E8E0D4",
-      transition: "background 0.5s ease"
-    }}>
-      <div style={{
-        borderBottom: `1px solid ${brand ? config.border : "#1A1A1A"}`,
-        padding: "20px 24px",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        background: brand ? config.surface : "#0D0D0D"
-      }}>
+    <div style={{ minHeight: "100vh", background: brand ? config.bg : "#080808", fontFamily: "'Georgia', serif", color: "#E8E0D4", transition: "background 0.5s ease" }}>
+
+      {/* Header */}
+      <div style={{ borderBottom: `1px solid ${brand ? config.border : "#1A1A1A"}`, padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", background: brand ? config.surface : "#0D0D0D" }}>
         <div>
           <div style={{ fontSize: "11px", letterSpacing: "3px", color: brand ? accent : "#666", textTransform: "uppercase", marginBottom: "4px", fontFamily: "monospace" }}>Daily Brief</div>
           <div style={{ fontSize: "20px", fontWeight: "700" }}>Content Generator</div>
         </div>
-        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-          <button onClick={randomizeAll} disabled={loading} style={{ background: "transparent", border: `1px solid ${accent}`, color: accent, padding: "8px 14px", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontFamily: "monospace", opacity: loading ? 0.5 : 1 }}>⚄ RANDOM</button>
-          {step > 1 && (
-            <button onClick={reset} style={{ background: "transparent", border: `1px solid ${config.border}`, color: "#888", padding: "8px 14px", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontFamily: "monospace" }}>RESET</button>
-          )}
-        </div>
+        {(brand || brief) && (
+          <button onClick={reset} style={{ background: "transparent", border: `1px solid ${config.border}`, color: "#888", padding: "8px 14px", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontFamily: "monospace" }}>RESET</button>
+        )}
       </div>
 
       <div style={{ maxWidth: "520px", margin: "0 auto", padding: "28px 20px" }}>
 
         {/* 01 Brand */}
         <div style={{ marginBottom: "28px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
-            <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", fontFamily: "monospace" }}>01 — Select Brand</div>
-            <button onClick={() => { const b = pick(BRAND_KEYS); setBrand(b); setStep(Math.max(step, 2)); setBrief(null); setError(null); }} style={randBtn}>⚄</button>
-          </div>
+          <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>01 — Select Brand</div>
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {Object.entries(BRAND_CONFIGS).map(([key, cfg]) => (
               <button key={key}
-                onClick={() => { setBrand(key); setSituation(null); setStep(Math.max(step, 2)); setBrief(null); setError(null); }}
+                onClick={() => { setBrand(key); setBrief(null); setError(null); }}
                 style={{ background: brand === key ? cfg.surface : "transparent", border: `1px solid ${brand === key ? cfg.accent : "#222"}`, borderRadius: "10px", padding: "14px 18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", textAlign: "left" }}>
                 <div>
                   <div style={{ fontSize: "16px", fontWeight: "600", color: brand === key ? cfg.accent : "#CCC", marginBottom: "2px" }}>{cfg.label}</div>
@@ -251,18 +240,15 @@ export default function ContentBrief() {
           </div>
         </div>
 
-        {/* 02 Post type */}
-        {step >= 2 && brand && (
+        {/* 02 Post Type */}
+        {brand && (
           <div style={{ marginBottom: "28px" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
-              <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", fontFamily: "monospace" }}>02 — Post Type</div>
-              <button onClick={() => { setPostType(pick(POST_TYPES)); setStep(Math.max(step, 3)); }} style={randBtn}>⚄</button>
-            </div>
+            <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>02 — Post Type</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               {POST_TYPES.map((pt) => (
                 <button key={pt}
-                  onClick={() => { setPostType(pt); setStep(Math.max(step, 3)); }}
-                  style={{ background: postType === pt ? config.surface : "transparent", border: `1px solid ${postType === pt ? accent : "#222"}`, borderRadius: "8px", padding: "12px 16px", cursor: "pointer", textAlign: "left", fontSize: "14px", color: postType === pt ? accent : "#888", fontWeight: postType === pt ? "600" : "400" }}>
+                  onClick={() => { setPostType(pt); setBrief(null); setError(null); }}
+                  style={{ background: postType === pt ? config.surface : "transparent", border: `1px solid ${postType === pt ? accent : "#222"}`, borderRadius: "8px", padding: "13px 16px", cursor: "pointer", textAlign: "left", fontSize: "14px", color: postType === pt ? accent : "#888", fontWeight: postType === pt ? "600" : "400" }}>
                   {pt}
                 </button>
               ))}
@@ -270,38 +256,22 @@ export default function ContentBrief() {
           </div>
         )}
 
-        {/* 03 Topic */}
-        {step >= 3 && brand && postType && (
-          <div style={{ marginBottom: "28px" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
-              <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", fontFamily: "monospace" }}>03 — Topic</div>
-              <button onClick={() => { setSituation(pick(situations)); setBrief(null); setError(null); }} style={randBtn}>⚄</button>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              {situations.map((s) => (
-                <button key={s}
-                  onClick={() => { setSituation(s); setBrief(null); setError(null); }}
-                  style={{ background: situation === s ? config.surface : "transparent", border: `1px solid ${situation === s ? accent : "#222"}`, borderRadius: "8px", padding: "12px 16px", cursor: "pointer", textAlign: "left", fontSize: "14px", color: situation === s ? accent : "#888", fontWeight: situation === s ? "600" : "400" }}>
-                  {s}
-                </button>
-              ))}
-            </div>
+        {/* Generate */}
+        {canGenerate && !loading && !brief && (
+          <button onClick={() => generateBrief()} style={{ width: "100%", background: accent, border: "none", borderRadius: "10px", padding: "16px", cursor: "pointer", fontSize: "14px", fontWeight: "700", color: "#000", letterSpacing: "1.5px", textTransform: "uppercase", fontFamily: "monospace" }}>
+            Generate
+          </button>
+        )}
 
-            {situation && !loading && !brief && (
-              <button onClick={() => generateBrief()} style={{ width: "100%", marginTop: "20px", background: accent, border: "none", borderRadius: "10px", padding: "16px", cursor: "pointer", fontSize: "14px", fontWeight: "700", color: "#000", letterSpacing: "1.5px", textTransform: "uppercase", fontFamily: "monospace" }}>Generate Brief</button>
-            )}
-
-            {loading && (
-              <div style={{ marginTop: "20px", textAlign: "center", padding: "20px", color: "#555", fontSize: "13px", fontFamily: "monospace" }}>
-                <div style={{ width: "28px", height: "28px", border: `2px solid ${config.border}`, borderTop: `2px solid ${accent}`, borderRadius: "50%", margin: "0 auto 12px", animation: "spin 0.8s linear infinite" }} />
-                WRITING YOUR BRIEF...
-              </div>
-            )}
-
-            {error && (
-              <div style={{ marginTop: "16px", padding: "14px", background: "#1A0A0A", border: "1px solid #3A1A1A", borderRadius: "8px", color: "#CC4444", fontSize: "13px", fontFamily: "monospace" }}>{error}</div>
-            )}
+        {loading && (
+          <div style={{ textAlign: "center", padding: "28px 20px", color: "#555", fontSize: "13px", fontFamily: "monospace" }}>
+            <div style={{ width: "28px", height: "28px", border: `2px solid ${config.border}`, borderTop: `2px solid ${accent}`, borderRadius: "50%", margin: "0 auto 12px", animation: "spin 0.8s linear infinite" }} />
+            WRITING YOUR BRIEF...
           </div>
+        )}
+
+        {error && (
+          <div style={{ marginTop: "16px", padding: "14px", background: "#1A0A0A", border: "1px solid #3A1A1A", borderRadius: "8px", color: "#CC4444", fontSize: "13px", fontFamily: "monospace" }}>{error}</div>
         )}
 
         {/* Result */}
@@ -309,14 +279,14 @@ export default function ContentBrief() {
           <div style={{ background: config.surface, border: `1px solid ${config.border}`, borderRadius: "14px", overflow: "hidden" }}>
             <div style={{ padding: "16px 20px", borderBottom: `1px solid ${config.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div style={{ fontSize: "11px", letterSpacing: "2px", color: accent, textTransform: "uppercase", fontFamily: "monospace" }}>Today's Brief — {config.label}</div>
-              <button onClick={() => copy(`HOOK:\n${brief.hook}\n\nCAPTION:\n${brief.caption}\n\nHASHTAGS:\n${brief.hashtags || ""}\n\nCTA:\n${brief.cta}`, "all")}
+              <button onClick={() => copy(`HOOK:\n${brief.hook}\n\nCAPTION:\n${brief.caption}${brief.hashtags ? `\n\nHASHTAGS:\n${brief.hashtags}` : ""}\n\nCTA:\n${brief.cta}`, "all")}
                 style={{ background: copied === "all" ? accent : "transparent", border: `1px solid ${copied === "all" ? accent : config.border}`, color: copied === "all" ? "#000" : "#666", padding: "5px 12px", borderRadius: "5px", cursor: "pointer", fontSize: "10px", fontFamily: "monospace" }}>
                 {copied === "all" ? "COPIED" : "COPY ALL"}
               </button>
             </div>
 
             {[
-              { key: "hook", label: "🎬 Hook", field: brief.hook, style: { fontSize: "16px", fontStyle: "italic" } },
+              { key: "hook", label: "🎬 Hook", field: brief.hook, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.5, color: "#F0E8DA" } },
               { key: "caption", label: "📝 Caption", field: brief.caption, style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
               { key: "hashtags", label: "#  Hashtags", field: brief.hashtags, style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
               { key: "cta", label: "👉 CTA", field: brief.cta, style: { fontSize: "15px", fontWeight: "600", color: accent } }
@@ -331,7 +301,7 @@ export default function ContentBrief() {
             ))}
 
             <div style={{ padding: "16px 20px", borderTop: `1px solid ${config.border}`, display: "flex", gap: "10px" }}>
-              <button onClick={() => generateBrief()} style={{ flex: 1, background: "transparent", border: `1px solid ${config.border}`, color: "#555", padding: "8px", borderRadius: "6px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace" }}>↻ REGENERATE</button>
+              <button onClick={() => generateBrief()} disabled={loading} style={{ flex: 1, background: "transparent", border: `1px solid ${config.border}`, color: "#555", padding: "8px", borderRadius: "6px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace" }}>↻ REGENERATE</button>
               <button onClick={reset} style={{ flex: 1, background: "transparent", border: `1px solid ${config.border}`, color: "#555", padding: "8px", borderRadius: "6px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace" }}>NEW BRIEF</button>
             </div>
           </div>
