@@ -532,6 +532,465 @@ function TodayActionsSheet({ processed, onClose }) {
   );
 }
 
+/* ── BULK OPERATIONS ─────────────────────────────────────── */
+
+// Amazon SP bulk upload file headers (exact column order)
+const BULK_HEADERS = [
+  'Product', 'Entity', 'Operation', 'Campaign ID', 'Ad Group ID',
+  'Portfolio ID', 'Ad ID', 'Keyword ID', 'Ad Group Default Bid',
+  'Bid', 'Custom text', 'Campaign Name', 'Ad Group Name',
+  'Start Date', 'End Date', 'Targeting Type', 'State', 'Daily Budget',
+  'SKU', 'ASIN', 'Keyword or Product Targeting', 'Match Type',
+  'Campaign Daily Budget', 'Bidding strategy', 'Placement', 'Percentage',
+  'Notes',
+];
+
+function makeBulkRow(fields) {
+  const row = Array(BULK_HEADERS.length).fill('');
+  const set = (col, val) => {
+    const idx = BULK_HEADERS.indexOf(col);
+    if (idx !== -1) row[idx] = val ?? '';
+  };
+  set('Product', 'Sponsored Products');
+  Object.entries(fields).forEach(([k, v]) => set(k, v));
+  return row;
+}
+
+// Derive the list of bulk operations from processed rows
+function generateBulkOps(processed) {
+  const ops = [];
+  let seq = 0;
+
+  for (const row of processed) {
+    const hasCpc = row.cpc > 0;
+
+    // CUT + search term → add as campaign/ad group negative exact
+    if (row.action === 'CUT' && row.termSource === 'search_term') {
+      const level = row.adGroup ? 'ad_group' : 'campaign';
+      ops.push({
+        id: `neg_${seq++}`,
+        type: 'add_negative',
+        label: 'Add Negative Exact',
+        groupLabel: 'Add Negative Keywords',
+        selected: true,
+        term: row.term,
+        campaign: row.campaign,
+        adGroup: row.adGroup,
+        level,
+        entity: level === 'ad_group' ? 'Ad Group Negative Keyword' : 'Campaign Negative Keyword',
+        matchType: 'Negative Exact',
+        spend: row.spend,
+        sourceAction: row,
+      });
+    }
+
+    // CUT + keyword target → lower bid by 50% (capped; user can override)
+    if (row.action === 'CUT' && row.termSource === 'keyword_target' && hasCpc) {
+      const defaultBid = Math.max(0.02, parseFloat((row.cpc * 0.50).toFixed(2)));
+      ops.push({
+        id: `lower_${seq++}`,
+        type: 'lower_bid',
+        label: 'Lower Bid −50%',
+        groupLabel: 'Lower Bids — CUT Keywords',
+        selected: true,
+        term: row.term,
+        campaign: row.campaign,
+        adGroup: row.adGroup,
+        matchType: row.matchType || 'Exact',
+        currentBid: row.cpc,
+        defaultBid,
+        newBid: defaultBid,
+        minBid: 0.02,
+        spend: row.spend,
+        sourceAction: row,
+      });
+    }
+
+    // CUT + ASIN target → lower bid (don't negative per safeguard)
+    if (row.action === 'CUT' && row.termSource === 'asin_target' && hasCpc) {
+      const defaultBid = Math.max(0.02, parseFloat((row.cpc * 0.50).toFixed(2)));
+      ops.push({
+        id: `asin_lower_${seq++}`,
+        type: 'lower_bid',
+        label: 'Lower ASIN Target Bid −50%',
+        groupLabel: 'Lower Bids — CUT Keywords',
+        selected: true,
+        term: row.term,
+        campaign: row.campaign,
+        adGroup: row.adGroup,
+        matchType: 'Targeting Expression',
+        currentBid: row.cpc,
+        defaultBid,
+        newBid: defaultBid,
+        minBid: 0.02,
+        spend: row.spend,
+        note: 'ASIN target — bid lowered instead of negated (per best practice)',
+        sourceAction: row,
+      });
+    }
+
+    // SCALE + keyword target → raise bid by 25%
+    if (row.action === 'SCALE' && row.termSource === 'keyword_target' && hasCpc) {
+      const newBid = parseFloat((row.cpc * 1.25).toFixed(2));
+      ops.push({
+        id: `raise_${seq++}`,
+        type: 'raise_bid',
+        label: `Raise Bid +25% → $${newBid}`,
+        groupLabel: 'Raise Bids — SCALE Keywords',
+        selected: true,
+        term: row.term,
+        campaign: row.campaign,
+        adGroup: row.adGroup,
+        matchType: row.matchType || 'Exact',
+        currentBid: row.cpc,
+        defaultBid: newBid,
+        newBid,
+        maxBid: parseFloat((row.cpc * 1.25).toFixed(2)),
+        sales: row.sales,
+        sourceAction: row,
+      });
+    }
+
+    // SCALE + search term → promote to exact match keyword
+    if (row.action === 'SCALE' && row.termSource === 'search_term') {
+      const suggestedBid = hasCpc
+        ? parseFloat((row.cpc * 1.10).toFixed(2))
+        : 0.50;
+      ops.push({
+        id: `promote_${seq++}`,
+        type: 'promote_to_exact',
+        label: `Create Exact Keyword @ $${suggestedBid}`,
+        groupLabel: 'Promote Search Terms → Exact Keywords',
+        selected: true,
+        term: row.term,
+        campaign: row.campaign,
+        adGroup: row.adGroup,
+        matchType: 'Exact',
+        newBid: suggestedBid,
+        defaultBid: suggestedBid,
+        sales: row.sales,
+        sourceAction: row,
+      });
+    }
+  }
+
+  return ops;
+}
+
+function buildBulkRows(ops) {
+  return ops.filter(o => o.selected).map(op => {
+    const base = {
+      'Campaign Name': op.campaign,
+      'Ad Group Name': op.adGroup,
+      'State': 'enabled',
+      'Notes': op.note || '',
+    };
+    if (op.type === 'add_negative') {
+      return makeBulkRow({ ...base, Entity: op.entity, Operation: 'Create', 'Keyword or Product Targeting': op.term, 'Match Type': op.matchType });
+    }
+    if (op.type === 'lower_bid' || op.type === 'raise_bid') {
+      return makeBulkRow({ ...base, Entity: 'Keyword', Operation: 'Update', 'Keyword or Product Targeting': op.term, 'Match Type': op.matchType, Bid: op.newBid.toFixed(2) });
+    }
+    if (op.type === 'promote_to_exact') {
+      return makeBulkRow({ ...base, Entity: 'Keyword', Operation: 'Create', 'Keyword or Product Targeting': op.term, 'Match Type': 'Exact', Bid: op.newBid.toFixed(2) });
+    }
+    return null;
+  }).filter(Boolean);
+}
+
+function downloadBulkFile(ops, fileName) {
+  const rows = [BULK_HEADERS, ...buildBulkRows(ops)];
+  const tsv = rows.map(r => r.join('\t')).join('\n');
+  const blob = new Blob([tsv], { type: 'text/plain;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (fileName.replace('.csv', '') || 'report') + '_bulk-ops.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ── BULK EXPORT VIEW ────────────────────────────────────── */
+
+const GROUP_ORDER = [
+  'Add Negative Keywords',
+  'Lower Bids — CUT Keywords',
+  'Raise Bids — SCALE Keywords',
+  'Promote Search Terms → Exact Keywords',
+];
+
+const GROUP_CONFIG = {
+  'Add Negative Keywords':               { color: '#FF6B6B', bg: 'rgba(180,30,30,0.12)',  border: 'rgba(255,107,107,0.25)' },
+  'Lower Bids — CUT Keywords':           { color: '#FF6B6B', bg: 'rgba(180,30,30,0.08)',  border: 'rgba(255,107,107,0.18)' },
+  'Raise Bids — SCALE Keywords':         { color: '#4ECA4E', bg: 'rgba(30,130,30,0.12)', border: 'rgba(78,202,78,0.25)'   },
+  'Promote Search Terms → Exact Keywords':{ color: '#4ECA4E', bg: 'rgba(30,130,30,0.08)', border: 'rgba(78,202,78,0.18)'   },
+};
+
+function BulkOpItem({ op, selected, onToggle, onBidChange, overrideDeepCut, onDeepCutToggle }) {
+  const cfg = GROUP_CONFIG[op.groupLabel] || { color: '#7A9BD4', bg: 'transparent', border: '#2a2010' };
+  const hasBid = op.type !== 'add_negative';
+
+  return (
+    <div style={{ borderBottom: '1px solid #1a1208', padding: '14px 0', display: 'flex', gap: 12, alignItems: 'flex-start', opacity: selected ? 1 : 0.45 }}>
+      {/* Checkbox */}
+      <button onClick={onToggle}
+        style={{ flexShrink: 0, width: 22, height: 22, borderRadius: 5, border: `2px solid ${selected ? cfg.color : '#3a2a10'}`, background: selected ? cfg.bg : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, cursor: 'pointer', marginTop: 2 }}>
+        {selected && <span style={{ color: cfg.color, fontSize: 13, fontWeight: 700, lineHeight: 1 }}>✓</span>}
+      </button>
+
+      {/* Content */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontFamily: "'Fraunces',serif", fontSize: 16, color: '#e8ddcc', marginBottom: 4, lineHeight: 1.3, wordBreak: 'break-word' }}>
+          "{op.term}"
+        </div>
+        <div style={{ fontFamily: 'monospace', fontSize: 11, color: '#5a4a30', marginBottom: hasBid ? 10 : 0 }}>
+          {op.campaign}{op.adGroup ? ` · ${op.adGroup}` : ''}
+          {op.matchType ? ` · ${op.matchType}` : ''}
+        </div>
+
+        {/* Bid adjustment row */}
+        {hasBid && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            {op.currentBid > 0 && (
+              <span style={{ fontFamily: 'monospace', fontSize: 12, color: '#7a6b58' }}>
+                Current: ${op.currentBid.toFixed(2)}
+              </span>
+            )}
+            <span style={{ fontFamily: 'monospace', fontSize: 12, color: '#5a4a30' }}>→</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ fontFamily: 'monospace', fontSize: 12, color: '#7a6b58' }}>$</span>
+              <input
+                type="number"
+                min={op.minBid ?? 0.02}
+                max={op.maxBid ?? 999}
+                step={0.01}
+                value={op.newBid}
+                onChange={e => onBidChange(parseFloat(e.target.value) || 0)}
+                style={{ width: 70, background: '#0e0b07', border: `1px solid ${cfg.border}`, borderRadius: 5, color: cfg.color, fontFamily: 'monospace', fontSize: 13, padding: '4px 7px', outline: 'none' }}
+              />
+            </div>
+            {op.currentBid > 0 && (
+              <span style={{ fontFamily: 'monospace', fontSize: 11, color: cfg.color }}>
+                ({op.newBid > op.currentBid ? '+' : ''}{Math.round((op.newBid / op.currentBid - 1) * 100)}%)
+              </span>
+            )}
+            {/* Deep cut toggle for CUT bid rows */}
+            {op.type === 'lower_bid' && (
+              <button onClick={onDeepCutToggle}
+                style={{ fontFamily: 'monospace', fontSize: 10, color: overrideDeepCut ? '#FF6B6B' : '#4a3a20', background: 'transparent', border: `1px solid ${overrideDeepCut ? 'rgba(255,107,107,0.4)' : '#2a2010'}`, borderRadius: 4, padding: '3px 8px', cursor: 'pointer', letterSpacing: 0.5 }}>
+                {overrideDeepCut ? '⚡ near-pause ($0.02)' : 'near-pause?'}
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Note */}
+        {op.note && (
+          <div style={{ fontFamily: 'monospace', fontSize: 10, color: '#D4C43A', marginTop: 6, opacity: 0.8 }}>
+            ⚠ {op.note}
+          </div>
+        )}
+      </div>
+
+      {/* Right: label */}
+      <div style={{ flexShrink: 0, fontFamily: 'monospace', fontSize: 10, color: cfg.color, letterSpacing: 0.5, textAlign: 'right', minWidth: 90, marginTop: 4 }}>
+        {op.type === 'add_negative'    ? 'NEG EXACT'   : ''}
+        {op.type === 'lower_bid'       ? 'LOWER BID'   : ''}
+        {op.type === 'raise_bid'       ? 'RAISE BID'   : ''}
+        {op.type === 'promote_to_exact'? 'NEW KEYWORD' : ''}
+      </div>
+    </div>
+  );
+}
+
+function BulkExportView({ processed, fileName, onClose }) {
+  const initialOps = generateBulkOps(processed);
+  const [ops, setOps] = useState(initialOps);
+  const [deepCuts, setDeepCuts] = useState({});
+  const [confirmed, setConfirmed] = useState(false);
+  const [exported, setExported] = useState(false);
+
+  const updateOp = (id, patch) => {
+    setOps(prev => prev.map(o => o.id === id ? { ...o, ...patch } : o));
+  };
+
+  const toggleDeepCut = (op) => {
+    const next = !deepCuts[op.id];
+    setDeepCuts(prev => ({ ...prev, [op.id]: next }));
+    updateOp(op.id, { newBid: next ? 0.02 : op.defaultBid });
+  };
+
+  const selectedOps = ops.filter(o => o.selected);
+  const selectedCount = selectedOps.length;
+
+  const groups = GROUP_ORDER.map(label => ({
+    label,
+    cfg: GROUP_CONFIG[label],
+    items: ops.filter(o => o.groupLabel === label),
+  })).filter(g => g.items.length > 0);
+
+  const handleExport = () => {
+    downloadBulkFile(ops, fileName);
+    setExported(true);
+    setConfirmed(false);
+  };
+
+  const negCount  = selectedOps.filter(o => o.type === 'add_negative').length;
+  const bidCount  = selectedOps.filter(o => o.type === 'lower_bid' || o.type === 'raise_bid').length;
+  const newCount  = selectedOps.filter(o => o.type === 'promote_to_exact').length;
+  const savedSpend= selectedOps.filter(o => o.type === 'add_negative' || o.type === 'lower_bid').reduce((s, o) => s + (o.spend || 0), 0);
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: '#080603', zIndex: 200, display: 'flex', flexDirection: 'column', fontFamily: "'Jost', sans-serif", color: '#e8ddcc' }}>
+
+      {/* Header */}
+      <div style={{ borderBottom: '1px solid #2a2010', padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#0c0905', flexShrink: 0 }}>
+        <div>
+          <div style={{ fontFamily: 'monospace', fontSize: 9, color: '#9a7b4f', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 1 }}>Level 2 — Bulk Operations</div>
+          <div style={{ fontFamily: "'Fraunces',serif", fontSize: 18 }}>Build Bulk Upload File</div>
+        </div>
+        <button onClick={onClose}
+          style={{ background: 'transparent', border: '1px solid #3a2a10', color: '#7a6b58', padding: '8px 14px', borderRadius: 8, fontFamily: 'monospace', fontSize: 12, cursor: 'pointer' }}>
+          ← Back
+        </button>
+      </div>
+
+      {/* Warning banner */}
+      <div style={{ background: 'rgba(212,196,58,0.1)', borderBottom: '1px solid rgba(212,196,58,0.25)', padding: '12px 20px', flexShrink: 0 }}>
+        <div style={{ fontFamily: 'monospace', fontSize: 11, color: '#D4C43A', lineHeight: 1.6, maxWidth: 800, margin: '0 auto' }}>
+          <strong>⚠ Review before uploading.</strong> This file is for Amazon Ads → Bulk Operations → Upload file. Changes take effect immediately on upload.
+          Deselect anything you&apos;re unsure about. Verify campaign names and ad group names match exactly.
+          Bid updates require existing keywords — Amazon will skip rows it cannot match.
+        </div>
+      </div>
+
+      {/* Scrollable content */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '20px', maxWidth: 800, width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
+
+        {/* Select all / none */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 20, alignItems: 'center' }}>
+          <button onClick={() => setOps(prev => prev.map(o => ({ ...o, selected: true })))}
+            style={{ background: 'transparent', border: '1px solid #3a2a10', color: '#9a7b4f', padding: '6px 14px', borderRadius: 6, fontFamily: 'monospace', fontSize: 11, cursor: 'pointer' }}>
+            SELECT ALL
+          </button>
+          <button onClick={() => setOps(prev => prev.map(o => ({ ...o, selected: false })))}
+            style={{ background: 'transparent', border: '1px solid #3a2a10', color: '#5a4a30', padding: '6px 14px', borderRadius: 6, fontFamily: 'monospace', fontSize: 11, cursor: 'pointer' }}>
+            DESELECT ALL
+          </button>
+          <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#5a4a30', marginLeft: 4 }}>
+            {selectedCount} of {ops.length} selected
+          </span>
+        </div>
+
+        {/* Operation groups */}
+        {groups.map(({ label, cfg, items }) => (
+          <div key={label} style={{ background: cfg.bg, border: `1px solid ${cfg.border}`, borderRadius: 14, padding: '16px 18px', marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+              <div style={{ fontFamily: 'monospace', fontSize: 10, color: cfg.color, letterSpacing: 2, textTransform: 'uppercase' }}>
+                {label}
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button onClick={() => setOps(prev => prev.map(o => o.groupLabel === label ? { ...o, selected: true } : o))}
+                  style={{ fontFamily: 'monospace', fontSize: 10, color: cfg.color, background: 'transparent', border: `1px solid ${cfg.border}`, borderRadius: 4, padding: '2px 8px', cursor: 'pointer' }}>all</button>
+                <button onClick={() => setOps(prev => prev.map(o => o.groupLabel === label ? { ...o, selected: false } : o))}
+                  style={{ fontFamily: 'monospace', fontSize: 10, color: '#5a4a30', background: 'transparent', border: '1px solid #2a2010', borderRadius: 4, padding: '2px 8px', cursor: 'pointer' }}>none</button>
+              </div>
+            </div>
+
+            {/* Group explanation */}
+            <div style={{ fontSize: 12, color: '#7a6b58', marginBottom: 12, lineHeight: 1.5 }}>
+              {label === 'Add Negative Keywords'                && 'Blocks these search queries from triggering your ads. Applied at campaign or ad group level.'}
+              {label === 'Lower Bids — CUT Keywords'           && 'Reduces bid by 50% by default. Use "near-pause" to drop to $0.02. Verify keyword IDs match if updating.'}
+              {label === 'Raise Bids — SCALE Keywords'         && 'Increases bid by 25% (capped). These keywords are converting below your ACoS target.'}
+              {label === 'Promote Search Terms → Exact Keywords'&& 'Creates a new exact-match keyword from a profitable search query. Amazon will match the keyword name to your campaign.'}
+            </div>
+
+            {items.map(op => (
+              <BulkOpItem
+                key={op.id}
+                op={op}
+                selected={op.selected}
+                onToggle={() => updateOp(op.id, { selected: !op.selected })}
+                onBidChange={val => updateOp(op.id, { newBid: Math.max(0.02, val) })}
+                overrideDeepCut={!!deepCuts[op.id]}
+                onDeepCutToggle={() => toggleDeepCut(op)}
+              />
+            ))}
+          </div>
+        ))}
+
+        {ops.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: '#4a3a20', fontFamily: 'monospace', fontSize: 13 }}>
+            No bulk operations available. Upload a report with CUT or SCALE recommendations first.
+          </div>
+        )}
+
+        <div style={{ height: 120 }} />
+      </div>
+
+      {/* Sticky footer */}
+      <div style={{ borderTop: '1px solid #2a2010', padding: '16px 20px', background: '#0c0905', flexShrink: 0 }}>
+        <div style={{ maxWidth: 800, margin: '0 auto' }}>
+
+          {/* Summary */}
+          <div style={{ display: 'flex', gap: 16, marginBottom: 14, flexWrap: 'wrap' }}>
+            {negCount > 0 && <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#FF6B6B' }}>{negCount} negative{negCount > 1 ? 's' : ''}</span>}
+            {bidCount > 0 && <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#c8b79a' }}>{bidCount} bid change{bidCount > 1 ? 's' : ''}</span>}
+            {newCount > 0 && <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#4ECA4E' }}>{newCount} new keyword{newCount > 1 ? 's' : ''}</span>}
+            {savedSpend > 0 && <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#FF6B6B', marginLeft: 'auto' }}>potential savings: ${savedSpend.toFixed(2)}</span>}
+          </div>
+
+          {/* Confirm step */}
+          {!confirmed && !exported && (
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button onClick={() => setConfirmed(true)} disabled={selectedCount === 0}
+                style={{ flex: 1, background: selectedCount > 0 ? '#b59266' : '#2a2010', border: 'none', color: selectedCount > 0 ? '#0c0905' : '#4a3a20', padding: '14px', borderRadius: 10, fontFamily: 'monospace', fontSize: 13, fontWeight: 700, cursor: selectedCount > 0 ? 'pointer' : 'default', letterSpacing: 0.5 }}>
+                REVIEW & GENERATE FILE ({selectedCount} operations)
+              </button>
+            </div>
+          )}
+
+          {/* Confirm modal (inline) */}
+          {confirmed && !exported && (
+            <div style={{ background: 'rgba(212,196,58,0.12)', border: '1px solid rgba(212,196,58,0.3)', borderRadius: 12, padding: '16px' }}>
+              <div style={{ fontFamily: 'monospace', fontSize: 11, color: '#D4C43A', letterSpacing: 1, marginBottom: 8 }}>⚠ FINAL CONFIRMATION</div>
+              <div style={{ fontSize: 13, color: '#c8b79a', lineHeight: 1.6, marginBottom: 14 }}>
+                This will generate a bulk operations file for <strong>{selectedCount} change{selectedCount > 1 ? 's' : ''}</strong>.
+                Open it in a text editor to verify before uploading to Amazon Ads → Bulk Operations → Upload.
+                Changes apply immediately on upload. You cannot undo in bulk — you&apos;d have to reverse each change manually.
+              </div>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button onClick={handleExport}
+                  style={{ flex: 1, background: '#D4C43A', border: 'none', color: '#0c0905', padding: '12px', borderRadius: 8, fontFamily: 'monospace', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                  ↓ GENERATE BULK FILE
+                </button>
+                <button onClick={() => setConfirmed(false)}
+                  style={{ background: 'transparent', border: '1px solid #3a2a10', color: '#7a6b58', padding: '12px 20px', borderRadius: 8, fontFamily: 'monospace', fontSize: 12, cursor: 'pointer' }}>
+                  CANCEL
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Post-export state */}
+          {exported && (
+            <div style={{ background: 'rgba(78,202,78,0.1)', border: '1px solid rgba(78,202,78,0.25)', borderRadius: 12, padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+              <div>
+                <div style={{ fontFamily: 'monospace', fontSize: 11, color: '#4ECA4E', marginBottom: 4 }}>✓ FILE GENERATED</div>
+                <div style={{ fontSize: 13, color: '#7a6b58' }}>Upload to Amazon Ads → Bulk Operations → Upload file. Review it first.</div>
+              </div>
+              <button onClick={handleExport}
+                style={{ background: 'transparent', border: '1px solid rgba(78,202,78,0.3)', color: '#4ECA4E', padding: '8px 14px', borderRadius: 8, fontFamily: 'monospace', fontSize: 11, cursor: 'pointer' }}>
+                ↓ Download Again
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── MAIN COMPONENT ──────────────────────────────────────── */
 
 export default function AmazonBidTool() {
@@ -547,6 +1006,7 @@ export default function AmazonBidTool() {
   const [view, setView]                 = useState('cards'); // 'cards' | 'table'
   const [showSettings, setShowSettings] = useState(false);
   const [showTodayActions, setShowTodayActions] = useState(false);
+  const [showBulk, setShowBulk] = useState(false);
   const fileRef = useRef(null);
 
   const processFile = useCallback((file) => {
@@ -623,6 +1083,7 @@ export default function AmazonBidTool() {
       `}</style>
 
       {showTodayActions && <TodayActionsSheet processed={processed} onClose={() => setShowTodayActions(false)} />}
+      {showBulk && <BulkExportView processed={processed} fileName={fileName} onClose={() => setShowBulk(false)} />}
 
       {/* Header */}
       <div style={{ borderBottom: '1px solid #2a2010', padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#0c0905', position: 'sticky', top: 0, zIndex: 50 }}>
@@ -636,6 +1097,12 @@ export default function AmazonBidTool() {
               style={{ background: '#b59266', border: 'none', color: '#0c0905', padding: '9px 16px', borderRadius: 8, fontSize: 12, fontFamily: 'monospace', fontWeight: 700, letterSpacing: 0.5, display: 'flex', alignItems: 'center', gap: 6 }}>
               <span>Today's Actions</span>
               {actionableCount > 0 && <span style={{ background: '#0c0905', color: '#b59266', borderRadius: 10, padding: '1px 7px', fontSize: 11 }}>{actionableCount}</span>}
+            </button>
+          )}
+          {hasData && (
+            <button onClick={() => setShowBulk(true)} className="hide-sm"
+              style={{ background: 'transparent', border: '1px solid rgba(212,196,58,0.4)', color: '#D4C43A', padding: '9px 14px', borderRadius: 8, fontSize: 12, fontFamily: 'monospace', letterSpacing: 0.5 }}>
+              ⬡ Bulk File
             </button>
           )}
           {hasData && (
