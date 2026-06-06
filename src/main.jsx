@@ -3,11 +3,14 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import ContentBrief from './ContentBrief.jsx'
+import AmazonBidTool from './AmazonBidTool.jsx'
 
-const isContentBrief = window.location.pathname.startsWith('/content-brief')
+const path = window.location.pathname
+const isContentBrief = path.startsWith('/content-brief')
+const isAmazonBids = path.startsWith('/amazon-ads')
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    {isContentBrief ? <ContentBrief /> : <App />}
+    {isContentBrief ? <ContentBrief /> : isAmazonBids ? <AmazonBidTool /> : <App />}
   </StrictMode>,
 )
