@@ -1,0 +1,123 @@
+<div
+  class="proof-bar"
+  data-section-id="{{ section.id }}"
+  aria-label="Product highlights"
+>
+  <div class="proof-bar__track">
+    <div class="proof-bar__inner" aria-hidden="true">
+      {%- for i in (1..4) -%}
+        <span class="proof-bar__segment">{{ section.settings.text }}</span>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --pb-bg:     {{ section.settings.background_color }};
+    --pb-color:  {{ section.settings.text_color }};
+    --pb-speed:  {{ section.settings.scroll_speed }}s;
+    --pb-size:   {{ section.settings.font_size }}px;
+    --pb-pad:    {{ section.settings.padding_vertical }}px;
+  }
+
+  .proof-bar {
+    background: var(--pb-bg);
+    overflow: hidden;
+    width: 100%;
+    padding: var(--pb-pad) 0;
+    border-bottom: 1px solid rgba(201, 168, 112, 0.12);
+  }
+
+  .proof-bar__inner {
+    display: flex;
+    width: max-content;
+    animation: proof-scroll var(--pb-speed) linear infinite;
+    will-change: transform;
+  }
+
+  .proof-bar__segment {
+    display: inline-block;
+    white-space: nowrap;
+    color: var(--pb-color);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: var(--pb-size);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding-right: 80px;
+  }
+
+  @keyframes proof-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .proof-bar__inner {
+      animation: none;
+    }
+    .proof-bar__segment:not(:first-child) {
+      display: none;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Proof Bar",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Ticker text",
+      "default": "OAK • SMOKE • VANILLA • CARAMEL • <.5 ABV • KEEP THE RITUAL. LOSE THE FOG."
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#1A0A04"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#C9A870"
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "label": "Scroll speed (seconds per loop)",
+      "info": "Higher = slower. 40–60s feels premium.",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size (px)",
+      "min": 9,
+      "max": 14,
+      "step": 1,
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Vertical padding (px)",
+      "min": 6,
+      "max": 18,
+      "step": 1,
+      "default": 10
+    }
+  ],
+  "presets": [
+    {
+      "name": "Proof Bar"
+    }
+  ]
+}
+{% endschema %}
