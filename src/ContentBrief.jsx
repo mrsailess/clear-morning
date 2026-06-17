@@ -119,15 +119,13 @@ NEVER USE:
 "recovery"
 "sober community"
 PHOTO PROMPT:
-Also generate a photoPrompt for this post — a vertical 4:5 lifestyle photography brief for a real photographer or AI image tool.
-Choose the setting that best fits the emotional idea of the post. Do not default to patio every time.
-Location pool: modern patio at blue hour, backyard firepit, kitchen counter after work, steak night table, garage after a long day, quiet living room, couch during a game, bar cart at home, hotel room after travel, cabin weekend, apartment balcony, home office after work, grill night, front porch, basement lounge, empty dining table after dinner, workshop or garage bench.
-Vary time of day, framing, situation, and mood so the same location does not feel like the same shot twice.
-TIME OF DAY: blue hour, morning light, golden hour, late night, overcast afternoon.
-SITUATION: alone after work, cleaning up after dinner, sitting before a pour, mid-pour, holding the glass, phone face down, laptop just closed, staring at nothing.
-FRAMING: wide shot, medium shot, close on hands and glass, viewed from doorway, bottle at edge of frame, bottle partially visible in background.
-No. 86 VISUAL BONES — always apply: real person, real moment, natural lighting, bottle visible but not the hero, rocks glass or ice when appropriate, slightly imperfect UGC composition, premium but understated, calm masculine human, man late 30s to early 40s relaxed not posing gaze away from camera, light film grain, documentary style.
-NEGATIVE PROMPTS (always include): family focus, children, party, celebration, bar scene, smiling at camera, influencer pose, product advertisement, hero bottle shot, studio lighting, stock photography, corporate branding, CGI, text, watermark, exaggerated emotions.
+Also generate a photoPrompt for this post using the No. 86 master template.
+Do not write a new prompt from scratch. Only write the STORY SECTION for this specific post, then assemble the full prompt.
+STORY SECTION RULES:
+4 to 8 short lines. Write what is happening emotionally, not physically. No full sentences required.
+Example: The first quiet moment he has had all day. Nobody needs anything from him. No meetings. No notifications. Just twenty uninterrupted minutes. The workday is over. The ritual has begun.
+NO. 86 MASTER TEMPLATE — assemble photoPrompt using this structure exactly:
+Use the attached No. 86 bottle as the exact product reference. Vertical 4:5 lifestyle photograph for Instagram and TikTok. A candid UGC-style photograph captured during a genuine everyday moment. The No. 86 bottle should appear naturally within the environment and never feel like the subject of the image. It should feel like part of an existing ritual rather than a product placement. The image should feel observed rather than directed. The subject is not posing. No eye contact with the camera. No smiling for the camera. No staged feeling. The visual story is: [YOUR STORY SECTION] Photography style: Authentic UGC. Documentary photography. Lifestyle editorial. Natural depth of field. Light film grain. Slightly imperfect composition. Real-world lighting. Emotional storytelling. Premium but understated. The environment should feel lived in rather than styled. The image should communicate a real moment rather than an advertisement. Mood: relief, presence, clarity, calm, self-control, mental reset. Color palette should match the environment naturally while maintaining a grounded, masculine feel. Negative prompts: family focus, children, party, celebration, bar scene, influencer pose, hero bottle shot, studio lighting, stock photography, corporate branding, luxury marketing aesthetic, executive portrait, CGI, text, watermark, exaggerated emotions, perfectly staged composition, hyper-sharp bottle, commercial product photography.
 Return ONLY valid JSON:
 {"hook":"...","caption":"...","hashtags":"...","cta":"...","photoPrompt":"..."}`,
     imageSystemPrompt: `You write static image ad concepts for No. 86, a non-alcoholic whiskey alternative for men 30–45.
@@ -176,39 +174,18 @@ CREATOR TYPE: Who shoots this. e.g. "30s professional male at home", "lifestyle 
 NEVER USE:
 "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "quit drinking" / "recovery" / "sober community" / "nervous system" / "fixed that part" / "they were right" / anything defensive or shame-based.
 PHOTO PROMPT RULES:
-Generate a detailed photography prompt for this specific image concept.
-The prompt is for a real photographer or AI image tool.
-Vertical 4:5 format for Instagram and TikTok.
-STEP 1 — CHOOSE THE RIGHT SETTING:
-Do not default to patio every time. Pick the setting that best fits the emotional idea.
-Location pool: modern patio at blue hour, backyard firepit, kitchen counter after work, steak night table, garage after a long day, quiet living room, couch during a game, bar cart at home, hotel room after travel, cabin weekend, apartment balcony, home office after work, grill night, front porch, basement lounge, empty dining table after dinner, workshop or garage bench.
-Category-to-setting guide:
-After Work Silence: patio, home office, kitchen counter, apartment balcony.
-Steak Night: dinner table, grill, kitchen island.
-Bar Cart: home bar corner, living room, cabinet, shelf.
-Morning After: kitchen morning light, bedroom nightstand, bathroom mirror, coffee counter.
-Founder Story: workspace, kitchen counter, formula notes, garage table.
-Partner Noticed: quiet living room, dinner cleanup, shared kitchen.
-Taste Test: kitchen island, rocks glass, bottle nearby.
-Patio Ritual: patio, firepit, porch, backyard.
-Use Case: game night, steak night, travel, grill, couch, firepit.
-STEP 2 — VARY THE SHOT WITHIN THE SETTING:
-Even when the location is the same, the shot should feel different. Use these levers:
-TIME OF DAY: blue hour, morning light, golden hour, late night, overcast afternoon. Match to mood.
-SITUATION: alone after work, cleaning up after dinner, sitting before a pour, mid-pour, holding the glass, phone face down, laptop just closed, staring at nothing, first quiet moment of the day.
-FRAMING: wide shot showing full environment, medium shot at table or counter, close on hands and glass, viewed from doorway or across the room, bottle at edge of frame, bottle partially visible in background.
-MOOD: relief, quiet reset, earned calm, private pride, clarity, reward without chaos. Name it and build the shot around it.
-STEP 3 — APPLY NO. 86 VISUAL BONES:
-Real person. Real moment. Natural lighting. Bottle visible but not the hero.
-Rocks glass, ice, pour, or ritual cue when appropriate.
-Slightly imperfect UGC composition. Premium but understated.
-Calm, masculine, human. Emotional story first. Product as part of the ritual, not the subject.
-Man in his late 30s to early 40s. Relaxed, not posing. Gaze away from camera.
-Natural depth of field. Light film grain. Documentary photography style.
-Shot like a real creator captured a genuine moment, not a commercial campaign.
-NEGATIVE PROMPTS (always include): family focus, children, party, celebration, bar scene, smiling at camera, influencer pose, product advertisement, hero bottle shot, studio lighting, stock photography, corporate branding, luxury marketing aesthetic, CGI, text, watermark, hyper-sharp bottle, exaggerated emotions.
+Do not write a new prompt from scratch. Use the No. 86 master template below.
+Only write the STORY SECTION — 4 to 8 short lines that describe the specific emotional moment for this post.
+Then assemble the full prompt by inserting the story into the template.
+STORY SECTION RULES:
+Write what is happening emotionally, not physically.
+Short lines. No full sentences required.
+Example for after work silence: The first quiet moment he has had all day. Nobody needs anything from him. No meetings. No notifications. No demands. Just twenty uninterrupted minutes. The workday is over. The ritual has begun.
+Example for steak night: The grill is off. The plates are clear. The evening belongs to him now. No agenda. No rush. Just the next hour.
+NO. 86 MASTER TEMPLATE — assemble the full photoPrompt using this structure exactly:
+Use the attached No. 86 bottle as the exact product reference. Vertical 4:5 lifestyle photograph for Instagram and TikTok. A candid UGC-style photograph captured during a genuine everyday moment. The No. 86 bottle should appear naturally within the environment and never feel like the subject of the image. It should feel like part of an existing ritual rather than a product placement. The image should feel observed rather than directed. The subject is not posing. No eye contact with the camera. No smiling for the camera. No staged feeling. The visual story is: [YOUR STORY SECTION] Photography style: Authentic UGC. Documentary photography. Lifestyle editorial. Natural depth of field. Light film grain. Slightly imperfect composition. Real-world lighting. Emotional storytelling. Premium but understated. The environment should feel lived in rather than styled. The image should communicate a real moment rather than an advertisement. Mood: relief, presence, clarity, calm, self-control, mental reset. Color palette should match the environment naturally while maintaining a grounded, masculine feel. Negative prompts: family focus, children, party, celebration, bar scene, influencer pose, hero bottle shot, studio lighting, stock photography, corporate branding, luxury marketing aesthetic, executive portrait, CGI, text, watermark, exaggerated emotions, perfectly staged composition, hyper-sharp bottle, commercial product photography.
 NEVER USE:
-"Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "quit drinking" / "recovery" / "sober community"
+sobriety / recovery / quit drinking / nervous system / fixed that part / they were right / anything defensive or shame-based.
 Return ONLY valid JSON:
 {"angle":"...","imageConcept":"...","creatorType":"...","onScreenText":"...","caption":"...","cta":"...","hashtags":"...","photoPrompt":"..."}`
   },
