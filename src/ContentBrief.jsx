@@ -157,9 +157,10 @@ PHOTO PROMPT RULES:
 Generate a detailed photography prompt for this specific image concept.
 The prompt is for a real photographer or AI image tool.
 Vertical 4:5 format for Instagram and TikTok.
-Do NOT default to patio every time. Choose the setting that best fits the content idea.
-Possible settings: modern patio at blue hour, backyard firepit, kitchen counter after work, steak night table, garage after a long day, quiet living room, couch during a game, bar cart at home, hotel room after travel, cabin weekend, apartment balcony, home office after work, grill night, front porch, basement lounge, empty dining table after dinner, workshop or garage bench.
-The setting should match the emotional idea:
+STEP 1 — CHOOSE THE RIGHT SETTING:
+Do not default to patio every time. Pick the setting that best fits the emotional idea.
+Location pool: modern patio at blue hour, backyard firepit, kitchen counter after work, steak night table, garage after a long day, quiet living room, couch during a game, bar cart at home, hotel room after travel, cabin weekend, apartment balcony, home office after work, grill night, front porch, basement lounge, empty dining table after dinner, workshop or garage bench.
+Category-to-setting guide:
 After Work Silence: patio, home office, kitchen counter, apartment balcony.
 Steak Night: dinner table, grill, kitchen island.
 Bar Cart: home bar corner, living room, cabinet, shelf.
@@ -169,13 +170,18 @@ Partner Noticed: quiet living room, dinner cleanup, shared kitchen.
 Taste Test: kitchen island, rocks glass, bottle nearby.
 Patio Ritual: patio, firepit, porch, backyard.
 Use Case: game night, steak night, travel, grill, couch, firepit.
-No. 86 VISUAL BONES — apply every time:
+STEP 2 — VARY THE SHOT WITHIN THE SETTING:
+Even when the location is the same, the shot should feel different. Use these levers:
+TIME OF DAY: blue hour, morning light, golden hour, late night, overcast afternoon. Match to mood.
+SITUATION: alone after work, cleaning up after dinner, sitting before a pour, mid-pour, holding the glass, phone face down, laptop just closed, staring at nothing, first quiet moment of the day.
+FRAMING: wide shot showing full environment, medium shot at table or counter, close on hands and glass, viewed from doorway or across the room, bottle at edge of frame, bottle partially visible in background.
+MOOD: relief, quiet reset, earned calm, private pride, clarity, reward without chaos. Name it and build the shot around it.
+STEP 3 — APPLY NO. 86 VISUAL BONES:
 Real person. Real moment. Natural lighting. Bottle visible but not the hero.
 Rocks glass, ice, pour, or ritual cue when appropriate.
 Slightly imperfect UGC composition. Premium but understated.
 Calm, masculine, human. Emotional story first. Product as part of the ritual, not the subject.
 Man in his late 30s to early 40s. Relaxed, not posing. Gaze away from camera.
-Warm highlights against the ambient light of the setting. Soft shadows. Realistic skin texture. Authentic clothing.
 Natural depth of field. Light film grain. Documentary photography style.
 Shot like a real creator captured a genuine moment, not a commercial campaign.
 NEGATIVE PROMPTS (always include): family focus, children, party, celebration, bar scene, smiling at camera, influencer pose, product advertisement, hero bottle shot, studio lighting, stock photography, corporate branding, luxury marketing aesthetic, CGI, text, watermark, hyper-sharp bottle, exaggerated emotions.
