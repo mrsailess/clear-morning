@@ -118,8 +118,18 @@ NEVER USE:
 "quit drinking"
 "recovery"
 "sober community"
+PHOTO PROMPT:
+Also generate a photoPrompt for this post — a vertical 4:5 lifestyle photography brief for a real photographer or AI image tool.
+Choose the setting that best fits the emotional idea of the post. Do not default to patio every time.
+Location pool: modern patio at blue hour, backyard firepit, kitchen counter after work, steak night table, garage after a long day, quiet living room, couch during a game, bar cart at home, hotel room after travel, cabin weekend, apartment balcony, home office after work, grill night, front porch, basement lounge, empty dining table after dinner, workshop or garage bench.
+Vary time of day, framing, situation, and mood so the same location does not feel like the same shot twice.
+TIME OF DAY: blue hour, morning light, golden hour, late night, overcast afternoon.
+SITUATION: alone after work, cleaning up after dinner, sitting before a pour, mid-pour, holding the glass, phone face down, laptop just closed, staring at nothing.
+FRAMING: wide shot, medium shot, close on hands and glass, viewed from doorway, bottle at edge of frame, bottle partially visible in background.
+No. 86 VISUAL BONES — always apply: real person, real moment, natural lighting, bottle visible but not the hero, rocks glass or ice when appropriate, slightly imperfect UGC composition, premium but understated, calm masculine human, man late 30s to early 40s relaxed not posing gaze away from camera, light film grain, documentary style.
+NEGATIVE PROMPTS (always include): family focus, children, party, celebration, bar scene, smiling at camera, influencer pose, product advertisement, hero bottle shot, studio lighting, stock photography, corporate branding, CGI, text, watermark, exaggerated emotions.
 Return ONLY valid JSON:
-{"hook":"...","caption":"...","hashtags":"...","cta":"..."}`,
+{"hook":"...","caption":"...","hashtags":"...","cta":"...","photoPrompt":"..."}`,
     imageSystemPrompt: `You write static image ad concepts for No. 86, a non-alcoholic whiskey alternative for men 30–45.
 BRAND VOICE: Calm. Masculine. Direct. Premium.
 CORE MESSAGE: Keep the ritual. Lose the fog.
@@ -378,7 +388,7 @@ ${modeInstruction}`;
         body: JSON.stringify({
           system: getSystemPrompt(b, m),
           messages: [{ role: "user", content: userContent }],
-          max_tokens: isImageMode(m) ? 1500 : 500
+          max_tokens: isImageMode(m) ? 1500 : b === "no86" ? 1200 : 500
         })
       });
       if (!response.ok) {
@@ -412,7 +422,7 @@ ${modeInstruction}`;
   };
 
   const getSocialCopyAll = (b) =>
-    `HOOK:\n${b.hook}\n\nCAPTION:\n${b.caption}${b.hashtags ? `\n\nHASHTAGS:\n${b.hashtags}` : ""}\n\nCTA:\n${b.cta}`;
+    `HOOK:\n${b.hook}\n\nCAPTION:\n${b.caption}${b.hashtags ? `\n\nHASHTAGS:\n${b.hashtags}` : ""}\n\nCTA:\n${b.cta}${b.photoPrompt ? `\n\nPHOTO PROMPT:\n${b.photoPrompt}` : ""}`;
 
   const getImageCopyAll = (b) =>
     `ANGLE:\n${b.angle}\n\nIMAGE CONCEPT:\n${b.imageConcept}\n\nCREATOR TYPE:\n${b.creatorType}\n\nON-SCREEN TEXT:\n${b.onScreenText}\n\nCAPTION:\n${b.caption}${b.hashtags ? `\n\nHASHTAGS:\n${b.hashtags}` : ""}\n\nCTA:\n${b.cta}${b.photoPrompt ? `\n\nPHOTO PROMPT:\n${b.photoPrompt}` : ""}`;
@@ -421,7 +431,8 @@ ${modeInstruction}`;
     { key: "hook", label: "Hook", field: brief.hook, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.5, color: "#F0E8DA" } },
     { key: "caption", label: "Caption", field: brief.caption, style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
     { key: "hashtags", label: "Hashtags", field: brief.hashtags, style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
-    { key: "cta", label: "CTA", field: brief.cta, style: { fontSize: "15px", fontWeight: "600", color: accent } }
+    { key: "cta", label: "CTA", field: brief.cta, style: { fontSize: "15px", fontWeight: "600", color: accent } },
+    { key: "photoPrompt", label: "Photo Prompt", field: brief.photoPrompt, style: { fontSize: "12px", lineHeight: "1.7", whiteSpace: "pre-wrap", color: "#A09890", fontFamily: "monospace" } }
   ] : [];
 
   const imageFields = brief ? [
