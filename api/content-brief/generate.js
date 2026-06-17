@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Invalid JSON body" });
   }
 
-  const { messages, system } = body;
+  const { messages, system, max_tokens } = body;
 
   if (!messages || !system) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -25,6 +25,10 @@ export default async function handler(req, res) {
   if (!Array.isArray(messages) || typeof system !== "string") {
     return res.status(400).json({ error: "Invalid input types" });
   }
+
+  const tokenLimit = typeof max_tokens === "number" && max_tokens > 0 && max_tokens <= 4096
+    ? max_tokens
+    : 500;
 
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -36,7 +40,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-6",
-        max_tokens: 500,
+        max_tokens: tokenLimit,
         temperature: 0.8,
         system,
         messages,

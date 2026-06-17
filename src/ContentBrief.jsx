@@ -377,7 +377,8 @@ ${modeInstruction}`;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           system: getSystemPrompt(b, m),
-          messages: [{ role: "user", content: userContent }]
+          messages: [{ role: "user", content: userContent }],
+          max_tokens: isImageMode(m) ? 1500 : 500
         })
       });
       if (!response.ok) throw new Error(`Server error: ${response.status}`);
