@@ -153,10 +153,36 @@ HASHTAGS:
 5–8 relevant hashtags as one space-separated string.
 ANGLE: One-word or short-phrase creative direction (e.g. "quiet night ritual", "morning clarity", "after work pause").
 CREATOR TYPE: Who shoots this. e.g. "home bartender", "30s professional male", "lifestyle creator".
+PHOTO PROMPT RULES:
+Generate a detailed photography prompt for this specific image concept.
+The prompt is for a real photographer or AI image tool.
+Vertical 4:5 format for Instagram and TikTok.
+Do NOT default to patio every time. Choose the setting that best fits the content idea.
+Possible settings: modern patio at blue hour, backyard firepit, kitchen counter after work, steak night table, garage after a long day, quiet living room, couch during a game, bar cart at home, hotel room after travel, cabin weekend, apartment balcony, home office after work, grill night, front porch, basement lounge, empty dining table after dinner, workshop or garage bench.
+The setting should match the emotional idea:
+After Work Silence: patio, home office, kitchen counter, apartment balcony.
+Steak Night: dinner table, grill, kitchen island.
+Bar Cart: home bar corner, living room, cabinet, shelf.
+Morning After: kitchen morning light, bedroom nightstand, bathroom mirror, coffee counter.
+Founder Story: workspace, kitchen counter, formula notes, garage table.
+Partner Noticed: quiet living room, dinner cleanup, shared kitchen.
+Taste Test: kitchen island, rocks glass, bottle nearby.
+Patio Ritual: patio, firepit, porch, backyard.
+Use Case: game night, steak night, travel, grill, couch, firepit.
+No. 86 VISUAL BONES — apply every time:
+Real person. Real moment. Natural lighting. Bottle visible but not the hero.
+Rocks glass, ice, pour, or ritual cue when appropriate.
+Slightly imperfect UGC composition. Premium but understated.
+Calm, masculine, human. Emotional story first. Product as part of the ritual, not the subject.
+Man in his late 30s to early 40s. Relaxed, not posing. Gaze away from camera.
+Warm highlights against the ambient light of the setting. Soft shadows. Realistic skin texture. Authentic clothing.
+Natural depth of field. Light film grain. Documentary photography style.
+Shot like a real creator captured a genuine moment, not a commercial campaign.
+NEGATIVE PROMPTS (always include): family focus, children, party, celebration, bar scene, smiling at camera, influencer pose, product advertisement, hero bottle shot, studio lighting, stock photography, corporate branding, luxury marketing aesthetic, CGI, text, watermark, hyper-sharp bottle, exaggerated emotions.
 NEVER USE:
 "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "quit drinking" / "recovery" / "sober community"
 Return ONLY valid JSON:
-{"angle":"...","imageConcept":"...","creatorType":"...","onScreenText":"...","caption":"...","cta":"...","hashtags":"..."}`
+{"angle":"...","imageConcept":"...","creatorType":"...","onScreenText":"...","caption":"...","cta":"...","hashtags":"...","photoPrompt":"..."}`
   },
   personal: {
     label: "@mr.sailes",
@@ -378,7 +404,7 @@ ${modeInstruction}`;
     `HOOK:\n${b.hook}\n\nCAPTION:\n${b.caption}${b.hashtags ? `\n\nHASHTAGS:\n${b.hashtags}` : ""}\n\nCTA:\n${b.cta}`;
 
   const getImageCopyAll = (b) =>
-    `ANGLE:\n${b.angle}\n\nIMAGE CONCEPT:\n${b.imageConcept}\n\nCREATOR TYPE:\n${b.creatorType}\n\nON-SCREEN TEXT:\n${b.onScreenText}\n\nCAPTION:\n${b.caption}${b.hashtags ? `\n\nHASHTAGS:\n${b.hashtags}` : ""}\n\nCTA:\n${b.cta}`;
+    `ANGLE:\n${b.angle}\n\nIMAGE CONCEPT:\n${b.imageConcept}\n\nCREATOR TYPE:\n${b.creatorType}\n\nON-SCREEN TEXT:\n${b.onScreenText}\n\nCAPTION:\n${b.caption}${b.hashtags ? `\n\nHASHTAGS:\n${b.hashtags}` : ""}\n\nCTA:\n${b.cta}${b.photoPrompt ? `\n\nPHOTO PROMPT:\n${b.photoPrompt}` : ""}`;
 
   const socialFields = brief ? [
     { key: "hook", label: "Hook", field: brief.hook, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.5, color: "#F0E8DA" } },
@@ -394,7 +420,8 @@ ${modeInstruction}`;
     { key: "onScreenText", label: "On-Screen Text", field: brief.onScreenText, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
     { key: "caption", label: "Caption", field: brief.caption, style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
     { key: "hashtags", label: "Hashtags", field: brief.hashtags, style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
-    { key: "cta", label: "CTA", field: brief.cta, style: { fontSize: "15px", fontWeight: "600", color: accent } }
+    { key: "cta", label: "CTA", field: brief.cta, style: { fontSize: "15px", fontWeight: "600", color: accent } },
+    { key: "photoPrompt", label: "Photo Prompt", field: brief.photoPrompt, style: { fontSize: "12px", lineHeight: "1.7", whiteSpace: "pre-wrap", color: "#A09890", fontFamily: "monospace" } }
   ] : [];
 
   const activeFields = isImageMode(mode) ? imageFields : socialFields;
