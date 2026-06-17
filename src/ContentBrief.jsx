@@ -381,12 +381,16 @@ ${modeInstruction}`;
           max_tokens: isImageMode(m) ? 1500 : 500
         })
       });
-      if (!response.ok) throw new Error(`Server error: ${response.status}`);
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(`Server ${response.status}: ${errData.error || errData.detail || JSON.stringify(errData)}`);
+      }
       const parsed = await response.json();
-      if (parsed.error) throw new Error(parsed.error);
+      if (parsed.error) throw new Error(`API error: ${parsed.error} ${parsed.detail || parsed.raw || ""}`);
+      if (!parsed.imageConcept && !parsed.hook) throw new Error(`Unexpected response: ${JSON.stringify(parsed)}`);
       setBrief(parsed);
-    } catch {
-      setError("Failed to generate. Check ANTHROPIC_API_KEY in Vercel env vars.");
+    } catch (err) {
+      setError(err.message || "Failed to generate.");
     } finally {
       setLoading(false);
     }
