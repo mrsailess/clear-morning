@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 
 const MODES = [
   { key: "social", label: "Social Post" },
@@ -96,19 +96,14 @@ YOUR BEST-PERFORMING EXAMPLES:
 "Not one successful person got where they wanted by drinking more."
 "I didn't quit drinking because I hated alcohol. I quit because I hated what it did to me."
 HOOK PROCESS:
-Generate 20 possible hooks internally.
+Generate 20 possible hooks internally. Each should use a different structure, opening, and emotional lane.
+For Social Post mode: Include 8 of the best as hookOptions in JSON, each using a different hook family. Set bestHook to the most shareable one. Also set hook to the same value as bestHook.
 Pick the one that is most true, simple, and shareable.
-The hook is the post.
+Every regeneration should produce a new direction, not a cleaner rewrite of the last one.
 HOOK FORMAT:
-Use one of these starters:
-"Nobody talks about..."
-"The goal isn't..."
-"I thought..."
-"One of the hardest parts..."
-"Most people don't realize..."
-"I finally realized..."
-"The truth is..."
-"Nobody tells you this part..."
+Do not rely on fixed hook starters. Use varied structures. The hook should feel like a human thought, not a template.
+Do not repeatedly use: "Most people do not realize" / "I realized" / "I finally realized" / "The drink was never" / "It was never about" / "I thought I wanted" / "Nobody talks about" — avoid them unless forced by the required hook family.
+The required hook family for this generation is provided in the user message. Follow it.
 HOOK LENGTH:
 25–35 words.
 CAPTION:
@@ -257,8 +252,7 @@ Return ONLY valid JSON:
 Sean is a Black Navy veteran, father of two mixed-race kids, husband, entrepreneur (No. 86, Amazon), Jiu-Jitsu practitioner, and builder. He is in his late 30s. He has been through it. He figured some things out the hard way. He shares what actually helped.
 READING LEVEL: 5th–8th grade. Short sentences. Simple words.
 VOICE: First person. Simple. True. Earned. Sounds lived, not written. Not a motivational speaker. Not a therapist. Not a brand.
-YOUR WINNING CONTENT FORMATS:
-Use one of these structures as the foundation:
+YOUR WINNING CONTENT FORMATS (use as inspiration, not templates):
 "I didn't quit drinking because..."
 "I thought sobriety would..."
 "Nobody talks about..."
@@ -271,6 +265,7 @@ Use one of these structures as the foundation:
 "Nobody stops drinking because..."
 "I want to impress myself..."
 "I forgot who I was when..."
+Do not default to these. The required hook family for this generation is provided in the user message. Follow it and write something that fits that family but sounds like Sean — earned, specific, real. Do not rely on fixed openers. Every regeneration should go a different direction.
 YOUR BEST-PERFORMING EXAMPLES:
 "I forgot who I was when I was sober."
 "I want to impress myself."
@@ -323,6 +318,31 @@ const CONTENT_ANGLES = [
   "belief challenge"
 ];
 
+const HOOK_FAMILIES = [
+  "private confession",
+  "specific moment",
+  "false belief",
+  "tradeoff",
+  "quiet anger",
+  "identity shift",
+  "object truth",
+  "social observation",
+  "hard contrast",
+  "unexpected admission"
+];
+
+const HOOK_FAMILY_DEFINITIONS = `Hook family definitions:
+private confession: A first-person line that admits something true without sounding dramatic.
+specific moment: Starts inside a concrete scene — laptop closed, phone face down, glass on counter, late night kitchen.
+false belief: Starts with what the person thought was true, then reveals the deeper truth.
+tradeoff: Frames the choice as what tonight costs tomorrow, or what something costs versus what it gives.
+quiet anger: Names a frustration without yelling or sounding bitter.
+identity shift: Contrasts the old version of the person with the current version.
+object truth: Uses an object as the emotional doorway — glass, ice, bottle, phone, laptop, porch, bar cart.
+social observation: Names something many people do but rarely say out loud.
+hard contrast: Uses a clean before/after or this/not-that contrast.
+unexpected admission: Starts with a surprising, honest admission.`;
+
 const pick = (arr, exclude) => {
   const pool = exclude ? arr.filter((x) => x !== exclude) : arr;
   return pool[Math.floor(Math.random() * pool.length)];
@@ -341,7 +361,9 @@ export default function ContentBrief() {
   const [imageLoading, setImageLoading] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
   const [imageError, setImageError] = useState(null);
+  const [recentHooks, setRecentHooks] = useState([]);
   const lastAngle = useRef(null);
+  const lastHookFamily = useRef(null);
 
   const config = brand ? BRAND_CONFIGS[brand] : BRAND_CONFIGS.no86;
   const accent = config.accent;
@@ -358,9 +380,18 @@ export default function ContentBrief() {
     setLoading(true);
     setBrief(null);
     setError(null);
+    setGeneratedImage(null);
+    setImageError(null);
 
     const angle = pick(CONTENT_ANGLES, lastAngle.current);
     lastAngle.current = angle;
+
+    const hookFamily = pick(HOOK_FAMILIES, lastHookFamily.current);
+    lastHookFamily.current = hookFamily;
+
+    const recentHooksBlock = recentHooks.length
+      ? `\nRecent hooks to avoid:\n${recentHooks.map((h, i) => `${i + 1}. ${h}`).join("\n")}\nDo not reuse the same opening, sentence structure, emotional claim, metaphor, or hook family as any of these. If the new idea feels like a rewrite of one of those, reject it and try another direction.\n`
+      : "";
 
     const modeInstruction = m === "ugc"
       ? "Generate a still-image UGC concept with 25 to 40 words of on-screen text. Feel like a real person posted it."
@@ -371,7 +402,9 @@ export default function ContentBrief() {
     const userContent = `Content mode: ${m === "ugc" ? "Static UGC Image" : m === "paid" ? "Paid Ad Image" : "Social Post"}
 Content category: ${c}
 Content angle: ${angle}
-${modeInstruction}`;
+Required hook family: ${hookFamily}
+${HOOK_FAMILY_DEFINITIONS}
+${recentHooksBlock}${modeInstruction}`;
 
     try {
       const response = await fetch("/api/content-brief/generate", {
@@ -390,7 +423,9 @@ ${modeInstruction}`;
       const parsed = await response.json();
       if (parsed.error) throw new Error(`API error: ${parsed.error} ${parsed.detail || parsed.raw || ""}`);
       if (!parsed.imageConcept && !parsed.hook) throw new Error(`Unexpected response: ${JSON.stringify(parsed)}`);
-      setBrief(parsed);
+      setBrief({ ...parsed, hookFamily });
+      const newHook = parsed.bestHook || parsed.hook || parsed.onScreenText || "";
+      if (newHook) setRecentHooks((prev) => [...prev.slice(-7), newHook]);
     } catch (err) {
       setError(err.message || "Failed to generate.");
     } finally {
@@ -425,6 +460,12 @@ ${modeInstruction}`;
     }
   };
 
+  const resetMemory = useCallback(() => {
+    setRecentHooks([]);
+    lastAngle.current = null;
+    lastHookFamily.current = null;
+  }, []);
+
   const reset = () => {
     setBrand(null);
     setMode("social");
@@ -433,7 +474,7 @@ ${modeInstruction}`;
     setError(null);
     setGeneratedImage(null);
     setImageError(null);
-    lastAngle.current = null;
+    resetMemory();
   };
 
   const getSocialCopyAll = (b) =>
@@ -485,7 +526,7 @@ ${modeInstruction}`;
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {Object.entries(BRAND_CONFIGS).map(([key, cfg]) => (
               <button key={key}
-                onClick={() => { setBrand(key); setCategory(null); setBrief(null); setError(null); }}
+                onClick={() => { setBrand(key); setCategory(null); setBrief(null); setError(null); resetMemory(); }}
                 style={{ background: brand === key ? cfg.surface : "transparent", border: `1px solid ${brand === key ? cfg.accent : "#222"}`, borderRadius: "10px", padding: "14px 18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", textAlign: "left" }}>
                 <div>
                   <div style={{ fontSize: "16px", fontWeight: "600", color: brand === key ? cfg.accent : "#CCC", marginBottom: "2px" }}>{cfg.label}</div>
@@ -504,7 +545,7 @@ ${modeInstruction}`;
             <div style={{ display: "flex", gap: "8px" }}>
               {MODES.map((m) => (
                 <button key={m.key}
-                  onClick={() => { setMode(m.key); setCategory(null); setBrief(null); setError(null); }}
+                  onClick={() => { setMode(m.key); setCategory(null); setBrief(null); setError(null); resetMemory(); }}
                   style={{ flex: 1, background: mode === m.key ? config.surface : "transparent", border: `1px solid ${mode === m.key ? accent : "#222"}`, borderRadius: "8px", padding: "10px 8px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace", color: mode === m.key ? accent : "#666", fontWeight: mode === m.key ? "700" : "400", letterSpacing: "0.5px", textTransform: "uppercase", textAlign: "center" }}>
                   {m.label}
                 </button>
@@ -520,7 +561,7 @@ ${modeInstruction}`;
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               {config.categories[mode].map((cat) => (
                 <button key={cat}
-                  onClick={() => { setCategory(cat); setBrief(null); setError(null); }}
+                  onClick={() => { setCategory(cat); setBrief(null); setError(null); resetMemory(); }}
                   style={{ background: category === cat ? config.surface : "transparent", border: `1px solid ${category === cat ? accent : "#222"}`, borderRadius: "8px", padding: "13px 16px", cursor: "pointer", textAlign: "left", fontSize: "14px", color: category === cat ? accent : "#888", fontWeight: category === cat ? "600" : "400" }}>
                   {cat}
                 </button>
@@ -551,8 +592,15 @@ ${modeInstruction}`;
         {brief && (
           <div style={{ background: config.surface, border: `1px solid ${config.border}`, borderRadius: "14px", overflow: "hidden" }}>
             <div style={{ padding: "16px 20px", borderBottom: `1px solid ${config.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div style={{ fontSize: "11px", letterSpacing: "2px", color: accent, textTransform: "uppercase", fontFamily: "monospace" }}>
-                {MODES.find((m) => m.key === mode)?.label} | {config.label}
+              <div>
+                <div style={{ fontSize: "11px", letterSpacing: "2px", color: accent, textTransform: "uppercase", fontFamily: "monospace" }}>
+                  {MODES.find((m) => m.key === mode)?.label} | {config.label}
+                </div>
+                {brief.hookFamily && (
+                  <div style={{ fontSize: "10px", color: "#555", fontFamily: "monospace", marginTop: "3px", letterSpacing: "0.5px" }}>
+                    Hook Family: {brief.hookFamily}
+                  </div>
+                )}
               </div>
               <button
                 onClick={() => copy(isImageMode(mode) ? getImageCopyAll(brief) : getSocialCopyAll(brief), "all")}
