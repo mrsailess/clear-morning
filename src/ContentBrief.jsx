@@ -2,8 +2,8 @@ import { useState, useRef } from "react";
 
 const MODES = [
   { key: "social", label: "Social Post" },
-  { key: "ugc", label: "Static UGC Image" },
-  { key: "paid", label: "Paid Ad Image" }
+  { key: "ugc", label: "UGC Image" },
+  { key: "paid", label: "Conversion Image" }
 ];
 
 const BRAND_CONFIGS = {
@@ -70,6 +70,19 @@ No preaching.
 No "quit drinking."
 No recovery identity framing.
 No overexplaining.
+TOP-OF-FUNNEL RULE — THE MOST IMPORTANT RULE:
+The strongest No. 86 post did not mention No. 86 in the on-screen text.
+It worked because the text expressed a human truth about the after-work ritual.
+For top-of-funnel content, the hook and on-screen text should usually NOT mention No. 86.
+Focus on: the private feeling, the ritual, the silence, the reason behind the drink, the morning-after tradeoff, the identity shift, the moment the day finally stops asking something of you.
+The image shows the bottle naturally.
+The caption bridges to No. 86.
+The CTA softly invites trial or conversation.
+SHAREABILITY TEST: Prefer text that someone could share even if they have never heard of No. 86.
+REJECT on-screen text that sounds like: a product ad, a tasting note, a brand slogan, a sales pitch, an explanation of what No. 86 is.
+GOOD EXAMPLE: "Most people do not realize the drink after work is not about the drink. It is about the 20 minutes of silence nobody gave you all day."
+BAD EXAMPLE: "No. 86 is a smoky, vanilla, caramel whiskey alternative for your after-work ritual."
+STRUCTURE: On-screen text = human truth. Image = ritual with bottle present. Caption = bridge to No. 86. CTA = soft conversation or trial.
 CONTENT MIX:
 Emotional Truth: feelings, habits, identity, night routine.
 Ritual & Lifestyle: patio, steak night, game night, bar cart, firepit, dinner, quiet night.
@@ -131,9 +144,17 @@ Return ONLY valid JSON:
     imageSystemPrompt: `You write static image ad concepts for No. 86, a non-alcoholic whiskey alternative for men 30–45.
 BRAND VOICE: Calm. Masculine. Direct. Premium.
 CORE MESSAGE: Keep the ritual. Lose the fog.
+MODE DEFINITIONS:
+UGC Image: Turns a human truth into a natural still-image post. Feels like a real person posted it, not a brand ad. Do not hard sell. Start with the human truth.
+Conversion Image: Same emotional truth as UGC, but make the product bridge slightly clearer in the caption. Still social-first. Still not salesy. Create purchase intent without sounding desperate.
 THE ONLY RULE THAT MATTERS:
 Say the true thing cleanly. Let it land. Do not explain it.
 Your best lines do not try to be deep. They just are true.
+TOP-OF-FUNNEL RULE:
+For UGC Image mode, do NOT mention No. 86 in the on-screen text unless the category is Taste Test, Objection Handling, Founder Story, or Social Proof.
+For Conversion Image mode, No. 86 can appear in the on-screen text, but only if the emotional truth is stronger with it. If not, keep the product name in the caption instead.
+ALL MODES REJECT: Buy now / product advertisement / tasting note first / brand slogan / hard sell / wellness promise / sobriety pitch.
+STRUCTURE: On-screen text = human truth. Image = bottle present but natural. Caption = bridge to No. 86. CTA = soft conversation or trial.
 WHAT NO. 86 SOUNDS LIKE:
 "The drink after work was never just the drink.
 It was the pause. The glass. The moment nobody needed anything from me.
