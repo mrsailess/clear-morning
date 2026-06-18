@@ -572,7 +572,7 @@ ${modeInstruction}`;
             ))}
 
             {/* Generate Image — shown when photoPrompt exists and mode is image */}
-            {brief.photoPrompt && isImageMode(mode) && (
+            {brief.photoPrompt && (
               <div style={{ padding: "20px", borderTop: `1px solid ${config.border}` }}>
                 <div style={{ fontSize: "10px", letterSpacing: "2px", color: "#444", marginBottom: "12px", textTransform: "uppercase", fontFamily: "monospace" }}>Generated Image</div>
                 <button
