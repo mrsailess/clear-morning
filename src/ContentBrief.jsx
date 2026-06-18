@@ -338,6 +338,9 @@ export default function ContentBrief() {
   const [brief, setBrief] = useState(null);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [generatedImage, setGeneratedImage] = useState(null);
+  const [imageError, setImageError] = useState(null);
   const lastAngle = useRef(null);
 
   const config = brand ? BRAND_CONFIGS[brand] : BRAND_CONFIGS.no86;
@@ -401,12 +404,35 @@ ${modeInstruction}`;
     setTimeout(() => setCopied(null), 2000);
   };
 
+  const generateImage = async () => {
+    if (!brief?.photoPrompt) return;
+    setImageLoading(true);
+    setImageError(null);
+    setGeneratedImage(null);
+    try {
+      const response = await fetch("/api/content-brief/generate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ photoPrompt: brief.photoPrompt, brand, mode })
+      });
+      const parsed = await response.json();
+      if (!response.ok || parsed.error) throw new Error(parsed.error || "Image generation failed");
+      setGeneratedImage(`data:${parsed.mimeType};base64,${parsed.imageBase64}`);
+    } catch (err) {
+      setImageError(err.message || "Image generation failed. Check OPENAI_API_KEY in Vercel env vars.");
+    } finally {
+      setImageLoading(false);
+    }
+  };
+
   const reset = () => {
     setBrand(null);
     setMode("social");
     setCategory(null);
     setBrief(null);
     setError(null);
+    setGeneratedImage(null);
+    setImageError(null);
     lastAngle.current = null;
   };
 
@@ -544,6 +570,36 @@ ${modeInstruction}`;
                 </button>
               </div>
             ))}
+
+            {/* Generate Image — shown when photoPrompt exists and mode is image */}
+            {brief.photoPrompt && isImageMode(mode) && (
+              <div style={{ padding: "20px", borderTop: `1px solid ${config.border}` }}>
+                <div style={{ fontSize: "10px", letterSpacing: "2px", color: "#444", marginBottom: "12px", textTransform: "uppercase", fontFamily: "monospace" }}>Generated Image</div>
+                <button
+                  onClick={generateImage}
+                  disabled={imageLoading}
+                  style={{ width: "100%", background: imageLoading ? "transparent" : accent, border: `1px solid ${imageLoading ? config.border : accent}`, borderRadius: "8px", padding: "12px", cursor: imageLoading ? "default" : "pointer", fontSize: "12px", fontWeight: "700", color: imageLoading ? "#555" : "#000", letterSpacing: "1px", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "12px" }}>
+                  {imageLoading ? "GENERATING IMAGE..." : generatedImage ? "REGENERATE IMAGE" : "GENERATE IMAGE"}
+                </button>
+                {imageLoading && (
+                  <div style={{ display: "flex", justifyContent: "center", padding: "12px 0" }}>
+                    <div style={{ width: "24px", height: "24px", border: `2px solid ${config.border}`, borderTop: `2px solid ${accent}`, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                  </div>
+                )}
+                {imageError && (
+                  <div style={{ padding: "10px", background: "#1A0A0A", border: "1px solid #3A1A1A", borderRadius: "6px", color: "#CC4444", fontSize: "12px", fontFamily: "monospace" }}>{imageError}</div>
+                )}
+                {generatedImage && (
+                  <div>
+                    <img src={generatedImage} alt="Generated content" style={{ width: "100%", borderRadius: "10px", display: "block", marginBottom: "10px" }} />
+                    <a href={generatedImage} download="no86-content-image.png"
+                      style={{ display: "block", textAlign: "center", background: "transparent", border: `1px solid ${config.border}`, color: "#555", padding: "8px", borderRadius: "6px", fontSize: "11px", fontFamily: "monospace", textDecoration: "none" }}>
+                      DOWNLOAD IMAGE
+                    </a>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div style={{ padding: "16px 20px", borderTop: `1px solid ${config.border}`, display: "flex", gap: "10px" }}>
               <button onClick={() => generateBrief()} disabled={loading} style={{ flex: 1, background: "transparent", border: `1px solid ${config.border}`, color: "#555", padding: "8px", borderRadius: "6px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace" }}>REGENERATE</button>
