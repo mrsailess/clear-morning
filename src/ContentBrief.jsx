@@ -319,6 +319,8 @@ export default function ContentBrief() {
   const [generatedImage, setGeneratedImage] = useState(null);
   const [imageError, setImageError] = useState(null);
   const [recentHooks, setRecentHooks] = useState([]);
+  const [selectedHook, setSelectedHook] = useState(null);
+  const [promptLoading, setPromptLoading] = useState(false);
   const lastAngle = useRef(null);
   const lastHookFamily = useRef(null);
 
@@ -381,6 +383,7 @@ ${recentHooksBlock}${modeInstruction}`;
       if (parsed.error) throw new Error(`API error: ${parsed.error} ${parsed.detail || parsed.raw || ""}`);
       if (!parsed.imageConcept && !parsed.hook) throw new Error(`Unexpected response: ${JSON.stringify(parsed)}`);
       setBrief({ ...parsed, hookFamily });
+      setSelectedHook(parsed.bestHook || parsed.hook || null);
       const newHook = parsed.bestHook || parsed.hook || parsed.onScreenText || "";
       if (newHook) setRecentHooks((prev) => [...prev.slice(-7), newHook]);
     } catch (err) {
@@ -438,8 +441,34 @@ ${recentHooksBlock}${modeInstruction}`;
     }
   };
 
+  const generatePhotoPrompt = async (hook) => {
+    if (!hook) return;
+    setPromptLoading(true);
+    setBrief((prev) => ({ ...prev, photoPrompt: null }));
+    try {
+      const res = await fetch("/api/content-brief/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system: NO86_PHOTO_PROMPT_SYSTEM,
+          messages: [{ role: "user", content: `Hook: ${hook}\nContent category: ${category}\nGenerate the photo prompt now.` }],
+          max_tokens: 1200
+        })
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || "Failed to generate photo prompt");
+      if (!data.photoPrompt) throw new Error("No photo prompt returned");
+      setBrief((prev) => ({ ...prev, photoPrompt: data.photoPrompt }));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setPromptLoading(false);
+    }
+  };
+
   const resetMemory = useCallback(() => {
     setRecentHooks([]);
+    setSelectedHook(null);
     lastAngle.current = null;
     lastHookFamily.current = null;
   }, []);
@@ -462,13 +491,12 @@ ${recentHooksBlock}${modeInstruction}`;
     `ANGLE:\n${b.angle}\n\nIMAGE CONCEPT:\n${b.imageConcept}\n\nCREATOR TYPE:\n${b.creatorType}\n\nON-SCREEN TEXT:\n${b.onScreenText}\n\nCAPTION:\n${b.caption}${b.hashtags ? `\n\nHASHTAGS:\n${b.hashtags}` : ""}\n\nCTA:\n${b.cta}${b.photoPrompt ? `\n\nPHOTO PROMPT:\n${b.photoPrompt}` : ""}`;
 
   const socialFields = brief ? [
-    { key: "hook", label: "Hook", field: brief.hook, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.5, color: "#F0E8DA" } },
-    ...(brief.hookOptions?.length ? [{ key: "hookOptions", label: "Hook Options", field: brief.hookOptions.map((h, i) => `${i + 1}. ${h}`).join("\n\n"), style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-wrap", color: "#A09890" } }] : []),
+    { key: "hook", label: "Selected Hook", field: selectedHook || brief.hook, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.5, color: "#F0E8DA" } },
     ...(brief.shareabilityScore ? [{ key: "shareability", label: "Shareability", field: `${brief.shareabilityScore.toUpperCase()} — ${brief.whyThisMightGetShared || ""}`, style: { fontSize: "12px", color: brief.shareabilityScore === "high" ? "#5A9A5A" : brief.shareabilityScore === "medium" ? "#9A8A3A" : "#9A4A4A", fontFamily: "monospace", lineHeight: 1.6 } }] : []),
     { key: "caption", label: "Caption", field: brief.caption, style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
     { key: "hashtags", label: "Hashtags", field: brief.hashtags, style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
     { key: "cta", label: "CTA", field: brief.cta, style: { fontSize: "15px", fontWeight: "600", color: accent } },
-    { key: "photoPrompt", label: "Photo Prompt", field: brief.photoPrompt, style: { fontSize: "12px", lineHeight: "1.7", whiteSpace: "pre-wrap", color: "#A09890", fontFamily: "monospace" } }
+    ...(brief.photoPrompt ? [{ key: "photoPrompt", label: "Photo Prompt", field: brief.photoPrompt, style: { fontSize: "12px", lineHeight: "1.7", whiteSpace: "pre-wrap", color: "#A09890", fontFamily: "monospace" } }] : [])
   ] : [];
 
   const imageFields = brief ? [
@@ -598,6 +626,29 @@ ${recentHooksBlock}${modeInstruction}`;
                 </button>
               </div>
             ))}
+
+            {/* Hook Options picker — Social Post only */}
+            {!isImageMode(mode) && brief?.hookOptions?.length > 0 && (
+              <div style={{ padding: "20px", borderTop: `1px solid ${config.border}` }}>
+                <div style={{ fontSize: "10px", letterSpacing: "2px", color: "#444", marginBottom: "12px", textTransform: "uppercase", fontFamily: "monospace" }}>Hook Options — tap to select</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {brief.hookOptions.map((h, i) => (
+                    <button key={i} onClick={() => { setSelectedHook(h); setBrief((prev) => ({ ...prev, photoPrompt: null })); }}
+                      style={{ background: selectedHook === h ? config.surface : "transparent", border: `1px solid ${selectedHook === h ? accent : config.border}`, borderRadius: "8px", padding: "12px 14px", cursor: "pointer", textAlign: "left", fontSize: "13px", lineHeight: 1.6, color: selectedHook === h ? accent : "#888", fontFamily: "'Georgia', serif" }}>
+                      {h}
+                    </button>
+                  ))}
+                </div>
+                {selectedHook && (
+                  <button
+                    onClick={() => generatePhotoPrompt(selectedHook)}
+                    disabled={promptLoading}
+                    style={{ marginTop: "14px", width: "100%", background: "transparent", border: `1px solid ${promptLoading ? config.border : accent}`, borderRadius: "8px", padding: "11px", cursor: promptLoading ? "default" : "pointer", fontSize: "11px", fontWeight: "700", color: promptLoading ? "#555" : accent, letterSpacing: "1px", textTransform: "uppercase", fontFamily: "monospace" }}>
+                    {promptLoading ? "BUILDING PHOTO PROMPT..." : brief.photoPrompt ? "REGENERATE PHOTO PROMPT" : "GENERATE PHOTO PROMPT"}
+                  </button>
+                )}
+              </div>
+            )}
 
             {/* Generate Image — shown for image modes (have photoPrompt) or no86 social post */}
             {(brief.photoPrompt || (mode === "social" && brand === "no86")) && (
