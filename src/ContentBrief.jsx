@@ -57,6 +57,21 @@ READING LEVEL: 5th–8th grade. Short sentences. Simple words.
 CORE MESSAGE:
 Keep the ritual. Lose the fog.
 NO. 86 CONTENT RULES:
+EMOTIONAL TRUTH IS THE DEFAULT ENGINE — NOT ONE CATEGORY.
+Every No. 86 post starts with a human truth. Then it adapts to the selected category.
+Product Education: human truth first, product explanation second.
+Taste Test: human truth first, taste notes second.
+Objection Handling: human truth first, objection response second.
+Use Case: human truth first, scene second.
+Social Proof: human truth first, proof second.
+Conversion Image: human truth first, product bridge second.
+Never start with: taste notes, product features, "I was surprised it tasted…", "No. 86 is…", "This non-alcoholic whiskey…", ingredient or flavor language, or direct sales claims.
+Bad: "I was ready for it to taste like a compromise. It doesn't."
+Better: "I did not need it to taste exactly like whiskey. I needed the moment to still feel grown."
+Bad: "Smoky, vanilla, and caramel undertones."
+Better: "The flavor matters because the ritual matters."
+Bad: "No. 86 gives you the whiskey ritual without the fog."
+Better: "The drink was never the whole point. The pause was."
 Start with emotional truth.
 Do not use labels like sobriety or recovery.
 Make it feel like a real thought, not advice.
@@ -108,9 +123,11 @@ Focus on: the private feeling, the ritual, the silence, the reason behind the dr
 The image shows the bottle naturally.
 The caption bridges to No. 86.
 The CTA softly invites trial or conversation.
-SHAREABILITY TEST: Prefer text that someone could share even if they have never heard of No. 86.
+SHAREABILITY TEST: Would someone send this to a friend with "this is me"? If yes, it is probably strong. If no, it is probably just an ad.
+Reject any hook that only matters to someone already shopping for non-alcoholic whiskey. Prefer hooks that matter to someone who has never heard of No. 86 but understands the feeling.
+BOTTLE TEST: Would someone share this post if the bottle were not there? If yes, it is strong. If no, rethink the hook.
 REJECT on-screen text that sounds like: a product ad, a tasting note, a brand slogan, a sales pitch, an explanation of what No. 86 is.
-GOOD EXAMPLE: "Most people do not realize the drink after work is not about the drink. It is about the 20 minutes of silence nobody gave you all day."
+GOOD EXAMPLE: "Most people do not realize the drink after work is not about the drink. It is about the 20 minutes of silence nobody gave you all day." — This won because it is bigger than the product, describes a private feeling, is instantly relatable, is shareable, and makes the bottle feel like the answer without making the post an ad.
 BAD EXAMPLE: "No. 86 is a smoky, vanilla, caramel whiskey alternative for your after-work ritual."
 STRUCTURE: On-screen text = human truth. Image = ritual with bottle present. Caption = bridge to No. 86. CTA = soft conversation or trial.
 CONTENT MIX:
@@ -127,8 +144,9 @@ YOUR BEST-PERFORMING EXAMPLES:
 "I didn't quit drinking because I hated alcohol. I quit because I hated what it did to me."
 HOOK PROCESS:
 Generate 20 possible hooks internally. Each should use a different structure, opening, and emotional lane.
+Of the 20: at least 12 must be emotional-truth hooks. At least 5 must be specific-moment hooks. No more than 3 can be product or taste-led.
+Pick the most shareable hook, not the most descriptive one.
 For Social Post mode: Include 8 of the best as hookOptions in JSON, each using a different hook family. Set bestHook to the most shareable one. Also set hook to the same value as bestHook.
-Pick the one that is most true, simple, and shareable.
 Every regeneration should produce a new direction, not a cleaner rewrite of the last one.
 HOOK FORMAT:
 Do not rely on fixed hook starters. Use varied structures. The hook should feel like a human thought, not a template.
@@ -157,13 +175,23 @@ Do not make every image a patio scene. Do not make every image a man sitting alo
 NO. 86 MASTER TEMPLATE — assemble the full photoPrompt using this exact structure:
 Use the attached No. 86 bottle as the exact product reference. Vertical 4:5 lifestyle photograph for Instagram and TikTok. Candid UGC-style photograph captured during a genuine everyday moment. The image should feel observed rather than directed. No posing. No eye contact with the camera. No staged feeling. The No. 86 bottle should appear naturally within the environment and never feel like the subject of the image. It should feel like part of an existing ritual rather than a product placement. SETTING: [write the specific setting for this post — kitchen counter, back porch, car seat, gym parking lot, hotel room, firepit, bar cart, office desk, apartment balcony, couch, etc.] SUBJECT: [write one subject demographic based on the use-case logic: use men 30 to 45 most for after-work and ritual content, men 45 to 55 for firepit and mature ritual, women 30 to 45 for partner-noticed and night routine, adults 25 to 34 for identity-shift and sober-curious. Race rotates naturally: Black man, Black woman, white man, white woman, Latino man, Latina woman, mixed race man, mixed race woman, ambiguous man, ambiguous woman. Do not call attention to race. Do not use children.] SUBJECT ACTION: [write what the person is doing — not performing for a camera, doing something real: leaning back, turning a glass slowly, reading, scrolling, staring at the yard, watching the grill cool down, etc.] VISUAL STORY: [write 4 to 8 short lines describing the emotional moment — what is happening emotionally, not physically. Short lines. No full sentences required.] BOTTLE PLACEMENT: [write where the No. 86 bottle sits naturally in the scene — on the arm of a chair, on a kitchen counter in the background, on the table beside a plate, on the bar cart, etc. It should never be the hero of the shot.] LIGHTING AND PROPS: [write the time of day, light quality, and any props that make the scene feel real — golden hour, dim lamp, overhead kitchen light, morning sun through blinds, phone face down on table, condensation on glass, plate being cleared, book open nearby, etc.] SUBJECT DIRECTION: The person should make the viewer think: I want to be that person right now. Not: I feel bad for that person. POSTURE: Settled. Weight back. Earned rest. Comfortable. Not slumped. Not defeated. FACE: Neutral to quietly satisfied. Just exhaled. Not looking down at the floor. No exaggerated emotion. ENERGY: Still. Grounded. Not restless. Not checking phone. ASPIRATION: Arrival, not escape. EMOTIONAL DIRECTION: Nobody needs anything from me right now. If the expression reads as sad, tired, or troubled, it is wrong. The correct expression is someone who just sat down and realized they have nowhere to be. UGC REALISM GUARDRAIL: The image should look like a real person or small brand captured it, not like an agency campaign. Prefer imperfect framing over perfect composition. Prefer believable rooms over designer interiors. Prefer real facial neutrality over model expressions. Prefer a slightly messy, lived-in environment over a styled set. Avoid cinematic overproduction. PHOTOGRAPHY STYLE: Authentic UGC. Documentary photography. Natural depth of field. Light film grain. Slightly imperfect composition. Real-world lighting. Environment feels lived-in, not styled. BRAND MOOD: Relief. Presence. Clarity. Calm. Self-control. Quiet confidence. NEGATIVE PROMPTS: Sadness. Depression. Loneliness. Slumped posture. Head down in defeat. Party scene. Children. Celebration. Bar scene. Influencer pose. Hero bottle shot. Studio lighting. Stock photography. Corporate branding. Luxury marketing aesthetic. CGI. Text. Watermark. Perfectly staged composition. Exaggerated emotions. Hyper-sharp bottle. Commercial product photography. Agency campaign aesthetic. Designer interior. Model expression.
 Return ONLY valid JSON:
-{"hook":"...","caption":"...","hashtags":"...","cta":"...","photoPrompt":"..."}`,
+{"hook":"...","bestHook":"...","hookOptions":["...","...","...","...","...","...","...","..."],"shareabilityScore":"high/medium/low","whyThisMightGetShared":"...","caption":"...","hashtags":"...","cta":"...","photoPrompt":"..."}`,
     imageSystemPrompt: `You write static image ad concepts for No. 86, a non-alcoholic whiskey alternative for men 30–45.
 BRAND VOICE: Calm. Masculine. Direct. Premium.
 CORE MESSAGE: Keep the ritual. Lose the fog.
 MODE DEFINITIONS:
 UGC Image: Turns a human truth into a natural still-image post. Feels like a real person posted it, not a brand ad. Do not hard sell. Start with the human truth.
 Conversion Image: Same emotional truth as UGC, but make the product bridge slightly clearer in the caption. Still social-first. Still not salesy. Create purchase intent without sounding desperate.
+EMOTIONAL TRUTH IS THE DEFAULT ENGINE FOR EVERY MODE:
+Every No. 86 image starts with a human truth. Then adapts to the category.
+Product Education: human truth first, product explanation in caption.
+Taste Test: human truth first, taste notes in caption.
+Objection Handling: human truth first, objection handled in caption.
+Use Case: human truth first, scene second.
+Social Proof: human truth first, proof in caption.
+Never let on-screen text start with: taste notes, product features, "No. 86 is…", ingredient language, or direct sales claims.
+SHAREABILITY TEST: Would someone share this if the bottle were not there? If yes, it is strong. If no, rethink the on-screen text.
+BOTTLE TEST: Would someone send this to a friend with "this is me"? That is the bar.
 THE ONLY RULE THAT MATTERS:
 Say the true thing cleanly. Let it land. Do not explain it.
 Your best lines do not try to be deep. They just are true.
@@ -502,13 +530,15 @@ ${recentHooksBlock}${modeInstruction}`;
   };
 
   const getSocialCopyAll = (b) =>
-    `HOOK:\n${b.hook}\n\nCAPTION:\n${b.caption}${b.hashtags ? `\n\nHASHTAGS:\n${b.hashtags}` : ""}\n\nCTA:\n${b.cta}${b.photoPrompt ? `\n\nPHOTO PROMPT:\n${b.photoPrompt}` : ""}`;
+    `HOOK:\n${b.hook}${b.hookOptions?.length ? `\n\nHOOK OPTIONS:\n${b.hookOptions.map((h, i) => `${i + 1}. ${h}`).join("\n")}` : ""}${b.shareabilityScore ? `\n\nSHAREABILITY: ${b.shareabilityScore.toUpperCase()} — ${b.whyThisMightGetShared || ""}` : ""}\n\nCAPTION:\n${b.caption}${b.hashtags ? `\n\nHASHTAGS:\n${b.hashtags}` : ""}\n\nCTA:\n${b.cta}${b.photoPrompt ? `\n\nPHOTO PROMPT:\n${b.photoPrompt}` : ""}`;
 
   const getImageCopyAll = (b) =>
     `ANGLE:\n${b.angle}\n\nIMAGE CONCEPT:\n${b.imageConcept}\n\nCREATOR TYPE:\n${b.creatorType}\n\nON-SCREEN TEXT:\n${b.onScreenText}\n\nCAPTION:\n${b.caption}${b.hashtags ? `\n\nHASHTAGS:\n${b.hashtags}` : ""}\n\nCTA:\n${b.cta}${b.photoPrompt ? `\n\nPHOTO PROMPT:\n${b.photoPrompt}` : ""}`;
 
   const socialFields = brief ? [
     { key: "hook", label: "Hook", field: brief.hook, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.5, color: "#F0E8DA" } },
+    ...(brief.hookOptions?.length ? [{ key: "hookOptions", label: "Hook Options", field: brief.hookOptions.map((h, i) => `${i + 1}. ${h}`).join("\n\n"), style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-wrap", color: "#A09890" } }] : []),
+    ...(brief.shareabilityScore ? [{ key: "shareability", label: "Shareability", field: `${brief.shareabilityScore.toUpperCase()} — ${brief.whyThisMightGetShared || ""}`, style: { fontSize: "12px", color: brief.shareabilityScore === "high" ? "#5A9A5A" : brief.shareabilityScore === "medium" ? "#9A8A3A" : "#9A4A4A", fontFamily: "monospace", lineHeight: 1.6 } }] : []),
     { key: "caption", label: "Caption", field: brief.caption, style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
     { key: "hashtags", label: "Hashtags", field: brief.hashtags, style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
     { key: "cta", label: "CTA", field: brief.cta, style: { fontSize: "15px", fontWeight: "600", color: accent } },
