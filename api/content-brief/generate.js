@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Invalid input types" });
   }
 
-  const tokenLimit = typeof max_tokens === "number" && max_tokens > 0 && max_tokens <= 4096
+  const tokenLimit = typeof max_tokens === "number" && max_tokens > 0 && max_tokens <= 8096
     ? max_tokens
     : 500;
 
@@ -59,8 +59,8 @@ export default async function handler(req, res) {
       const end = clean.lastIndexOf("}");
       if (start === -1 || end === -1) throw new Error("No JSON found");
       parsed = JSON.parse(clean.slice(start, end + 1));
-    } catch {
-      return res.status(502).json({ error: "AI returned invalid JSON", raw: clean });
+    } catch (parseErr) {
+      return res.status(502).json({ error: "AI returned invalid JSON", detail: parseErr.message, raw: clean.slice(0, 500) });
     }
 
     return res.status(200).json(parsed);
