@@ -1,5 +1,10 @@
 import { useState, useRef, useCallback } from "react";
 
+const NO86_PHOTO_PROMPT_SYSTEM = `You generate photo prompts for No. 86, a non-alcoholic whiskey alternative. Given a hook and content category, write a single assembled photo prompt using the master template below. Return ONLY valid JSON. Start with { and end with }. No markdown. No explanation.
+{"photoPrompt":"..."}
+MASTER TEMPLATE — write SETTING, SUBJECT, SUBJECT ACTION, VISUAL STORY, BOTTLE PLACEMENT, and LIGHTING AND PROPS fresh based on the hook. Keep everything else word for word.
+Use the attached No. 86 bottle as the exact product reference. Vertical 4:5 lifestyle photograph for Instagram and TikTok. Candid UGC-style photograph captured during a genuine everyday moment. The image should feel observed rather than directed. No posing. No eye contact with the camera. No staged feeling. The No. 86 bottle should appear naturally within the environment and never feel like the subject of the image. It should feel like part of an existing ritual rather than a product placement. SETTING: [specific setting — kitchen counter, back porch, car seat, hotel room, firepit, bar cart, apartment balcony, couch, gym parking lot, etc.] SUBJECT: [one subject demographic matched to the content: men 30–45 for after-work/ritual, men 45–55 for firepit/mature ritual, women 30–45 for partner-noticed/night routine, adults 25–34 for identity-shift/sober-curious. Race rotates: Black man, Black woman, white man, white woman, Latino man, Latina woman, mixed race man, mixed race woman, ambiguous man, ambiguous woman. Do not call attention to race. No children.] SUBJECT ACTION: [what the person is doing — real, not posed: leaning back, turning a glass slowly, staring at the yard, watching the grill cool, reading, etc.] VISUAL STORY: [4–8 short lines describing the emotional moment — what is happening emotionally, not physically.] BOTTLE PLACEMENT: [where the No. 86 bottle sits naturally — never the hero of the shot.] LIGHTING AND PROPS: [time of day, light quality, props that make the scene feel real.] SUBJECT DIRECTION: The person should make the viewer think: I want to be that person right now. Not: I feel bad for that person. POSTURE: Settled. Weight back. Earned rest. Comfortable. Not slumped. FACE: Neutral to quietly satisfied. Just exhaled. Not looking down. No exaggerated emotion. ENERGY: Still. Grounded. Not restless. Not checking phone. ASPIRATION: Arrival, not escape. EMOTIONAL DIRECTION: Nobody needs anything from me right now. Correct expression: someone who just sat down and realized they have nowhere to be. UGC REALISM GUARDRAIL: Should look like a real person captured it, not an agency campaign. Prefer imperfect framing, believable rooms, real facial neutrality, slightly messy lived-in environment. Avoid cinematic overproduction. PHOTOGRAPHY STYLE: Authentic UGC. Documentary. Natural depth of field. Light film grain. Slightly imperfect composition. Real-world lighting. Lived-in environment. BRAND MOOD: Relief. Presence. Clarity. Calm. Self-control. Quiet confidence. NEGATIVE PROMPTS: Sadness. Depression. Loneliness. Slumped posture. Head down in defeat. Party scene. Children. Celebration. Bar scene. Influencer pose. Hero bottle shot. Studio lighting. Stock photography. Corporate branding. Luxury marketing aesthetic. CGI. Text. Watermark. Perfectly staged composition. Exaggerated emotions. Hyper-sharp bottle. Commercial product photography. Agency campaign aesthetic. Designer interior. Model expression.`;
+
 const MODES = [
   { key: "social", label: "Social Post" },
   { key: "ugc", label: "UGC Image" },
@@ -74,15 +79,8 @@ BEST EXAMPLES (voice reference only):
 "Nobody stops drinking because you made them feel bad about it."
 "The goal isn't to never drink again. The goal is to never need to."
 "Most people do not realize the drink after work is not about the drink. It is about the 20 minutes of silence nobody gave you all day."
-PHOTO PROMPT:
-Also generate a photoPrompt for this post using the No. 86 master template below.
-Write these sections fresh based on the specific content idea: SETTING, SUBJECT, SUBJECT ACTION, VISUAL STORY, BOTTLE PLACEMENT, LIGHTING AND PROPS.
-Keep all other sections exactly as written.
-Do not make every image a patio scene. Do not make every image a man sitting alone. Do not make every image blue hour. Do not make every image a glass-in-hand shot. Vary the setting, activity, bottle placement, and lighting while keeping the emotional DNA consistent.
-NO. 86 MASTER TEMPLATE — assemble the full photoPrompt using this exact structure:
-Use the attached No. 86 bottle as the exact product reference. Vertical 4:5 lifestyle photograph for Instagram and TikTok. Candid UGC-style photograph captured during a genuine everyday moment. The image should feel observed rather than directed. No posing. No eye contact with the camera. No staged feeling. The No. 86 bottle should appear naturally within the environment and never feel like the subject of the image. It should feel like part of an existing ritual rather than a product placement. SETTING: [write the specific setting for this post — kitchen counter, back porch, car seat, gym parking lot, hotel room, firepit, bar cart, office desk, apartment balcony, couch, etc.] SUBJECT: [write one subject demographic based on the use-case logic: use men 30 to 45 most for after-work and ritual content, men 45 to 55 for firepit and mature ritual, women 30 to 45 for partner-noticed and night routine, adults 25 to 34 for identity-shift and sober-curious. Race rotates naturally: Black man, Black woman, white man, white woman, Latino man, Latina woman, mixed race man, mixed race woman, ambiguous man, ambiguous woman. Do not call attention to race. Do not use children.] SUBJECT ACTION: [write what the person is doing — not performing for a camera, doing something real: leaning back, turning a glass slowly, reading, scrolling, staring at the yard, watching the grill cool down, etc.] VISUAL STORY: [write 4 to 8 short lines describing the emotional moment — what is happening emotionally, not physically. Short lines. No full sentences required.] BOTTLE PLACEMENT: [write where the No. 86 bottle sits naturally in the scene — on the arm of a chair, on a kitchen counter in the background, on the table beside a plate, on the bar cart, etc. It should never be the hero of the shot.] LIGHTING AND PROPS: [write the time of day, light quality, and any props that make the scene feel real — golden hour, dim lamp, overhead kitchen light, morning sun through blinds, phone face down on table, condensation on glass, plate being cleared, book open nearby, etc.] SUBJECT DIRECTION: The person should make the viewer think: I want to be that person right now. Not: I feel bad for that person. POSTURE: Settled. Weight back. Earned rest. Comfortable. Not slumped. Not defeated. FACE: Neutral to quietly satisfied. Just exhaled. Not looking down at the floor. No exaggerated emotion. ENERGY: Still. Grounded. Not restless. Not checking phone. ASPIRATION: Arrival, not escape. EMOTIONAL DIRECTION: Nobody needs anything from me right now. If the expression reads as sad, tired, or troubled, it is wrong. The correct expression is someone who just sat down and realized they have nowhere to be. UGC REALISM GUARDRAIL: The image should look like a real person or small brand captured it, not like an agency campaign. Prefer imperfect framing over perfect composition. Prefer believable rooms over designer interiors. Prefer real facial neutrality over model expressions. Prefer a slightly messy, lived-in environment over a styled set. Avoid cinematic overproduction. PHOTOGRAPHY STYLE: Authentic UGC. Documentary photography. Natural depth of field. Light film grain. Slightly imperfect composition. Real-world lighting. Environment feels lived-in, not styled. BRAND MOOD: Relief. Presence. Clarity. Calm. Self-control. Quiet confidence. NEGATIVE PROMPTS: Sadness. Depression. Loneliness. Slumped posture. Head down in defeat. Party scene. Children. Celebration. Bar scene. Influencer pose. Hero bottle shot. Studio lighting. Stock photography. Corporate branding. Luxury marketing aesthetic. CGI. Text. Watermark. Perfectly staged composition. Exaggerated emotions. Hyper-sharp bottle. Commercial product photography. Agency campaign aesthetic. Designer interior. Model expression.
 Return ONLY valid JSON. No explanation before or after. No markdown. No code blocks. Start your response with { and end with }.
-{"hook":"...","bestHook":"...","hookOptions":["hook1","hook2","hook3","hook4","hook5","hook6","hook7","hook8"],"shareabilityScore":"high","whyThisMightGetShared":"one sentence reason","caption":"...","hashtags":"#tag1 #tag2 #tag3 #tag4 #tag5","cta":"...","photoPrompt":"..."}`,
+{"hook":"...","bestHook":"...","hookOptions":["hook1","hook2","hook3","hook4","hook5","hook6","hook7","hook8"],"shareabilityScore":"high","whyThisMightGetShared":"one sentence reason","caption":"...","hashtags":"#tag1 #tag2 #tag3 #tag4 #tag5","cta":"..."}`,
     imageSystemPrompt: `You write static image ad concepts for No. 86, a non-alcoholic whiskey alternative for men 30–45.
 BRAND VOICE: Calm. Masculine. Direct. Premium.
 CORE MESSAGE: Keep the ritual. Lose the fog.
@@ -399,15 +397,36 @@ ${recentHooksBlock}${modeInstruction}`;
   };
 
   const generateImage = async () => {
-    if (!brief?.photoPrompt) return;
     setImageLoading(true);
     setImageError(null);
     setGeneratedImage(null);
     try {
+      let photoPrompt = brief?.photoPrompt;
+
+      // Social Post mode: photo prompt not in brief — generate it now
+      if (!photoPrompt && mode === "social" && brand === "no86") {
+        const promptRes = await fetch("/api/content-brief/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            system: NO86_PHOTO_PROMPT_SYSTEM,
+            messages: [{ role: "user", content: `Hook: ${brief.hook}\nContent category: ${category}\nGenerate the photo prompt now.` }],
+            max_tokens: 1200
+          })
+        });
+        const promptData = await promptRes.json();
+        if (!promptRes.ok || promptData.error) throw new Error(promptData.error || "Failed to generate photo prompt");
+        photoPrompt = promptData.photoPrompt;
+        if (!photoPrompt) throw new Error("No photo prompt returned");
+        setBrief((prev) => ({ ...prev, photoPrompt }));
+      }
+
+      if (!photoPrompt) throw new Error("No photo prompt available");
+
       const response = await fetch("/api/content-brief/generate-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ photoPrompt: brief.photoPrompt, brand, mode })
+        body: JSON.stringify({ photoPrompt, brand, mode })
       });
       const parsed = await response.json();
       if (!response.ok || parsed.error) throw new Error(parsed.error || "Image generation failed");
@@ -580,8 +599,8 @@ ${recentHooksBlock}${modeInstruction}`;
               </div>
             ))}
 
-            {/* Generate Image — shown when photoPrompt exists and mode is image */}
-            {brief.photoPrompt && (
+            {/* Generate Image — shown for image modes (have photoPrompt) or no86 social post */}
+            {(brief.photoPrompt || (mode === "social" && brand === "no86")) && (
               <div style={{ padding: "20px", borderTop: `1px solid ${config.border}` }}>
                 <div style={{ fontSize: "10px", letterSpacing: "2px", color: "#444", marginBottom: "12px", textTransform: "uppercase", fontFamily: "monospace" }}>Generated Image</div>
                 <button
