@@ -366,6 +366,19 @@ social observation: Names something many people do but rarely say out loud.
 hard contrast: Uses a clean before/after or this/not-that contrast.
 unexpected admission: Starts with a surprising, honest admission.`;
 
+const AUDIENCE_OPTIONS = ["Solo", "Couples", "Friends", "Family"];
+
+const AUDIENCE_RULES = {
+  Solo: `Audience context: Solo
+Focus on personal ritual, silence, control, clarity, and the moment the day finally stops asking something from the person. No loneliness. No sadness. The person should feel aspirational and grounded.`,
+  Couples: `Audience context: Couples
+Focus on quiet connection, shared space, dinner cleanup, couch, patio, kitchen, or end-of-night ritual together. Do not make it romantic cliché. Do not make it sexual. Do not make the partner look like a prop. The moment should feel real, calm, and lived-in.`,
+  Friends: `Audience context: Friends
+Focus on social ritual without party energy. Use game night, grill night, firepit, steak night, backyard, or dinner table. No bar scene. No drunken behavior. No celebration energy. The point is belonging without fog.`,
+  Family: `Audience context: Family
+Focus on presence, responsibility, after-bedtime quiet, dinner cleanup, or the house finally settling. Do not show children as the main focus. Children may be implied through toys, homework, lunchbox, hallway light, or a closed bedroom door — do not make them the subject. No guilt-heavy parenting copy. Tone should be calm and grounded, not shame-based.`
+};
+
 const pick = (arr, exclude) => {
   const pool = exclude ? arr.filter((x) => x !== exclude) : arr;
   return pool[Math.floor(Math.random() * pool.length)];
@@ -387,6 +400,7 @@ export default function ContentBrief() {
   const [imageLoading, setImageLoading] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
   const [imageError, setImageError] = useState(null);
+  const [audienceContext, setAudienceContext] = useState("Solo");
   const [recentHooks, setRecentHooks] = useState([]);
   const [selectedHook, setSelectedHook] = useState(null);
   const [promptLoading, setPromptLoading] = useState(false);
@@ -439,12 +453,14 @@ export default function ContentBrief() {
       ? "Generate a Product Belief post. Start with a human truth if possible. Product mention is allowed. Rotate the product angle — taste, how to drink, objection, founder, proof."
       : "Generate a post. Every regeneration should explore a different tension, moment, or idea inside this category.";
 
+    const audienceBlock = (b === "no86" && isNo86Mode(m)) ? `\n${AUDIENCE_RULES[audienceContext]}\n` : "";
+
     const userContent = `Content mode: ${m === "ugc" ? "Static UGC Image" : m === "paid" ? "Paid Ad Image" : m === "emotional" ? "Emotional Truth" : m === "ritual" ? "Ritual / Lifestyle" : m === "product" ? "Product Belief" : "Social Post"}
 Content category: ${c}
 Content angle: ${angle}
 Required hook family: ${hookFamily}
 ${HOOK_FAMILY_DEFINITIONS}
-${recentHooksBlock}${modeInstruction}`;
+${audienceBlock}${recentHooksBlock}${modeInstruction}`;
 
     try {
       const response = await fetch("/api/content-brief/generate", {
@@ -494,7 +510,7 @@ ${recentHooksBlock}${modeInstruction}`;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           system: getSystemPrompt("no86", tabKey),
-          messages: [{ role: "user", content: `Content mode: ${tabKey === "emotional" ? "Emotional Truth" : tabKey === "ritual" ? "Ritual / Lifestyle" : "Product Belief"}\nContent category: ${cat}\nContent angle: ${angle}\nRequired hook family: ${hookFamily}\n${HOOK_FAMILY_DEFINITIONS}\n${modeInstr}` }],
+          messages: [{ role: "user", content: `Content mode: ${tabKey === "emotional" ? "Emotional Truth" : tabKey === "ritual" ? "Ritual / Lifestyle" : "Product Belief"}\nContent category: ${cat}\nContent angle: ${angle}\nRequired hook family: ${hookFamily}\n${HOOK_FAMILY_DEFINITIONS}\n${AUDIENCE_RULES[audienceContext]}\n${modeInstr}` }],
           max_tokens: tabKey === "emotional" ? 2000 : 1500
         })
       }).then((r) => r.json()).then((d) => ({ ...d, _tab: tabKey, _category: cat }));
@@ -678,7 +694,7 @@ ${recentHooksBlock}${modeInstruction}`;
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {Object.entries(BRAND_CONFIGS).map(([key, cfg]) => (
               <button key={key}
-                onClick={() => { setBrand(key); setMode(key === "no86" ? "emotional" : "social"); setCategory(null); setBrief(null); setError(null); setDaily3(null); resetMemory(); }}
+                onClick={() => { setBrand(key); setMode(key === "no86" ? "emotional" : "social"); setCategory(null); setBrief(null); setError(null); setDaily3(null); setAudienceContext("Solo"); resetMemory(); }}
                 style={{ background: brand === key ? cfg.surface : "transparent", border: `1px solid ${brand === key ? cfg.accent : "#222"}`, borderRadius: "10px", padding: "14px 18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", textAlign: "left" }}>
                 <div>
                   <div style={{ fontSize: "16px", fontWeight: "600", color: brand === key ? cfg.accent : "#CCC", marginBottom: "2px" }}>{cfg.label}</div>
@@ -706,10 +722,26 @@ ${recentHooksBlock}${modeInstruction}`;
           </div>
         )}
 
-        {/* 03 Category */}
+        {/* 03 Audience Context — No. 86 only */}
+        {brand === "no86" && (
+          <div style={{ marginBottom: "28px" }}>
+            <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>03 Audience Context</div>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              {AUDIENCE_OPTIONS.map((a) => (
+                <button key={a}
+                  onClick={() => { setAudienceContext(a); setBrief(null); setError(null); setDaily3(null); }}
+                  style={{ flex: 1, minWidth: "60px", background: audienceContext === a ? config.surface : "transparent", border: `1px solid ${audienceContext === a ? accent : "#222"}`, borderRadius: "8px", padding: "10px 8px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace", color: audienceContext === a ? accent : "#666", fontWeight: audienceContext === a ? "700" : "400", letterSpacing: "0.5px", textTransform: "uppercase", textAlign: "center" }}>
+                  {a}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 04 Category */}
         {brand && (
           <div style={{ marginBottom: "28px" }}>
-            <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>03 Content Category</div>
+            <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>{brand === "no86" ? "04" : "03"} Content Category</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               {config.categories[mode].map((cat) => (
                 <button key={cat}
@@ -732,7 +764,7 @@ ${recentHooksBlock}${modeInstruction}`;
         {/* Generate Daily 3 */}
         {brand === "no86" && !loading && !brief && !daily3 && !daily3Loading && (
           <button onClick={generateDaily3} style={{ width: "100%", background: "transparent", border: `1px solid ${accent}`, borderRadius: "10px", padding: "14px", cursor: "pointer", fontSize: "13px", fontWeight: "700", color: accent, letterSpacing: "1.5px", textTransform: "uppercase", fontFamily: "monospace" }}>
-            Generate Daily 3
+            Generate Daily 3 — {audienceContext}
           </button>
         )}
 
@@ -799,7 +831,7 @@ ${recentHooksBlock}${modeInstruction}`;
             <div style={{ padding: "16px 20px", borderBottom: `1px solid ${config.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div>
                 <div style={{ fontSize: "11px", letterSpacing: "2px", color: accent, textTransform: "uppercase", fontFamily: "monospace" }}>
-                  {(brand === "no86" ? NO86_MODES : PERSONAL_MODES).find((m) => m.key === mode)?.label} | {config.label}
+                  {(brand === "no86" ? NO86_MODES : PERSONAL_MODES).find((m) => m.key === mode)?.label}{brand === "no86" ? ` — ${audienceContext}` : ""} | {config.label}
                 </div>
                 {brief.hookFamily && (
                   <div style={{ fontSize: "10px", color: "#555", fontFamily: "monospace", marginTop: "3px", letterSpacing: "0.5px" }}>
