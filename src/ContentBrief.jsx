@@ -645,7 +645,7 @@ ${recentHooksBlock}${modeInstruction}`;
   ] : [];
 
   const no86Fields = brief ? [
-    { key: "onScreenText", label: "On-Screen Text", field: selectedHook || brief.hook || brief.onScreenText, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
+    { key: "onScreenText", label: "On-Screen Text", field: selectedHook || brief.hookOptions?.[0] || brief.hook || brief.onScreenText, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
     { key: "imageConcept", label: "Image Concept",  field: brief.imageConcept, style: { fontSize: "14px", lineHeight: "1.7", color: "#C8C0B4", fontStyle: "italic" } },
     { key: "caption",     label: "Caption",      field: brief.caption,     style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
     ...(brief.shareable !== undefined ? [{ key: "shareable", label: "Shareable", field: brief.shareable ? "✓ Passes the "this is me" test" : "✗ May not be shareable — consider regenerating", style: { fontSize: "12px", color: brief.shareable ? "#5A9A5A" : "#9A4A4A", fontFamily: "monospace" } }] : []),
@@ -830,10 +830,17 @@ ${recentHooksBlock}${modeInstruction}`;
                 <div style={{ fontSize: "10px", letterSpacing: "2px", color: "#444", marginBottom: "12px", textTransform: "uppercase", fontFamily: "monospace" }}>Hook Options — tap to select</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   {brief.hookOptions.map((h, i) => (
-                    <button key={i} onClick={() => { setSelectedHook(h); setBrief((prev) => ({ ...prev, photoPrompt: null })); }}
-                      style={{ background: selectedHook === h ? config.surface : "transparent", border: `1px solid ${selectedHook === h ? accent : config.border}`, borderRadius: "8px", padding: "12px 14px", cursor: "pointer", textAlign: "left", fontSize: "13px", lineHeight: 1.6, color: selectedHook === h ? accent : "#888", fontFamily: "'Georgia', serif" }}>
-                      {h}
-                    </button>
+                    <div key={i} style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}>
+                      <button onClick={() => { setSelectedHook(h); setBrief((prev) => ({ ...prev, photoPrompt: null })); }}
+                        style={{ flex: 1, background: selectedHook === h ? config.surface : "transparent", border: `1px solid ${selectedHook === h ? accent : config.border}`, borderRadius: "8px", padding: "12px 14px", cursor: "pointer", textAlign: "left", fontSize: "13px", lineHeight: 1.6, color: selectedHook === h ? accent : "#888", fontFamily: "'Georgia', serif" }}>
+                        {h}
+                      </button>
+                      {selectedHook === h && (
+                        <button onClick={() => copy(h, `hook-opt-${i}`)} style={{ flexShrink: 0, background: "transparent", border: `1px solid ${copied === `hook-opt-${i}` ? accent : config.border}`, color: copied === `hook-opt-${i}` ? accent : "#555", padding: "8px 10px", borderRadius: "6px", cursor: "pointer", fontSize: "10px", fontFamily: "monospace", alignSelf: "stretch" }}>
+                          {copied === `hook-opt-${i}` ? "COPIED" : "COPY"}
+                        </button>
+                      )}
+                    </div>
                   ))}
                 </div>
                 {selectedHook && (
