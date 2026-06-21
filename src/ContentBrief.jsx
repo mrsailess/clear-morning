@@ -14,13 +14,24 @@ NEGATIVE PROMPTS: Hero bottle shot. Influencer pose. Subject looking at camera. 
 
 const NO86_PHOTO_PROMPT_SYSTEM = `You generate photo prompts for No. 86, a non-alcoholic whiskey alternative. Given a hook and content category, write a single assembled photo prompt using the master template below. Return ONLY valid JSON. Start with { and end with }. No markdown. No explanation.
 {"photoPrompt":"..."}
-MASTER TEMPLATE — write SETTING, SUBJECT, SUBJECT ACTION, VISUAL STORY, BOTTLE PLACEMENT, and PROPS fresh based on the hook. Keep all other sections exactly as written.
+MASTER TEMPLATE — write EMOTIONAL TRUTH, MOMENT, SETTING, SUBJECT, BOTTLE PLACEMENT, and PROPS fresh based on the hook. Keep all other sections exactly as written.
 ${NO86_MASTER_TEMPLATE}`;
 
+const NO86_PLACEMENT_PHOTO_SYSTEM = `You generate product photo prompts for No. 86, a non-alcoholic whiskey alternative. The bottle is the hero or near-hero. Return ONLY valid JSON. Start with { and end with }. No markdown. No explanation.
+{"photoPrompt":"..."}
+RULES:
+The No. 86 bottle should be clearly visible, label readable, and intentionally placed — but not artificially staged.
+Product-forward does not mean overproduced. Keep it premium, warm, realistic, and clean.
+Use settings like: dark wood bar cart, kitchen counter, patio table, steak night table, rocks glass beside bottle, bottle beside one large clear ice cube, bottle with oak or caramel cues, premium dark surface with warm practical light, Amazon-style clean layout, Shopify-style hero lifestyle image.
+LIGHTING: Natural readable light. Warm. Clean. No studio flash. No harsh shadows. Label must be readable.
+STYLE: Premium. Warm. Masculine. Understated. Not cheesy. Not a generic whiskey ad. Not a bar scene.
+NEGATIVE PROMPTS: Fake text in image. Bar scene. Generic whiskey ad. Cheap ecommerce look. Studio flash. Artificial staging. CGI. Watermark. Text. Overproduced lighting.`;
+
 const NO86_MODES = [
-  { key: "emotional", label: "Emotional Truth" },
-  { key: "ritual",   label: "Ritual / Lifestyle" },
-  { key: "product",  label: "Product Belief" }
+  { key: "emotional",  label: "Emotional Truth" },
+  { key: "ritual",     label: "Ritual / Lifestyle" },
+  { key: "product",    label: "Product Belief" },
+  { key: "placement",  label: "Creative Placement" }
 ];
 
 const PERSONAL_MODES = [
@@ -71,6 +82,21 @@ const BRAND_CONFIGS = {
         "First Pour Experience",
         "When To Reach For It",
         "Why It Works For The Ritual"
+      ],
+      placement: [
+        "Hero Bottle",
+        "Bar Cart",
+        "How To Pour",
+        "Neat / Over Ice / Mixed",
+        "50/50",
+        "Flavor Profile",
+        "Bottle With Glass",
+        "Amazon Listing Image",
+        "Dark Premium Product Shot",
+        "Kitchen Counter Product Shot",
+        "Patio Table Product Shot",
+        "Gift / Host Bottle",
+        "Review / Social Proof Image"
       ]
     },
     systemPrompt: `You write TikTok/Instagram content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
@@ -236,7 +262,21 @@ GOOD EXAMPLES:
 HASHTAGS: 5–8 as one string. Prefer: #no86 #nonalcoholicwhiskey #mindfuldrinking #whiskeyritual #sobercurious #drinkno86
 SHAREABILITY CHECK: Before finalizing, confirm this post passes the "this is me" test. Set shareable to true or false.
 Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
-{"postType":"Product Belief","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","caption":"...","shareable":true,"cta":"...","hashtags":"..."}`
+{"postType":"Product Belief","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","caption":"...","shareable":true,"cta":"...","hashtags":"..."}`,
+    placementPrompt: `You write Creative Product Placement content for No. 86, a non-alcoholic whiskey alternative.
+JOB: Make the No. 86 bottle visually memorable. Use cases include Amazon secondary images, Shopify assets, Meta ads, retargeting, product education, and brand memory posts.
+READING LEVEL: 5th–8th grade. Short sentences. No em dashes.
+CORE RULE: The bottle is the hero or near-hero. Still keep it premium, warm, and brand-right — not cheap ecommerce.
+ON-SCREEN TEXT: 10–25 words. Clean product-forward copy. Can mention No. 86 directly. Short lines. Examples: "Keep the ritual. Lose the fog." / "Neat. Over ice. 50/50." / "Same pour. Clearer morning." / "Not bourbon. Not pretending to be."
+IMAGE CONCEPT: Describe a specific product-forward scene — bottle centered or clearly framed, label readable, setting supports the product. Premium but not overproduced.
+CAPTION: 30–60 words. Supports the image. Educates or builds trust. Short sentences.
+CTA: Soft product bridge. Max 12 words.
+TONE: Premium. Warm. Clean. Realistic. Masculine. Understated. Not cheesy. Not salesy.
+AVOID: Fake text inside the image. Bar scene energy. Generic whiskey ad. Cheap product shot feel. Overproduction. Hard sell.
+HASHTAGS: 5–8 as one string. Prefer: #no86 #nonalcoholicwhiskey #whiskeyritual #mindfuldrinking #drinkno86
+SHAREABILITY CHECK: Set shareable to true or false.
+Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
+{"postType":"Creative Product Placement","audienceContext":"...","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","caption":"...","shareable":true,"cta":"...","hashtags":"..."}`
   },
   personal: {
     label: "@mr.sailes",
@@ -395,7 +435,7 @@ const pick = (arr, exclude) => {
 };
 
 const isImageMode = (m) => m === "ugc" || m === "paid";
-const isNo86Mode = (m) => m === "emotional" || m === "ritual" || m === "product";
+const isNo86Mode = (m) => m === "emotional" || m === "ritual" || m === "product" || m === "placement";
 
 export default function ContentBrief() {
   const [brand, setBrand] = useState(null);
@@ -423,9 +463,10 @@ export default function ContentBrief() {
 
   const getSystemPrompt = (b, m) => {
     if (b === "no86") {
-      if (m === "emotional") return BRAND_CONFIGS.no86.emotionalPrompt;
-      if (m === "ritual")    return BRAND_CONFIGS.no86.ritualPrompt;
-      if (m === "product")   return BRAND_CONFIGS.no86.productPrompt;
+      if (m === "emotional")  return BRAND_CONFIGS.no86.emotionalPrompt;
+      if (m === "ritual")     return BRAND_CONFIGS.no86.ritualPrompt;
+      if (m === "product")    return BRAND_CONFIGS.no86.productPrompt;
+      if (m === "placement")  return BRAND_CONFIGS.no86.placementPrompt;
     }
     return isImageMode(m) ? BRAND_CONFIGS[b].imageSystemPrompt : BRAND_CONFIGS[b].systemPrompt;
   };
@@ -461,11 +502,13 @@ export default function ContentBrief() {
       ? "Generate a Ritual / Lifestyle post. Start with the ritual moment. Show where No. 86 belongs naturally. Use a real lived-in setting."
       : m === "product"
       ? "Generate a Product Belief post. Start with a human truth if possible. Product mention is allowed. Rotate the product angle — taste, how to drink, objection, founder, proof."
+      : m === "placement"
+      ? "Generate a Creative Product Placement concept. The bottle is the hero or near-hero. Make it visually memorable and brand-right. Premium, warm, and clean — not a generic whiskey ad."
       : "Generate a post. Every regeneration should explore a different tension, moment, or idea inside this category.";
 
     const audienceBlock = (b === "no86" && isNo86Mode(m)) ? `\n${AUDIENCE_RULES[audienceContext]}\n` : "";
 
-    const userContent = `Content mode: ${m === "ugc" ? "Static UGC Image" : m === "paid" ? "Paid Ad Image" : m === "emotional" ? "Emotional Truth" : m === "ritual" ? "Ritual / Lifestyle" : m === "product" ? "Product Belief" : "Social Post"}
+    const userContent = `Content mode: ${m === "ugc" ? "Static UGC Image" : m === "paid" ? "Paid Ad Image" : m === "emotional" ? "Emotional Truth" : m === "ritual" ? "Ritual / Lifestyle" : m === "product" ? "Product Belief" : m === "placement" ? "Creative Product Placement" : "Social Post"}
 Content category: ${c}
 Content angle: ${angle}
 Required hook family: ${hookFamily}
@@ -558,7 +601,7 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            system: NO86_PHOTO_PROMPT_SYSTEM,
+            system: mode === "placement" ? NO86_PLACEMENT_PHOTO_SYSTEM : NO86_PHOTO_PROMPT_SYSTEM,
             messages: [{ role: "user", content: `Hook: ${selectedHook || brief.hook || brief.onScreenText || ""}\nContent category: ${category}\nGenerate the photo prompt now.` }],
             max_tokens: 1200
           })
@@ -591,12 +634,13 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
     if (!hook) return;
     setPromptLoading(true);
     setBrief((prev) => ({ ...prev, photoPrompt: null }));
+    const photoSystem = mode === "placement" ? NO86_PLACEMENT_PHOTO_SYSTEM : NO86_PHOTO_PROMPT_SYSTEM;
     try {
       const res = await fetch("/api/content-brief/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          system: NO86_PHOTO_PROMPT_SYSTEM,
+          system: photoSystem,
           messages: [{ role: "user", content: `Hook: ${hook}\nContent category: ${category}\nGenerate the photo prompt now.` }],
           max_tokens: 1200
         })
@@ -896,8 +940,8 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
               </div>
             )}
 
-            {/* Generate Photo Prompt — for ritual/product tabs (no hookOptions) */}
-            {brand === "no86" && (mode === "ritual" || mode === "product") && (
+            {/* Generate Photo Prompt — for ritual/product/placement tabs (no hookOptions) */}
+            {brand === "no86" && (mode === "ritual" || mode === "product" || mode === "placement") && (
               <div style={{ padding: "20px", borderTop: `1px solid ${config.border}` }}>
                 <button
                   onClick={() => generatePhotoPrompt(selectedHook || brief.onScreenText || "")}
