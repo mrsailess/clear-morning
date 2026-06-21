@@ -864,8 +864,8 @@ ${recentHooksBlock}${modeInstruction}`;
               </div>
             )}
 
-            {/* Generate Image — shown for all no86 tabs */}
-            {brand === "no86" && (brief.photoPrompt || mode === "emotional") && (
+            {/* Generate Image — hidden for now */}
+            {false && brand === "no86" && (brief.photoPrompt || mode === "emotional") && (
               <div style={{ padding: "20px", borderTop: `1px solid ${config.border}` }}>
                 <div style={{ fontSize: "10px", letterSpacing: "2px", color: "#444", marginBottom: "12px", textTransform: "uppercase", fontFamily: "monospace" }}>Generated Image</div>
                 <button
