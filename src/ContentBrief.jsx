@@ -7,10 +7,16 @@ const NO86_PHOTO_PROMPT_SYSTEM = `You generate photo prompts for No. 86, a non-a
 MASTER TEMPLATE — write SETTING, SUBJECT, SUBJECT ACTION, VISUAL STORY, BOTTLE PLACEMENT, and PROPS fresh based on the hook. Keep all other sections exactly as written.
 ${NO86_MASTER_TEMPLATE}`;
 
-const MODES = [
+const NO86_MODES = [
+  { key: "emotional", label: "Emotional Truth" },
+  { key: "ritual",   label: "Ritual / Lifestyle" },
+  { key: "product",  label: "Product Belief" }
+];
+
+const PERSONAL_MODES = [
   { key: "social", label: "Social Post" },
-  { key: "ugc", label: "UGC Image" },
-  { key: "paid", label: "Conversion Image" }
+  { key: "ugc",   label: "UGC Image" },
+  { key: "paid",  label: "Conversion Image" }
 ];
 
 const BRAND_CONFIGS = {
@@ -22,41 +28,39 @@ const BRAND_CONFIGS = {
     border: "#2A2010",
     tagline: "Keep the ritual. Lose the fog.",
     categories: {
-      social: [
-        "Emotional Truth",
-        "Ritual & Lifestyle",
-        "Founder Story",
-        "Product Education",
-        "Customer Story",
-        "Social Proof"
+      emotional: [
+        "After Work Silence",
+        "The Tradeoff Tomorrow",
+        "The Ritual, Not the Alcohol",
+        "Identity Shift",
+        "Showing Up Fully",
+        "Bored, Stressed, or Just Empty",
+        "What You Actually Miss",
+        "Control and Clarity"
       ],
-      ugc: [
-        "Problem Aware",
-        "Ritual Replacement",
-        "Morning After",
-        "Taste Test",
+      ritual: [
+        "Patio Ritual",
+        "Steak Night",
+        "Kitchen Wind Down",
+        "Bar Cart",
+        "Firepit",
+        "Hotel Room",
+        "Home Office Reset",
+        "Weekend Porch",
+        "Dinner Table",
+        "Late Night Exhale"
+      ],
+      product: [
+        "What No. 86 Is",
+        "Taste Profile",
+        "How To Drink It",
+        "Why People Buy It",
         "Objection Handling",
         "Founder Story",
-        "Use Case",
-        "Partner Noticed",
-        "After Work Silence",
-        "Steak Night",
-        "Patio Ritual",
-        "Bar Cart"
-      ],
-      paid: [
-        "Problem Aware",
-        "Ritual Replacement",
-        "Morning After",
-        "Taste Test",
-        "Objection Handling",
-        "Founder Story",
-        "Use Case",
-        "Partner Noticed",
-        "After Work Silence",
-        "Steak Night",
-        "Patio Ritual",
-        "Bar Cart"
+        "Customer Reaction",
+        "First Pour Experience",
+        "When To Reach For It",
+        "Why It Works For The Ritual"
       ]
     },
     systemPrompt: `You write TikTok/Instagram content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
@@ -161,7 +165,69 @@ ${NO86_MASTER_TEMPLATE}
 NEVER USE:
 sobriety / recovery / quit drinking / nervous system / fixed that part / they were right / anything defensive or shame-based.
 Return ONLY valid JSON:
-{"angle":"...","imageConcept":"...","creatorType":"...","onScreenText":"...","caption":"...","cta":"...","hashtags":"...","photoPrompt":"..."}`
+{"angle":"...","imageConcept":"...","creatorType":"...","onScreenText":"...","caption":"...","cta":"...","hashtags":"...","photoPrompt":"..."}`,
+    emotionalPrompt: `You write Emotional Truth content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
+JOB: Reach, shares, followers, community. This is the daily non-negotiable.
+READING LEVEL: 5th–8th grade. Short sentences. Simple words. No em dashes.
+CORE RULE: Lead with a human truth. The post should feel like a private thought, not advice.
+ON-SCREEN TEXT: Usually should NOT mention No. 86. Optimize for someone sending it with "this is me."
+BOTTLE: May appear naturally in image. Never the hero.
+CAPTION: Bridges softly to No. 86. Use "That's why we made No. 86." only if it fits naturally.
+CTA: Invite reflection or comments. Soft. Max 12 words.
+TONE: "I noticed this too." Never "you need to fix this." Observe the tradeoff. Never scold.
+Prefer: quiet truth, simple contrast, private recognition, ritual language, morning-after clarity.
+BANNED: "the real you" / "full version of yourself" / "show up better" / "better version" / "level up" / "your highest self" / "nervous system" / "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "quit drinking" / "recovery" / "sober community"
+INTERNAL CHECK: Reject anything that sounds like a coach or lecture. If it sounds like a private thought — it is right.
+SHAREABILITY TEST: Would someone send this with "this is me"? Would they share it if the bottle were not there? If no — rethink.
+HOOK PROCESS: Generate 20 hooks internally. At least 12 emotional-truth, 5 specific-moment, max 3 product-led. Output 8 best as hookOptions each using a different hook family. Set bestHook and hook to the winner. Follow the required hook family from the user message.
+HOOK: 25–35 words. Varied structure. No fixed starters.
+CAPTION: 45–90 words. Short sentences. Never repeats hook. Tradeoff → ritual → No. 86 bridge → clarity.
+HASHTAGS: 5–8 as one string. Prefer: #mindfuldrinking #morningclarity #afterworkritual #menswellness #whiskeyritual #no86. Avoid: #alcoholfree #recovery #sobercommunity #quitdrinking
+GOOD EXAMPLES:
+"The drink after work was never about the drink. It was about the 20 minutes of silence nobody gave you all day."
+"Some nights you do not need another drink. You need the day to stop needing you."
+"The night feels easier. The morning asks for it back."
+Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
+{"postType":"Emotional Truth","subcategory":"...","angle":"...","hook":"...","bestHook":"...","hookOptions":["...","...","...","...","...","...","...","..."],"onScreenText":"...","imageConcept":"...","caption":"...","whyThisWorks":"...","whyThisMightGetShared":"...","cta":"...","hashtags":"..."}`,
+    ritualPrompt: `You write Ritual / Lifestyle content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
+JOB: Make No. 86 feel desirable and real in everyday life. Create desire through the ritual.
+READING LEVEL: 5th–8th grade. Short sentences. Simple words. No em dashes.
+CORE RULE: Start with the ritual, not the product. Show the moment where No. 86 belongs.
+ON-SCREEN TEXT: 25–40 words. Supports the image. Short lines. White space between them.
+PRODUCT VISIBILITY: More visible than Emotional Truth posts, but still feels natural. Never the hero.
+IMAGE: Real lived-in settings. Natural or realistic home lighting. No staged ad energy. No influencer posing.
+CAPTION: 45–80 words. The image carries the feeling. Text supports, does not overpower.
+CTA: Invite community. Max 12 words. Good: "What does your version of this look like?" / "What tells your day it is over?"
+TONE: Premium but understated. Calm. Real. Not a luxury ad. Not a bar ad.
+AVOID: Looking like an ad. Overly staged scenes. Product-first copy. Generic luxury lifestyle. Party energy. Bar energy.
+GOOD EXAMPLES:
+"Laptop closed. Phone face down. Glass on the table. That small pause matters more than people think."
+"Steak night does not need to turn into a slow morning."
+"The best part of the night is not always the drink. Sometimes it is the room finally getting quiet."
+HASHTAGS: 5–8 as one string. Prefer: #afterworkritual #steaknight #patiolife #ritualdrinks #no86 #mindfuldrinking
+PHOTO PROMPT: Generate a photoPrompt using the No. 86 master template below. Write SETTING, SUBJECT, SUBJECT ACTION, MOMENT / NATURAL ACTION, VISUAL STORY, BOTTLE PLACEMENT, and PROPS fresh based on the ritual. Keep all other sections exactly as written. Vary the setting and lighting — do not repeat the same scene every time.
+${NO86_MASTER_TEMPLATE}
+Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
+{"postType":"Ritual / Lifestyle","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","photoPrompt":"...","caption":"...","whyThisWorks":"...","whyThisMightGetShared":"...","cta":"...","hashtags":"..."}`,
+    productPrompt: `You write Product Belief content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
+JOB: Remove doubt and create purchase intent.
+READING LEVEL: 5th–8th grade. Short sentences. Simple words. No em dashes.
+CORE RULE: Product mention is allowed. Still start with a human truth when possible.
+ROTATE between: taste profile, how to drink it, 50/50 serve, less than 0.5% ABV, reviews, objection handling, founder story, Amazon social proof, comparison to whiskey experience (not flavor).
+KEEP IT: Simple and believable. Show belief not hype. Do not overclaim. Do not say it tastes exactly like bourbon. Do not use recovery or sobriety framing by default.
+ON-SCREEN TEXT: 25–40 words. Can mention No. 86 directly.
+CAPTION: 45–80 words. Explains, educates, or builds trust simply.
+CTA: Soft product bridge. Max 12 words. Good: "Try No. 86 tonight." / "Link in bio." / "Would this fit your ritual?"
+AVOID: Hard sell. Fake urgency. Medical claims. Wellness promises. Overexplaining. Cheesy product claims. Spam tone.
+GOOD EXAMPLES:
+"No. 86 is not trying to be bourbon. It is trying to keep the glass, the ice, and the pause without borrowing from tomorrow."
+"3 ways to pour No. 86: neat, over ice, or 50/50."
+"The flavor matters because the ritual matters."
+HASHTAGS: 5–8 as one string. Prefer: #no86 #nonalcoholicwhiskey #mindfuldrinking #whiskeyritual #sobercurious #drinkno86
+PHOTO PROMPT: Generate a photoPrompt using the No. 86 master template below. Write SETTING, SUBJECT, SUBJECT ACTION, MOMENT / NATURAL ACTION, VISUAL STORY, BOTTLE PLACEMENT, and PROPS fresh. The bottle can be slightly more prominent than in Emotional Truth posts but should still never feel like a product ad.
+${NO86_MASTER_TEMPLATE}
+Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
+{"postType":"Product Belief","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","photoPrompt":"...","caption":"...","whyThisWorks":"...","whyThisMightGetShared":"...","cta":"...","hashtags":"..."}`
   },
   personal: {
     label: "@mr.sailes",
@@ -307,10 +373,13 @@ const pick = (arr, exclude) => {
 };
 
 const isImageMode = (m) => m === "ugc" || m === "paid";
+const isNo86Mode = (m) => m === "emotional" || m === "ritual" || m === "product";
 
 export default function ContentBrief() {
   const [brand, setBrand] = useState(null);
-  const [mode, setMode] = useState("social");
+  const [mode, setMode] = useState("emotional");
+  const [daily3, setDaily3] = useState(null);
+  const [daily3Loading, setDaily3Loading] = useState(false);
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(false);
   const [brief, setBrief] = useState(null);
@@ -329,8 +398,14 @@ export default function ContentBrief() {
   const accent = config.accent;
   const canGenerate = brand && category;
 
-  const getSystemPrompt = (b, m) =>
-    isImageMode(m) ? BRAND_CONFIGS[b].imageSystemPrompt : BRAND_CONFIGS[b].systemPrompt;
+  const getSystemPrompt = (b, m) => {
+    if (b === "no86") {
+      if (m === "emotional") return BRAND_CONFIGS.no86.emotionalPrompt;
+      if (m === "ritual")    return BRAND_CONFIGS.no86.ritualPrompt;
+      if (m === "product")   return BRAND_CONFIGS.no86.productPrompt;
+    }
+    return isImageMode(m) ? BRAND_CONFIGS[b].imageSystemPrompt : BRAND_CONFIGS[b].systemPrompt;
+  };
 
   const generateBrief = async (overrides = {}) => {
     const b = overrides.brand ?? brand;
@@ -357,9 +432,15 @@ export default function ContentBrief() {
       ? "Generate a still-image UGC concept with 25 to 40 words of on-screen text. Feel like a real person posted it."
       : m === "paid"
       ? "Generate a still-image paid ad concept with 25 to 40 words of on-screen text and a stronger sales angle. Same UGC feel, but sharper product benefit and clearer CTA."
+      : m === "emotional"
+      ? "Generate an Emotional Truth post. Lead with a human truth. Do not mention No. 86 in the on-screen text. Optimize for shares and comments. Every regeneration should explore a different tension, moment, or idea."
+      : m === "ritual"
+      ? "Generate a Ritual / Lifestyle post. Start with the ritual moment. Show where No. 86 belongs naturally. Use a real lived-in setting."
+      : m === "product"
+      ? "Generate a Product Belief post. Start with a human truth if possible. Product mention is allowed. Rotate the product angle — taste, how to drink, objection, founder, proof."
       : "Generate a post. Every regeneration should explore a different tension, moment, or idea inside this category.";
 
-    const userContent = `Content mode: ${m === "ugc" ? "Static UGC Image" : m === "paid" ? "Paid Ad Image" : "Social Post"}
+    const userContent = `Content mode: ${m === "ugc" ? "Static UGC Image" : m === "paid" ? "Paid Ad Image" : m === "emotional" ? "Emotional Truth" : m === "ritual" ? "Ritual / Lifestyle" : m === "product" ? "Product Belief" : "Social Post"}
 Content category: ${c}
 Content angle: ${angle}
 Required hook family: ${hookFamily}
@@ -373,7 +454,7 @@ ${recentHooksBlock}${modeInstruction}`;
         body: JSON.stringify({
           system: getSystemPrompt(b, m),
           messages: [{ role: "user", content: userContent }],
-          max_tokens: isImageMode(m) ? 1500 : b === "no86" ? 2000 : 500
+          max_tokens: b === "no86" ? (m === "emotional" ? 2000 : 1500) : isImageMode(m) ? 1500 : 500
         })
       });
       if (!response.ok) {
@@ -382,7 +463,7 @@ ${recentHooksBlock}${modeInstruction}`;
       }
       const parsed = await response.json();
       if (parsed.error) throw new Error(`API error: ${parsed.error} ${parsed.detail || parsed.raw || ""}`);
-      if (!parsed.imageConcept && !parsed.hook) throw new Error(`Unexpected response: ${JSON.stringify(parsed)}`);
+      if (!parsed.imageConcept && !parsed.hook && !parsed.onScreenText) throw new Error(`Unexpected response: ${JSON.stringify(parsed)}`);
       setBrief({ ...parsed, hookFamily });
       setSelectedHook(parsed.bestHook || parsed.hook || null);
       const newHook = parsed.bestHook || parsed.hook || parsed.onScreenText || "";
@@ -391,6 +472,45 @@ ${recentHooksBlock}${modeInstruction}`;
       setError(err.message || "Failed to generate.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const generateDaily3 = async () => {
+    if (brand !== "no86") return;
+    setDaily3Loading(true);
+    setDaily3(null);
+    setError(null);
+    const angle = pick(CONTENT_ANGLES, lastAngle.current);
+    const hookFamily = pick(HOOK_FAMILIES, lastHookFamily.current);
+    const makeCall = (tabKey) => {
+      const cats = BRAND_CONFIGS.no86.categories[tabKey];
+      const cat = cats[Math.floor(Math.random() * cats.length)];
+      const modeInstr = tabKey === "emotional"
+        ? "Generate an Emotional Truth post. Lead with a human truth. Do not mention No. 86 in the on-screen text."
+        : tabKey === "ritual"
+        ? "Generate a Ritual / Lifestyle post. Start with the ritual moment. Use a real lived-in setting."
+        : "Generate a Product Belief post. Start with a human truth if possible. Product mention is allowed.";
+      return fetch("/api/content-brief/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system: getSystemPrompt("no86", tabKey),
+          messages: [{ role: "user", content: `Content mode: ${tabKey === "emotional" ? "Emotional Truth" : tabKey === "ritual" ? "Ritual / Lifestyle" : "Product Belief"}\nContent category: ${cat}\nContent angle: ${angle}\nRequired hook family: ${hookFamily}\n${HOOK_FAMILY_DEFINITIONS}\n${modeInstr}` }],
+          max_tokens: tabKey === "emotional" ? 2000 : 1500
+        })
+      }).then((r) => r.json()).then((d) => ({ ...d, _tab: tabKey, _category: cat }));
+    };
+    try {
+      const [emotional, ritual, product] = await Promise.all([
+        makeCall("emotional"),
+        makeCall("ritual"),
+        makeCall("product")
+      ]);
+      setDaily3({ emotional, ritual, product });
+    } catch (err) {
+      setError(err.message || "Failed to generate Daily 3.");
+    } finally {
+      setDaily3Loading(false);
     }
   };
 
@@ -407,14 +527,14 @@ ${recentHooksBlock}${modeInstruction}`;
     try {
       let photoPrompt = brief?.photoPrompt;
 
-      // Social Post mode: photo prompt not in brief — generate it now
-      if (!photoPrompt && mode === "social" && brand === "no86") {
+      // Emotional Truth tab: photo prompt not in brief — generate it now
+      if (!photoPrompt && mode === "emotional" && brand === "no86") {
         const promptRes = await fetch("/api/content-brief/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             system: NO86_PHOTO_PROMPT_SYSTEM,
-            messages: [{ role: "user", content: `Hook: ${brief.hook}\nContent category: ${category}\nGenerate the photo prompt now.` }],
+            messages: [{ role: "user", content: `Hook: ${selectedHook || brief.hook || brief.onScreenText || ""}\nContent category: ${category}\nGenerate the photo prompt now.` }],
             max_tokens: 1200
           })
         });
@@ -476,12 +596,13 @@ ${recentHooksBlock}${modeInstruction}`;
 
   const reset = () => {
     setBrand(null);
-    setMode("social");
+    setMode("emotional");
     setCategory(null);
     setBrief(null);
     setError(null);
     setGeneratedImage(null);
     setImageError(null);
+    setDaily3(null);
     resetMemory();
   };
 
@@ -490,6 +611,21 @@ ${recentHooksBlock}${modeInstruction}`;
 
   const getImageCopyAll = (b) =>
     `ANGLE:\n${b.angle}\n\nIMAGE CONCEPT:\n${b.imageConcept}\n\nCREATOR TYPE:\n${b.creatorType}\n\nON-SCREEN TEXT:\n${b.onScreenText}\n\nCAPTION:\n${b.caption}${b.hashtags ? `\n\nHASHTAGS:\n${b.hashtags}` : ""}\n\nCTA:\n${b.cta}${b.photoPrompt ? `\n\nPHOTO PROMPT:\n${b.photoPrompt}` : ""}`;
+
+  const getNo86CopyAll = (b) =>
+    [
+      b.postType   ? `POST TYPE:\n${b.postType}` : "",
+      b.subcategory ? `SUBCATEGORY:\n${b.subcategory}` : "",
+      b.angle       ? `ANGLE:\n${b.angle}` : "",
+      b.onScreenText ? `ON-SCREEN TEXT:\n${b.onScreenText}` : "",
+      b.imageConcept ? `IMAGE CONCEPT:\n${b.imageConcept}` : "",
+      b.caption      ? `CAPTION:\n${b.caption}` : "",
+      b.whyThisWorks ? `WHY THIS WORKS:\n${b.whyThisWorks}` : "",
+      b.whyThisMightGetShared ? `WHY THIS MIGHT GET SHARED:\n${b.whyThisMightGetShared}` : "",
+      b.hashtags ? `HASHTAGS:\n${b.hashtags}` : "",
+      b.cta      ? `CTA:\n${b.cta}` : "",
+      b.photoPrompt ? `PHOTO PROMPT:\n${b.photoPrompt}` : ""
+    ].filter(Boolean).join("\n\n");
 
   const socialFields = brief ? [
     { key: "hook", label: "Selected Hook", field: selectedHook || brief.hook, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.5, color: "#F0E8DA" } },
@@ -511,7 +647,21 @@ ${recentHooksBlock}${modeInstruction}`;
     { key: "photoPrompt", label: "Photo Prompt", field: brief.photoPrompt, style: { fontSize: "12px", lineHeight: "1.7", whiteSpace: "pre-wrap", color: "#A09890", fontFamily: "monospace" } }
   ] : [];
 
-  const activeFields = isImageMode(mode) ? imageFields : socialFields;
+  const no86Fields = brief ? [
+    { key: "postType",    label: "Post Type",    field: brief.postType,    style: { fontSize: "11px", color: accent, fontFamily: "monospace", letterSpacing: "0.5px", fontWeight: "700" } },
+    { key: "subcategory", label: "Subcategory",  field: brief.subcategory, style: { fontSize: "13px", color: "#A09890" } },
+    { key: "angle",       label: "Angle",        field: brief.angle,       style: { fontSize: "13px", color: accent, fontWeight: "600", letterSpacing: "0.5px" } },
+    { key: "onScreenText",label: "On-Screen Text",field: brief.onScreenText,style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
+    { key: "imageConcept",label: "Image Concept", field: brief.imageConcept,style: { fontSize: "14px", lineHeight: "1.7", color: "#C8C0B4", fontStyle: "italic" } },
+    { key: "caption",     label: "Caption",      field: brief.caption,     style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
+    { key: "whyThisWorks",label: "Why This Works",field: brief.whyThisWorks,style: { fontSize: "13px", lineHeight: "1.7", color: "#6A6260", fontStyle: "italic" } },
+    { key: "whyThisMightGetShared", label: "Why This Might Get Shared", field: brief.whyThisMightGetShared, style: { fontSize: "13px", lineHeight: "1.7", color: "#6A6260", fontStyle: "italic" } },
+    { key: "hashtags",    label: "Hashtags",     field: brief.hashtags,    style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
+    { key: "cta",         label: "CTA",          field: brief.cta,         style: { fontSize: "15px", fontWeight: "600", color: accent } },
+    ...(brief.photoPrompt ? [{ key: "photoPrompt", label: "Photo Prompt", field: brief.photoPrompt, style: { fontSize: "12px", lineHeight: "1.7", whiteSpace: "pre-wrap", color: "#A09890", fontFamily: "monospace" } }] : [])
+  ] : [];
+
+  const activeFields = brand === "no86" && isNo86Mode(mode) ? no86Fields : isImageMode(mode) ? imageFields : socialFields;
 
   return (
     <div style={{ minHeight: "100vh", background: brand ? config.bg : "#080808", fontFamily: "'Georgia', serif", color: "#E8E0D4", transition: "background 0.5s ease" }}>
@@ -535,7 +685,7 @@ ${recentHooksBlock}${modeInstruction}`;
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {Object.entries(BRAND_CONFIGS).map(([key, cfg]) => (
               <button key={key}
-                onClick={() => { setBrand(key); setCategory(null); setBrief(null); setError(null); resetMemory(); }}
+                onClick={() => { setBrand(key); setMode(key === "no86" ? "emotional" : "social"); setCategory(null); setBrief(null); setError(null); setDaily3(null); resetMemory(); }}
                 style={{ background: brand === key ? cfg.surface : "transparent", border: `1px solid ${brand === key ? cfg.accent : "#222"}`, borderRadius: "10px", padding: "14px 18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", textAlign: "left" }}>
                 <div>
                   <div style={{ fontSize: "16px", fontWeight: "600", color: brand === key ? cfg.accent : "#CCC", marginBottom: "2px" }}>{cfg.label}</div>
@@ -550,12 +700,12 @@ ${recentHooksBlock}${modeInstruction}`;
         {/* 02 Mode */}
         {brand && (
           <div style={{ marginBottom: "28px" }}>
-            <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>02 Mode</div>
-            <div style={{ display: "flex", gap: "8px" }}>
-              {MODES.map((m) => (
+            <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>02 Content Job</div>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              {(brand === "no86" ? NO86_MODES : PERSONAL_MODES).map((m) => (
                 <button key={m.key}
-                  onClick={() => { setMode(m.key); setCategory(null); setBrief(null); setError(null); resetMemory(); }}
-                  style={{ flex: 1, background: mode === m.key ? config.surface : "transparent", border: `1px solid ${mode === m.key ? accent : "#222"}`, borderRadius: "8px", padding: "10px 8px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace", color: mode === m.key ? accent : "#666", fontWeight: mode === m.key ? "700" : "400", letterSpacing: "0.5px", textTransform: "uppercase", textAlign: "center" }}>
+                  onClick={() => { setMode(m.key); setCategory(null); setBrief(null); setError(null); setDaily3(null); resetMemory(); }}
+                  style={{ flex: 1, minWidth: "80px", background: mode === m.key ? config.surface : "transparent", border: `1px solid ${mode === m.key ? accent : "#222"}`, borderRadius: "8px", padding: "10px 8px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace", color: mode === m.key ? accent : "#666", fontWeight: mode === m.key ? "700" : "400", letterSpacing: "0.5px", textTransform: "uppercase", textAlign: "center" }}>
                   {m.label}
                 </button>
               ))}
@@ -581,9 +731,23 @@ ${recentHooksBlock}${modeInstruction}`;
 
         {/* Generate */}
         {canGenerate && !loading && !brief && (
-          <button onClick={() => generateBrief()} style={{ width: "100%", background: accent, border: "none", borderRadius: "10px", padding: "16px", cursor: "pointer", fontSize: "14px", fontWeight: "700", color: "#000", letterSpacing: "1.5px", textTransform: "uppercase", fontFamily: "monospace" }}>
+          <button onClick={() => generateBrief()} style={{ width: "100%", background: accent, border: "none", borderRadius: "10px", padding: "16px", cursor: "pointer", fontSize: "14px", fontWeight: "700", color: "#000", letterSpacing: "1.5px", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "10px" }}>
             Generate
           </button>
+        )}
+
+        {/* Generate Daily 3 */}
+        {brand === "no86" && !loading && !brief && !daily3 && !daily3Loading && (
+          <button onClick={generateDaily3} style={{ width: "100%", background: "transparent", border: `1px solid ${accent}`, borderRadius: "10px", padding: "14px", cursor: "pointer", fontSize: "13px", fontWeight: "700", color: accent, letterSpacing: "1.5px", textTransform: "uppercase", fontFamily: "monospace" }}>
+            Generate Daily 3
+          </button>
+        )}
+
+        {daily3Loading && (
+          <div style={{ textAlign: "center", padding: "28px 20px", color: "#555", fontSize: "13px", fontFamily: "monospace" }}>
+            <div style={{ width: "28px", height: "28px", border: `2px solid ${config.border}`, borderTop: `2px solid ${accent}`, borderRadius: "50%", margin: "0 auto 12px", animation: "spin 0.8s linear infinite" }} />
+            GENERATING DAILY 3...
+          </div>
         )}
 
         {loading && (
@@ -597,13 +761,54 @@ ${recentHooksBlock}${modeInstruction}`;
           <div style={{ marginTop: "16px", padding: "14px", background: "#1A0A0A", border: "1px solid #3A1A1A", borderRadius: "8px", color: "#CC4444", fontSize: "13px", fontFamily: "monospace" }}>{error}</div>
         )}
 
+        {/* Daily 3 Results */}
+        {daily3 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            {["emotional", "ritual", "product"].map((tab) => {
+              const d = daily3[tab];
+              if (!d) return null;
+              const tabLabel = tab === "emotional" ? "Emotional Truth" : tab === "ritual" ? "Ritual / Lifestyle" : "Product Belief";
+              const fields = [
+                { key: `${tab}-subcategory`, label: "Subcategory",  field: d.subcategory, style: { fontSize: "13px", color: "#A09890" } },
+                { key: `${tab}-angle`,       label: "Angle",        field: d.angle,       style: { fontSize: "13px", color: accent, fontWeight: "600" } },
+                { key: `${tab}-onscreen`,    label: "On-Screen Text",field: d.onScreenText,style: { fontSize: "16px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
+                { key: `${tab}-concept`,     label: "Image Concept", field: d.imageConcept,style: { fontSize: "13px", lineHeight: "1.7", color: "#C8C0B4", fontStyle: "italic" } },
+                { key: `${tab}-caption`,     label: "Caption",      field: d.caption,     style: { fontSize: "13px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
+                { key: `${tab}-why`,         label: "Why This Works",field: d.whyThisWorks,style: { fontSize: "12px", color: "#6A6260", fontStyle: "italic" } },
+                { key: `${tab}-hashtags`,    label: "Hashtags",     field: d.hashtags,    style: { fontSize: "12px", color: accent } },
+                { key: `${tab}-cta`,         label: "CTA",          field: d.cta,         style: { fontSize: "13px", fontWeight: "600", color: accent } },
+              ].filter((f) => f.field);
+              return (
+                <div key={tab} style={{ background: config.surface, border: `1px solid ${config.border}`, borderRadius: "14px", overflow: "hidden" }}>
+                  <div style={{ padding: "14px 18px", borderBottom: `1px solid ${config.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ fontSize: "11px", letterSpacing: "2px", color: accent, textTransform: "uppercase", fontFamily: "monospace" }}>{tabLabel}</div>
+                    <button onClick={() => copy(getNo86CopyAll(d), `daily3-${tab}`)} style={{ background: copied === `daily3-${tab}` ? accent : "transparent", border: `1px solid ${copied === `daily3-${tab}` ? accent : config.border}`, color: copied === `daily3-${tab}` ? "#000" : "#666", padding: "5px 12px", borderRadius: "5px", cursor: "pointer", fontSize: "10px", fontFamily: "monospace" }}>
+                      {copied === `daily3-${tab}` ? "COPIED" : "COPY ALL"}
+                    </button>
+                  </div>
+                  {fields.map(({ key, label, field, style }, i, arr) => (
+                    <div key={key} style={{ padding: "16px 18px", borderBottom: i < arr.length - 1 ? `1px solid ${config.border}` : "none" }}>
+                      <div style={{ fontSize: "10px", letterSpacing: "2px", color: "#444", marginBottom: "8px", textTransform: "uppercase", fontFamily: "monospace" }}>{label}</div>
+                      <div style={{ marginBottom: "10px", ...style }}>{field}</div>
+                      <button onClick={() => copy(field, key)} style={{ background: "transparent", border: `1px solid ${config.border}`, color: copied === key ? accent : "#555", padding: "4px 10px", borderRadius: "5px", cursor: "pointer", fontSize: "10px", fontFamily: "monospace" }}>
+                        {copied === key ? "COPIED" : "COPY"}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+            <button onClick={() => { setDaily3(null); resetMemory(); }} style={{ width: "100%", background: "transparent", border: `1px solid ${config.border}`, color: "#555", padding: "10px", borderRadius: "8px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace" }}>NEW DAILY 3</button>
+          </div>
+        )}
+
         {/* Result */}
         {brief && (
           <div style={{ background: config.surface, border: `1px solid ${config.border}`, borderRadius: "14px", overflow: "hidden" }}>
             <div style={{ padding: "16px 20px", borderBottom: `1px solid ${config.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div>
                 <div style={{ fontSize: "11px", letterSpacing: "2px", color: accent, textTransform: "uppercase", fontFamily: "monospace" }}>
-                  {MODES.find((m) => m.key === mode)?.label} | {config.label}
+                  {(brand === "no86" ? NO86_MODES : PERSONAL_MODES).find((m) => m.key === mode)?.label} | {config.label}
                 </div>
                 {brief.hookFamily && (
                   <div style={{ fontSize: "10px", color: "#555", fontFamily: "monospace", marginTop: "3px", letterSpacing: "0.5px" }}>
@@ -612,7 +817,7 @@ ${recentHooksBlock}${modeInstruction}`;
                 )}
               </div>
               <button
-                onClick={() => copy(isImageMode(mode) ? getImageCopyAll(brief) : getSocialCopyAll(brief), "all")}
+                onClick={() => copy(brand === "no86" && isNo86Mode(mode) ? getNo86CopyAll(brief) : isImageMode(mode) ? getImageCopyAll(brief) : getSocialCopyAll(brief), "all")}
                 style={{ background: copied === "all" ? accent : "transparent", border: `1px solid ${copied === "all" ? accent : config.border}`, color: copied === "all" ? "#000" : "#666", padding: "5px 12px", borderRadius: "5px", cursor: "pointer", fontSize: "10px", fontFamily: "monospace" }}>
                 {copied === "all" ? "COPIED" : "COPY ALL"}
               </button>
@@ -651,8 +856,8 @@ ${recentHooksBlock}${modeInstruction}`;
               </div>
             )}
 
-            {/* Generate Image — shown for image modes (have photoPrompt) or no86 social post */}
-            {(brief.photoPrompt || (mode === "social" && brand === "no86")) && (
+            {/* Generate Image — shown when photoPrompt exists or for no86 emotional tab */}
+            {(brief.photoPrompt || (mode === "emotional" && brand === "no86")) && (
               <div style={{ padding: "20px", borderTop: `1px solid ${config.border}` }}>
                 <div style={{ fontSize: "10px", letterSpacing: "2px", color: "#444", marginBottom: "12px", textTransform: "uppercase", fontFamily: "monospace" }}>Generated Image</div>
                 <button
