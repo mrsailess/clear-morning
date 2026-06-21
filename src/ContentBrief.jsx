@@ -189,12 +189,12 @@ GOOD EXAMPLES:
 "The night feels easier. The morning asks for it back."
 SHAREABILITY CHECK: Before finalizing, confirm this post passes the "this is me" test. Set shareable to true or false.
 Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
-{"postType":"Emotional Truth","subcategory":"...","angle":"...","hook":"...","bestHook":"...","hookOptions":["...","...","...","...","...","...","...","..."],"onScreenText":"...","imageConcept":"...","caption":"...","shareable":true,"cta":"...","hashtags":"..."}`,
+{"postType":"Emotional Truth","subcategory":"...","angle":"...","hook":"...","bestHook":"...","hookOptions":["...","...","...","...","...","...","...","..."],"imageConcept":"...","caption":"...","shareable":true,"cta":"...","hashtags":"..."}`,
     ritualPrompt: `You write Ritual / Lifestyle content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
 JOB: Make No. 86 feel desirable and real in everyday life. Create desire through the ritual.
 READING LEVEL: 5th–8th grade. Short sentences. Simple words. No em dashes.
 CORE RULE: Start with the ritual, not the product. Show the moment where No. 86 belongs.
-ON-SCREEN TEXT: 25–40 words. Supports the image. Short lines. White space between them.
+ON-SCREEN TEXT: This is the hook. 25–35 words. Short lines. White space between them. Reads like a private thought or specific moment, not a product description. Must stand alone without the bottle.
 PRODUCT VISIBILITY: More visible than Emotional Truth posts, but still feels natural. Never the hero.
 IMAGE: Real lived-in settings. Natural or realistic home lighting. No staged ad energy. No influencer posing.
 CAPTION: 45–80 words. The image carries the feeling. Text supports, does not overpower.
@@ -215,7 +215,7 @@ READING LEVEL: 5th–8th grade. Short sentences. Simple words. No em dashes.
 CORE RULE: Product mention is allowed. Still start with a human truth when possible.
 ROTATE between: taste profile, how to drink it, 50/50 serve, less than 0.5% ABV, reviews, objection handling, founder story, Amazon social proof, comparison to whiskey experience (not flavor).
 KEEP IT: Simple and believable. Show belief not hype. Do not overclaim. Do not say it tastes exactly like bourbon. Do not use recovery or sobriety framing by default.
-ON-SCREEN TEXT: 25–40 words. Can mention No. 86 directly.
+ON-SCREEN TEXT: This is the hook. 25–35 words. Can mention No. 86 directly. Short lines. Must carry the entire post by itself.
 CAPTION: 45–80 words. Explains, educates, or builds trust simply.
 CTA: Soft product bridge. Max 12 words. Good: "Try No. 86 tonight." / "Link in bio." / "Would this fit your ritual?"
 AVOID: Hard sell. Fake urgency. Medical claims. Wellness promises. Overexplaining. Cheesy product claims. Spam tone.
@@ -645,11 +645,8 @@ ${recentHooksBlock}${modeInstruction}`;
   ] : [];
 
   const no86Fields = brief ? [
-    { key: "postType",    label: "Post Type",    field: brief.postType,    style: { fontSize: "11px", color: accent, fontFamily: "monospace", letterSpacing: "0.5px", fontWeight: "700" } },
-    { key: "subcategory", label: "Subcategory",  field: brief.subcategory, style: { fontSize: "13px", color: "#A09890" } },
-    { key: "angle",       label: "Angle",        field: brief.angle,       style: { fontSize: "13px", color: accent, fontWeight: "600", letterSpacing: "0.5px" } },
-    { key: "onScreenText",label: "On-Screen Text",field: brief.onScreenText,style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
-    { key: "imageConcept",label: "Image Concept", field: brief.imageConcept,style: { fontSize: "14px", lineHeight: "1.7", color: "#C8C0B4", fontStyle: "italic" } },
+    { key: "onScreenText", label: "On-Screen Text", field: selectedHook || brief.hook || brief.onScreenText, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
+    { key: "imageConcept", label: "Image Concept",  field: brief.imageConcept, style: { fontSize: "14px", lineHeight: "1.7", color: "#C8C0B4", fontStyle: "italic" } },
     { key: "caption",     label: "Caption",      field: brief.caption,     style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
     ...(brief.shareable !== undefined ? [{ key: "shareable", label: "Shareable", field: brief.shareable ? "✓ Passes the "this is me" test" : "✗ May not be shareable — consider regenerating", style: { fontSize: "12px", color: brief.shareable ? "#5A9A5A" : "#9A4A4A", fontFamily: "monospace" } }] : []),
     { key: "hashtags",    label: "Hashtags",     field: brief.hashtags,    style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
@@ -765,13 +762,11 @@ ${recentHooksBlock}${modeInstruction}`;
               if (!d) return null;
               const tabLabel = tab === "emotional" ? "Emotional Truth" : tab === "ritual" ? "Ritual / Lifestyle" : "Product Belief";
               const fields = [
-                { key: `${tab}-subcategory`, label: "Subcategory",  field: d.subcategory, style: { fontSize: "13px", color: "#A09890" } },
-                { key: `${tab}-angle`,       label: "Angle",        field: d.angle,       style: { fontSize: "13px", color: accent, fontWeight: "600" } },
-                { key: `${tab}-onscreen`,    label: "On-Screen Text",field: d.onScreenText,style: { fontSize: "16px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
-                { key: `${tab}-concept`,     label: "Image Concept", field: d.imageConcept,style: { fontSize: "13px", lineHeight: "1.7", color: "#C8C0B4", fontStyle: "italic" } },
-                { key: `${tab}-caption`,     label: "Caption",      field: d.caption,     style: { fontSize: "13px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
+                { key: `${tab}-onscreen`,    label: "On-Screen Text",field: d.hook || d.onScreenText, style: { fontSize: "16px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
+                { key: `${tab}-concept`,     label: "Image Concept", field: d.imageConcept, style: { fontSize: "13px", lineHeight: "1.7", color: "#C8C0B4", fontStyle: "italic" } },
+                { key: `${tab}-caption`,     label: "Caption",       field: d.caption,      style: { fontSize: "13px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
                 ...(d.shareable !== undefined ? [{ key: `${tab}-shareable`, label: "Shareable", field: d.shareable ? "✓ Passes the "this is me" test" : "✗ May not be shareable", style: { fontSize: "12px", color: d.shareable ? "#5A9A5A" : "#9A4A4A", fontFamily: "monospace" } }] : []),
-                { key: `${tab}-hashtags`,    label: "Hashtags",     field: d.hashtags,    style: { fontSize: "12px", color: accent } },
+                { key: `${tab}-hashtags`,    label: "Hashtags",      field: d.hashtags,     style: { fontSize: "12px", color: accent } },
                 { key: `${tab}-cta`,         label: "CTA",          field: d.cta,         style: { fontSize: "13px", fontWeight: "600", color: accent } },
               ].filter((f) => f.field);
               return (
