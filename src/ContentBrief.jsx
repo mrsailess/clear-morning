@@ -641,7 +641,7 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           system: photoSystem,
-          messages: [{ role: "user", content: `Hook: ${hook}\nContent category: ${category}\nGenerate the photo prompt now.` }],
+          messages: [{ role: "user", content: `Hook: ${hook}\nContent category: ${category}${brief?.subcategory ? `\nSubcategory: ${brief.subcategory}` : ""}\nGenerate the photo prompt now.` }],
           max_tokens: 1200
         })
       });
@@ -944,7 +944,7 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
             {brand === "no86" && (mode === "ritual" || mode === "product" || mode === "placement") && (
               <div style={{ padding: "20px", borderTop: `1px solid ${config.border}` }}>
                 <button
-                  onClick={() => generatePhotoPrompt(selectedHook || brief.onScreenText || "")}
+                  onClick={() => generatePhotoPrompt(selectedHook || brief.onScreenText || brief.imageConcept || brief.angle || brief.subcategory || "Generate photo prompt")}
                   disabled={promptLoading}
                   style={{ width: "100%", background: "transparent", border: `1px solid ${promptLoading ? config.border : accent}`, borderRadius: "8px", padding: "11px", cursor: promptLoading ? "default" : "pointer", fontSize: "11px", fontWeight: "700", color: promptLoading ? "#555" : accent, letterSpacing: "1px", textTransform: "uppercase", fontFamily: "monospace" }}>
                   {promptLoading ? "BUILDING PHOTO PROMPT..." : brief.photoPrompt ? "REGENERATE PHOTO PROMPT" : "GENERATE PHOTO PROMPT"}
