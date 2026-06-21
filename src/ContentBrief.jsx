@@ -648,7 +648,7 @@ ${recentHooksBlock}${modeInstruction}`;
     { key: "onScreenText", label: "On-Screen Text", field: selectedHook || brief.hookOptions?.[0] || brief.hook || brief.onScreenText, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
     { key: "imageConcept", label: "Image Concept",  field: brief.imageConcept, style: { fontSize: "14px", lineHeight: "1.7", color: "#C8C0B4", fontStyle: "italic" } },
     { key: "caption",     label: "Caption",      field: brief.caption,     style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
-    ...(brief.shareable !== undefined ? [{ key: "shareable", label: "Shareable", field: brief.shareable ? "✓ Passes the "this is me" test" : "✗ May not be shareable — consider regenerating", style: { fontSize: "12px", color: brief.shareable ? "#5A9A5A" : "#9A4A4A", fontFamily: "monospace" } }] : []),
+    ...(brief.shareable !== undefined ? [{ key: "shareable", label: "Shareable", field: brief.shareable ? "✓ Passes the 'this is me' test" : "✗ May not be shareable — consider regenerating", style: { fontSize: "12px", color: brief.shareable ? "#5A9A5A" : "#9A4A4A", fontFamily: "monospace" } }] : []),
     { key: "hashtags",    label: "Hashtags",     field: brief.hashtags,    style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
     { key: "cta",         label: "CTA",          field: brief.cta,         style: { fontSize: "15px", fontWeight: "600", color: accent } },
     ...(brief.photoPrompt ? [{ key: "photoPrompt", label: "Photo Prompt", field: brief.photoPrompt, style: { fontSize: "12px", lineHeight: "1.7", whiteSpace: "pre-wrap", color: "#A09890", fontFamily: "monospace" } }] : [])
@@ -765,7 +765,7 @@ ${recentHooksBlock}${modeInstruction}`;
                 { key: `${tab}-onscreen`,    label: "On-Screen Text",field: d.hook || d.onScreenText, style: { fontSize: "16px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
                 { key: `${tab}-concept`,     label: "Image Concept", field: d.imageConcept, style: { fontSize: "13px", lineHeight: "1.7", color: "#C8C0B4", fontStyle: "italic" } },
                 { key: `${tab}-caption`,     label: "Caption",       field: d.caption,      style: { fontSize: "13px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
-                ...(d.shareable !== undefined ? [{ key: `${tab}-shareable`, label: "Shareable", field: d.shareable ? "✓ Passes the "this is me" test" : "✗ May not be shareable", style: { fontSize: "12px", color: d.shareable ? "#5A9A5A" : "#9A4A4A", fontFamily: "monospace" } }] : []),
+                ...(d.shareable !== undefined ? [{ key: `${tab}-shareable`, label: "Shareable", field: d.shareable ? "✓ Passes the 'this is me' test" : "✗ May not be shareable", style: { fontSize: "12px", color: d.shareable ? "#5A9A5A" : "#9A4A4A", fontFamily: "monospace" } }] : []),
                 { key: `${tab}-hashtags`,    label: "Hashtags",      field: d.hashtags,     style: { fontSize: "12px", color: accent } },
                 { key: `${tab}-cta`,         label: "CTA",          field: d.cta,         style: { fontSize: "13px", fontWeight: "600", color: accent } },
               ].filter((f) => f.field);
