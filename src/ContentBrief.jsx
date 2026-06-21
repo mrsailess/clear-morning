@@ -205,10 +205,8 @@ GOOD EXAMPLES:
 "Steak night does not need to turn into a slow morning."
 "The best part of the night is not always the drink. Sometimes it is the room finally getting quiet."
 HASHTAGS: 5–8 as one string. Prefer: #afterworkritual #steaknight #patiolife #ritualdrinks #no86 #mindfuldrinking
-PHOTO PROMPT: Generate a photoPrompt using the No. 86 master template below. Write SETTING, SUBJECT, SUBJECT ACTION, MOMENT / NATURAL ACTION, VISUAL STORY, BOTTLE PLACEMENT, and PROPS fresh based on the ritual. Keep all other sections exactly as written. Vary the setting and lighting — do not repeat the same scene every time.
-${NO86_MASTER_TEMPLATE}
 Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
-{"postType":"Ritual / Lifestyle","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","photoPrompt":"...","caption":"...","whyThisWorks":"...","whyThisMightGetShared":"...","cta":"...","hashtags":"..."}`,
+{"postType":"Ritual / Lifestyle","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","caption":"...","whyThisWorks":"...","whyThisMightGetShared":"...","cta":"...","hashtags":"..."}`,
     productPrompt: `You write Product Belief content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
 JOB: Remove doubt and create purchase intent.
 READING LEVEL: 5th–8th grade. Short sentences. Simple words. No em dashes.
@@ -224,10 +222,8 @@ GOOD EXAMPLES:
 "3 ways to pour No. 86: neat, over ice, or 50/50."
 "The flavor matters because the ritual matters."
 HASHTAGS: 5–8 as one string. Prefer: #no86 #nonalcoholicwhiskey #mindfuldrinking #whiskeyritual #sobercurious #drinkno86
-PHOTO PROMPT: Generate a photoPrompt using the No. 86 master template below. Write SETTING, SUBJECT, SUBJECT ACTION, MOMENT / NATURAL ACTION, VISUAL STORY, BOTTLE PLACEMENT, and PROPS fresh. The bottle can be slightly more prominent than in Emotional Truth posts but should still never feel like a product ad.
-${NO86_MASTER_TEMPLATE}
 Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
-{"postType":"Product Belief","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","photoPrompt":"...","caption":"...","whyThisWorks":"...","whyThisMightGetShared":"...","cta":"...","hashtags":"..."}`
+{"postType":"Product Belief","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","caption":"...","whyThisWorks":"...","whyThisMightGetShared":"...","cta":"...","hashtags":"..."}`
   },
   personal: {
     label: "@mr.sailes",
@@ -527,8 +523,8 @@ ${recentHooksBlock}${modeInstruction}`;
     try {
       let photoPrompt = brief?.photoPrompt;
 
-      // Emotional Truth tab: photo prompt not in brief — generate it now
-      if (!photoPrompt && mode === "emotional" && brand === "no86") {
+      // No. 86 tabs: photo prompt is always on-demand — generate it now if missing
+      if (!photoPrompt && brand === "no86") {
         const promptRes = await fetch("/api/content-brief/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -856,8 +852,20 @@ ${recentHooksBlock}${modeInstruction}`;
               </div>
             )}
 
-            {/* Generate Image — shown when photoPrompt exists or for no86 emotional tab */}
-            {(brief.photoPrompt || (mode === "emotional" && brand === "no86")) && (
+            {/* Generate Photo Prompt — for ritual/product tabs (no hookOptions) */}
+            {brand === "no86" && (mode === "ritual" || mode === "product") && (
+              <div style={{ padding: "20px", borderTop: `1px solid ${config.border}` }}>
+                <button
+                  onClick={() => generatePhotoPrompt(selectedHook || brief.onScreenText || "")}
+                  disabled={promptLoading}
+                  style={{ width: "100%", background: "transparent", border: `1px solid ${promptLoading ? config.border : accent}`, borderRadius: "8px", padding: "11px", cursor: promptLoading ? "default" : "pointer", fontSize: "11px", fontWeight: "700", color: promptLoading ? "#555" : accent, letterSpacing: "1px", textTransform: "uppercase", fontFamily: "monospace" }}>
+                  {promptLoading ? "BUILDING PHOTO PROMPT..." : brief.photoPrompt ? "REGENERATE PHOTO PROMPT" : "GENERATE PHOTO PROMPT"}
+                </button>
+              </div>
+            )}
+
+            {/* Generate Image — shown for all no86 tabs */}
+            {brand === "no86" && (brief.photoPrompt || mode === "emotional") && (
               <div style={{ padding: "20px", borderTop: `1px solid ${config.border}` }}>
                 <div style={{ fontSize: "10px", letterSpacing: "2px", color: "#444", marginBottom: "12px", textTransform: "uppercase", fontFamily: "monospace" }}>Generated Image</div>
                 <button
