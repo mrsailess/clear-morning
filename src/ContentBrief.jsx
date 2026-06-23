@@ -223,9 +223,12 @@ GOOD EXAMPLES:
 "The drink after work was never about the drink. It was about the 20 minutes of silence nobody gave you all day."
 "Some nights you do not need another drink. You need the day to stop needing you."
 "The night feels easier. The morning asks for it back."
-SHAREABILITY CHECK: Before finalizing, confirm this post passes the "this is me" test. Set shareable to true or false.
+QUALITY GATE — run both checks before returning output. If either fails, rewrite the post.
+ASPIRATION CHECK: The person in the image should feel calm, grounded, in control, and quietly satisfied. The viewer should think "I want that kind of evening." Not: "I feel bad for that person." Do not frame the person as resisting alcohol, sad, lonely, struggling, or defeated. The emotional frame should be: the pressure stopped, the house got quiet, the person is present and in control. Bad frames: he is stressed, tempted, fighting the old version of himself, sitting with the weight of a decision, trying not to drink.
+SHAREABILITY CHECK: The on-screen text should feel like something someone sends to a friend and says "this is me" or "this is exactly what I mean." The post should be bigger than the product. It should describe a private feeling, a ritual, a tradeoff, or a moment people recognize immediately. The product is the answer, not the story. If the text is not shareable without the bottle, rewrite it.
+AVOID: Framing the person as resisting alcohol. Sad or lonely scenes. Dark or heavy rooms. Copy that sounds like advice. Copy that sounds like a lesson. Making the product the emotional center.
 Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
-{"postType":"Emotional Truth","subcategory":"...","angle":"...","hook":"...","bestHook":"...","hookOptions":["...","...","...","...","...","...","...","..."],"imageConcept":"...","caption":"...","shareable":true,"cta":"...","hashtags":"..."}`,
+{"postType":"Emotional Truth","subcategory":"...","angle":"...","hook":"...","bestHook":"...","hookOptions":["...","...","...","...","...","...","...","..."],"imageConcept":"...","caption":"...","aspirationCheck":"...","shareabilityCheck":"...","cta":"...","hashtags":"..."}`,
     ritualPrompt: `You write Ritual / Lifestyle content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
 JOB: Make No. 86 feel desirable and real in everyday life. Create desire through the ritual.
 READING LEVEL: 5th–8th grade. Short sentences. Simple words. No em dashes.
@@ -242,9 +245,12 @@ GOOD EXAMPLES:
 "Steak night does not need to turn into a slow morning."
 "The best part of the night is not always the drink. Sometimes it is the room finally getting quiet."
 HASHTAGS: 5–8 as one string. Prefer: #afterworkritual #steaknight #patiolife #ritualdrinks #no86 #mindfuldrinking
-SHAREABILITY CHECK: Before finalizing, confirm this post passes the "this is me" test. Set shareable to true or false.
+QUALITY GATE — run both checks before returning output. If either fails, rewrite the post.
+ASPIRATION CHECK: The person should feel calm, grounded, and quietly in control. The viewer should think "I want that kind of evening." Not pity. Not struggle. Not resistance. The emotional frame: the day is over, the pressure stopped, the person chose this moment.
+SHAREABILITY CHECK: The on-screen text should stand alone without the bottle. Someone should be able to send it and say "this is me." If it only works with the product in frame, rewrite it.
+AVOID: Dark or heavy framing. Lonely scenes. Copy that sounds like advice or a lesson. Framing the person as trying not to drink.
 Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
-{"postType":"Ritual / Lifestyle","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","caption":"...","shareable":true,"cta":"...","hashtags":"..."}`,
+{"postType":"Ritual / Lifestyle","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","caption":"...","aspirationCheck":"...","shareabilityCheck":"...","cta":"...","hashtags":"..."}`,
     productPrompt: `You write Product Belief content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
 JOB: Remove doubt and create purchase intent.
 READING LEVEL: 5th–8th grade. Short sentences. Simple words. No em dashes.
@@ -260,9 +266,12 @@ GOOD EXAMPLES:
 "3 ways to pour No. 86: neat, over ice, or 50/50."
 "The flavor matters because the ritual matters."
 HASHTAGS: 5–8 as one string. Prefer: #no86 #nonalcoholicwhiskey #mindfuldrinking #whiskeyritual #sobercurious #drinkno86
-SHAREABILITY CHECK: Before finalizing, confirm this post passes the "this is me" test. Set shareable to true or false.
+QUALITY GATE — run both checks before returning output. If either fails, rewrite the post.
+ASPIRATION CHECK: The person should feel in control and quietly satisfied, not pressured or deprived. The viewer should think "I want that" — not "that person needs help." Product-forward does not mean deprivation-forward.
+SHAREABILITY CHECK: Even in product education mode, the post should start with something true and human. If the on-screen text only works as an ad, rewrite it to lead with a truth first.
+AVOID: Framing No. 86 as a substitute for something the person is missing. Sobriety language. Deprivation framing. Hard sell. Shame framing.
 Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
-{"postType":"Product Belief","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","caption":"...","shareable":true,"cta":"...","hashtags":"..."}`,
+{"postType":"Product Belief","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","caption":"...","aspirationCheck":"...","shareabilityCheck":"...","cta":"...","hashtags":"..."}`,
     placementPrompt: `You write Creative Product Placement content for No. 86, a non-alcoholic whiskey alternative.
 JOB: Make the No. 86 bottle visually memorable. Use cases include Amazon secondary images, Shopify assets, Meta ads, retargeting, product education, and brand memory posts.
 READING LEVEL: 5th–8th grade. Short sentences. No em dashes.
@@ -274,9 +283,11 @@ CTA: Soft product bridge. Max 12 words.
 TONE: Premium. Warm. Clean. Realistic. Masculine. Understated. Not cheesy. Not salesy.
 AVOID: Fake text inside the image. Bar scene energy. Generic whiskey ad. Cheap product shot feel. Overproduction. Hard sell.
 HASHTAGS: 5–8 as one string. Prefer: #no86 #nonalcoholicwhiskey #whiskeyritual #mindfuldrinking #drinkno86
-SHAREABILITY CHECK: Set shareable to true or false.
+QUALITY GATE — run both checks before returning output. If either fails, rewrite.
+ASPIRATION CHECK: The image should feel premium and desirable. The viewer should want the bottle, the glass, and the setting. Not a clinical product shot. Not a bar ad. Aspirational and brand-right.
+SHAREABILITY CHECK: The on-screen text should be clean, confident, and memorable. Someone should be able to screenshot it. If it sounds like generic ad copy, rewrite it.
 Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
-{"postType":"Creative Product Placement","audienceContext":"...","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","caption":"...","shareable":true,"cta":"...","hashtags":"..."}`
+{"postType":"Creative Product Placement","audienceContext":"...","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","caption":"...","aspirationCheck":"...","shareabilityCheck":"...","cta":"...","hashtags":"..."}`
   },
   personal: {
     label: "@mr.sailes",
@@ -688,7 +699,9 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
       b.angle       ? `ANGLE:\n${b.angle}` : "",
       b.onScreenText ? `ON-SCREEN TEXT:\n${b.onScreenText}` : "",
       b.imageConcept ? `IMAGE CONCEPT:\n${b.imageConcept}` : "",
-      b.caption      ? `CAPTION:\n${b.caption}` : "",
+      b.caption           ? `CAPTION:\n${b.caption}` : "",
+      b.aspirationCheck   ? `ASPIRATION CHECK:\n${b.aspirationCheck}` : "",
+      b.shareabilityCheck ? `SHAREABILITY CHECK:\n${b.shareabilityCheck}` : "",
       b.hashtags ? `HASHTAGS:\n${b.hashtags}` : "",
       b.cta      ? `CTA:\n${b.cta}` : "",
       b.photoPrompt ? `PHOTO PROMPT:\n${b.photoPrompt}` : ""
@@ -717,9 +730,10 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
   const no86Fields = brief ? [
     { key: "onScreenText", label: "On-Screen Text", field: selectedHook || brief.hookOptions?.[0] || brief.hook || brief.onScreenText, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
     { key: "imageConcept", label: "Image Concept",  field: brief.imageConcept, style: { fontSize: "14px", lineHeight: "1.7", color: "#C8C0B4", fontStyle: "italic" } },
-    { key: "caption",     label: "Caption",      field: brief.caption,     style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
-    ...(brief.shareable !== undefined ? [{ key: "shareable", label: "Shareable", field: brief.shareable ? "✓ Passes the 'this is me' test" : "✗ May not be shareable — consider regenerating", style: { fontSize: "12px", color: brief.shareable ? "#5A9A5A" : "#9A4A4A", fontFamily: "monospace" } }] : []),
-    { key: "hashtags",    label: "Hashtags",     field: brief.hashtags,    style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
+    { key: "caption",          label: "Caption",           field: brief.caption,           style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
+    ...(brief.aspirationCheck  ? [{ key: "aspirationCheck",  label: "Aspiration Check",  field: brief.aspirationCheck,  style: { fontSize: "12px", lineHeight: "1.7", color: "#7A9A7A", fontStyle: "italic" } }] : []),
+    ...(brief.shareabilityCheck ? [{ key: "shareabilityCheck", label: "Shareability Check", field: brief.shareabilityCheck, style: { fontSize: "12px", lineHeight: "1.7", color: "#7A9A7A", fontStyle: "italic" } }] : []),
+    { key: "hashtags",         label: "Hashtags",          field: brief.hashtags,          style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
     { key: "cta",         label: "CTA",          field: brief.cta,         style: { fontSize: "15px", fontWeight: "600", color: accent } },
     ...(brief.photoPrompt ? [{ key: "photoPrompt", label: "Photo Prompt", field: brief.photoPrompt, style: { fontSize: "12px", lineHeight: "1.7", whiteSpace: "pre-wrap", color: "#A09890", fontFamily: "monospace" } }] : [])
   ] : [];
@@ -850,9 +864,10 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
               const fields = [
                 { key: `${tab}-onscreen`,    label: "On-Screen Text",field: d.hook || d.onScreenText, style: { fontSize: "16px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
                 { key: `${tab}-concept`,     label: "Image Concept", field: d.imageConcept, style: { fontSize: "13px", lineHeight: "1.7", color: "#C8C0B4", fontStyle: "italic" } },
-                { key: `${tab}-caption`,     label: "Caption",       field: d.caption,      style: { fontSize: "13px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
-                ...(d.shareable !== undefined ? [{ key: `${tab}-shareable`, label: "Shareable", field: d.shareable ? "✓ Passes the 'this is me' test" : "✗ May not be shareable", style: { fontSize: "12px", color: d.shareable ? "#5A9A5A" : "#9A4A4A", fontFamily: "monospace" } }] : []),
-                { key: `${tab}-hashtags`,    label: "Hashtags",      field: d.hashtags,     style: { fontSize: "12px", color: accent } },
+                { key: `${tab}-caption`,          label: "Caption",           field: d.caption,           style: { fontSize: "13px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
+                ...(d.aspirationCheck  ? [{ key: `${tab}-aspiration`,  label: "Aspiration Check",  field: d.aspirationCheck,  style: { fontSize: "12px", lineHeight: "1.7", color: "#7A9A7A", fontStyle: "italic" } }] : []),
+                ...(d.shareabilityCheck ? [{ key: `${tab}-shareable`,  label: "Shareability Check", field: d.shareabilityCheck, style: { fontSize: "12px", lineHeight: "1.7", color: "#7A9A7A", fontStyle: "italic" } }] : []),
+                { key: `${tab}-hashtags`,         label: "Hashtags",          field: d.hashtags,          style: { fontSize: "12px", color: accent } },
                 { key: `${tab}-cta`,         label: "CTA",          field: d.cta,         style: { fontSize: "13px", fontWeight: "600", color: accent } },
               ].filter((f) => f.field);
               return (
