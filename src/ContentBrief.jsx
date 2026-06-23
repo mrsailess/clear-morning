@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 
-const NO86_MASTER_TEMPLATE = `Use the attached No. 86 bottle as the exact product reference. Vertical 4:5 UGC lifestyle photograph for Instagram and TikTok. Candid and observed — never staged, never directed. No posing. No eye contact with camera. The bottle is present but never the hero. When tradeoffs are required: emotional truth over technical perfection. Believable moment over bottle visibility. Emotional recognition over luxury aesthetic.
+const NO86_MASTER_TEMPLATE = `Use the attached No. 86 bottle as the exact product reference. Vertical 9:16 photograph at 1080 × 1920 pixels for TikTok and Instagram Reels. Candid and observed — never staged, never directed. No posing. No eye contact with camera. The bottle is present but never the hero. When tradeoffs are required: emotional truth over technical perfection. Believable moment over bottle visibility. Emotional recognition over luxury aesthetic.
 EMOTIONAL TRUTH: [This is the image. Generate one specific, recognizable human truth the image is visualizing — e.g. "The day is over. Nobody needs anything from me right now." or "For the first time all day, he isn't rushing." or "He got home before his mind did." Build every other element around this truth. If the emotional truth isn't immediately clear without a caption, the image fails regardless of everything else.]
 MOMENT: [One specific observable action — not a feeling, not a story, a moment. Examples: he just set the glass down and leaned forward. She paused before the first sip. He closed the laptop and stayed seated. One moment only. Match it to the emotional truth.]
 SETTING: [Where this moment naturally happens. The setting should explain the emotion without words. Kitchen after work, lived-in living room, home office at night, patio at dusk. Not a luxury penthouse, designer loft, or styled Pinterest home.]
@@ -20,6 +20,7 @@ ${NO86_MASTER_TEMPLATE}`;
 const NO86_PLACEMENT_PHOTO_SYSTEM = `You generate product photo prompts for No. 86, a non-alcoholic whiskey alternative. The bottle is the hero or near-hero. Return ONLY valid JSON. Start with { and end with }. No markdown. No explanation.
 {"photoPrompt":"..."}
 RULES:
+Vertical 9:16 at 1080 × 1920 pixels for TikTok and Instagram Reels.
 The No. 86 bottle should be clearly visible, label readable, and intentionally placed — but not artificially staged.
 Product-forward does not mean overproduced. Keep it premium, warm, realistic, and clean.
 Use settings like: dark wood bar cart, kitchen counter, patio table, steak night table, rocks glass beside bottle, bottle beside one large clear ice cube, bottle with oak or caramel cues, premium dark surface with warm practical light, Amazon-style clean layout, Shopify-style hero lifestyle image.
