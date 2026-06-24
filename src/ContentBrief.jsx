@@ -225,10 +225,7 @@ GOOD EXAMPLES:
 "The drink after work was never about the drink. It was about the 20 minutes of silence nobody gave you all day."
 "Some nights you do not need another drink. You need the day to stop needing you."
 "The night feels easier. The morning asks for it back."
-QUALITY GATE — run both checks before returning output. If either fails, rewrite the post.
-ASPIRATION CHECK: The person in the image should feel calm, grounded, in control, and quietly satisfied. The viewer should think "I want that kind of evening." Not: "I feel bad for that person." Do not frame the person as resisting alcohol, sad, lonely, struggling, or defeated. The emotional frame should be: the pressure stopped, the house got quiet, the person is present and in control. Bad frames: he is stressed, tempted, fighting the old version of himself, sitting with the weight of a decision, trying not to drink.
-SHAREABILITY CHECK: The on-screen text should feel like something someone sends to a friend and says "this is me" or "this is exactly what I mean." The post should be bigger than the product. It should describe a private feeling, a ritual, a tradeoff, or a moment people recognize immediately. The product is the answer, not the story. If the text is not shareable without the bottle, rewrite it.
-AVOID: Framing the person as resisting alcohol. Sad or lonely scenes. Dark or heavy rooms. Copy that sounds like advice. Copy that sounds like a lesson. Making the product the emotional center.
+QUALITY GATE: Before returning, check two things. 1. Does the person feel like someone the viewer wants to be right now? 2. Would someone send the on-screen text to a friend and say "this is me"? If either answer is no, rewrite before returning.
 Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
 {"postType":"Emotional Truth","subcategory":"...","angle":"...","hook":"...","bestHook":"...","hookOptions":["...","...","...","...","...","...","...","..."],"imageConcept":"...","caption":"...","cta":"...","hashtags":"..."}`,
     ritualPrompt: `You write Ritual / Lifestyle content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
@@ -247,10 +244,7 @@ GOOD EXAMPLES:
 "Steak night does not need to turn into a slow morning."
 "The best part of the night is not always the drink. Sometimes it is the room finally getting quiet."
 HASHTAGS: 5–8 as one string. Prefer: #afterworkritual #steaknight #patiolife #ritualdrinks #no86 #mindfuldrinking
-QUALITY GATE — run both checks before returning output. If either fails, rewrite the post.
-ASPIRATION CHECK: The person should feel calm, grounded, and quietly in control. The viewer should think "I want that kind of evening." Not pity. Not struggle. Not resistance. The emotional frame: the day is over, the pressure stopped, the person chose this moment.
-SHAREABILITY CHECK: The on-screen text should stand alone without the bottle. Someone should be able to send it and say "this is me." If it only works with the product in frame, rewrite it.
-AVOID: Dark or heavy framing. Lonely scenes. Copy that sounds like advice or a lesson. Framing the person as trying not to drink.
+QUALITY GATE: Before returning, check two things. 1. Does the person feel like someone the viewer wants to be right now? 2. Would someone send the on-screen text to a friend and say "this is me"? If either answer is no, rewrite before returning.
 Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
 {"postType":"Ritual / Lifestyle","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","caption":"...","cta":"...","hashtags":"..."}`,
     productPrompt: `You write Product Belief content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
@@ -268,10 +262,7 @@ GOOD EXAMPLES:
 "3 ways to pour No. 86: neat, over ice, or 50/50."
 "The flavor matters because the ritual matters."
 HASHTAGS: 5–8 as one string. Prefer: #no86 #nonalcoholicwhiskey #mindfuldrinking #whiskeyritual #sobercurious #drinkno86
-QUALITY GATE — run both checks before returning output. If either fails, rewrite the post.
-ASPIRATION CHECK: The person should feel in control and quietly satisfied, not pressured or deprived. The viewer should think "I want that" — not "that person needs help." Product-forward does not mean deprivation-forward.
-SHAREABILITY CHECK: Even in product education mode, the post should start with something true and human. If the on-screen text only works as an ad, rewrite it to lead with a truth first.
-AVOID: Framing No. 86 as a substitute for something the person is missing. Sobriety language. Deprivation framing. Hard sell. Shame framing.
+QUALITY GATE: Before returning, check two things. 1. Does the person feel like someone the viewer wants to be right now? 2. Would someone send the on-screen text to a friend and say "this is me"? If either answer is no, rewrite before returning.
 Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
 {"postType":"Product Belief","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","caption":"...","cta":"...","hashtags":"..."}`,
     placementPrompt: `You write Creative Product Placement content for No. 86, a non-alcoholic whiskey alternative.
@@ -287,9 +278,7 @@ AVOID: Fake text inside the image. Bar scene energy. Generic whiskey ad. Cheap p
 BEAUTIFUL EVENING CATEGORY — when subcategory is Beautiful Evening:
 This is the scroll-stopping lane. Lighting is the main creative driver. Use patio at blue hour, open kitchen with warm evening light, quiet balcony at sunset, backyard table after dinner, living room with soft lamp glow, hotel balcony at dusk, firepit with subtle glow, or bar cart near a window at golden hour. The bottle can be more prominent than other categories but should still feel naturally placed — not stiff or staged. On-screen text should be Emotional Truth style, about 30 words, a private truth someone would save or share. Do not explain the product on screen. The viewer should think "I want that evening" — not "that is a nice ad." Avoid dark moody scenes, luxury-for-luxury styling, studio product energy, and over-styled sets. The image should feel aspirational, warm, calm, and real.
 HASHTAGS: 5–8 as one string. Prefer: #no86 #nonalcoholicwhiskey #whiskeyritual #mindfuldrinking #drinkno86
-QUALITY GATE — run both checks before returning output. If either fails, rewrite.
-ASPIRATION CHECK: The image should feel premium and desirable. The viewer should want the bottle, the glass, and the setting. Not a clinical product shot. Not a bar ad. Aspirational and brand-right.
-SHAREABILITY CHECK: The on-screen text should be clean, confident, and memorable. Someone should be able to screenshot it. If it sounds like generic ad copy, rewrite it.
+QUALITY GATE: Before returning, check two things. 1. Does the person feel like someone the viewer wants to be right now? 2. Would someone send the on-screen text to a friend and say "this is me"? If either answer is no, rewrite before returning.
 Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
 {"postType":"Creative Product Placement","audienceContext":"...","subcategory":"...","angle":"...","onScreenText":"...","imageConcept":"...","caption":"...","cta":"...","hashtags":"..."}`
   },
