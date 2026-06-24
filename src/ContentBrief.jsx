@@ -455,8 +455,6 @@ const isNo86Mode = (m) => m === "emotional" || m === "ritual" || m === "product"
 export default function ContentBrief() {
   const [brand, setBrand] = useState(null);
   const [mode, setMode] = useState("emotional");
-  const [daily3, setDaily3] = useState(null);
-  const [daily3Loading, setDaily3Loading] = useState(false);
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(false);
   const [brief, setBrief] = useState(null);
@@ -829,20 +827,6 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
           </button>
         )}
 
-        {/* Generate Daily 3 */}
-        {brand === "no86" && !loading && !brief && !daily3 && !daily3Loading && (
-          <button onClick={generateDaily3} style={{ width: "100%", background: "transparent", border: `1px solid ${accent}`, borderRadius: "10px", padding: "14px", cursor: "pointer", fontSize: "13px", fontWeight: "700", color: accent, letterSpacing: "1.5px", textTransform: "uppercase", fontFamily: "monospace" }}>
-            Generate Daily 3 — {audienceContext}
-          </button>
-        )}
-
-        {daily3Loading && (
-          <div style={{ textAlign: "center", padding: "28px 20px", color: "#555", fontSize: "13px", fontFamily: "monospace" }}>
-            <div style={{ width: "28px", height: "28px", border: `2px solid ${config.border}`, borderTop: `2px solid ${accent}`, borderRadius: "50%", margin: "0 auto 12px", animation: "spin 0.8s linear infinite" }} />
-            GENERATING DAILY 3...
-          </div>
-        )}
-
         {loading && (
           <div style={{ textAlign: "center", padding: "28px 20px", color: "#555", fontSize: "13px", fontFamily: "monospace" }}>
             <div style={{ width: "28px", height: "28px", border: `2px solid ${config.border}`, borderTop: `2px solid ${accent}`, borderRadius: "50%", margin: "0 auto 12px", animation: "spin 0.8s linear infinite" }} />
@@ -852,44 +836,6 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
 
         {error && (
           <div style={{ marginTop: "16px", padding: "14px", background: "#1A0A0A", border: "1px solid #3A1A1A", borderRadius: "8px", color: "#CC4444", fontSize: "13px", fontFamily: "monospace" }}>{error}</div>
-        )}
-
-        {/* Daily 3 Results */}
-        {daily3 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            {["emotional", "ritual", "product"].map((tab) => {
-              const d = daily3[tab];
-              if (!d) return null;
-              const tabLabel = tab === "emotional" ? "Emotional Truth" : tab === "ritual" ? "Ritual / Lifestyle" : "Product Belief";
-              const fields = [
-                { key: `${tab}-onscreen`,    label: "On-Screen Text",field: d.hook || d.onScreenText, style: { fontSize: "16px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
-                { key: `${tab}-concept`,     label: "Image Concept", field: d.imageConcept, style: { fontSize: "13px", lineHeight: "1.7", color: "#C8C0B4", fontStyle: "italic" } },
-                { key: `${tab}-caption`,  label: "Caption",  field: d.caption,  style: { fontSize: "13px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
-                { key: `${tab}-hashtags`, label: "Hashtags", field: d.hashtags, style: { fontSize: "12px", color: accent } },
-                { key: `${tab}-cta`,         label: "CTA",          field: d.cta,         style: { fontSize: "13px", fontWeight: "600", color: accent } },
-              ].filter((f) => f.field);
-              return (
-                <div key={tab} style={{ background: config.surface, border: `1px solid ${config.border}`, borderRadius: "14px", overflow: "hidden" }}>
-                  <div style={{ padding: "14px 18px", borderBottom: `1px solid ${config.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ fontSize: "11px", letterSpacing: "2px", color: accent, textTransform: "uppercase", fontFamily: "monospace" }}>{tabLabel}</div>
-                    <button onClick={() => copy(getNo86CopyAll(d), `daily3-${tab}`)} style={{ background: copied === `daily3-${tab}` ? accent : "transparent", border: `1px solid ${copied === `daily3-${tab}` ? accent : config.border}`, color: copied === `daily3-${tab}` ? "#000" : "#666", padding: "5px 12px", borderRadius: "5px", cursor: "pointer", fontSize: "10px", fontFamily: "monospace" }}>
-                      {copied === `daily3-${tab}` ? "COPIED" : "COPY ALL"}
-                    </button>
-                  </div>
-                  {fields.map(({ key, label, field, style }, i, arr) => (
-                    <div key={key} style={{ padding: "16px 18px", borderBottom: i < arr.length - 1 ? `1px solid ${config.border}` : "none" }}>
-                      <div style={{ fontSize: "10px", letterSpacing: "2px", color: "#444", marginBottom: "8px", textTransform: "uppercase", fontFamily: "monospace" }}>{label}</div>
-                      <div style={{ marginBottom: "10px", ...style }}>{field}</div>
-                      <button onClick={() => copy(field, key)} style={{ background: "transparent", border: `1px solid ${config.border}`, color: copied === key ? accent : "#555", padding: "4px 10px", borderRadius: "5px", cursor: "pointer", fontSize: "10px", fontFamily: "monospace" }}>
-                        {copied === key ? "COPIED" : "COPY"}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              );
-            })}
-            <button onClick={() => { setDaily3(null); resetMemory(); }} style={{ width: "100%", background: "transparent", border: `1px solid ${config.border}`, color: "#555", padding: "10px", borderRadius: "8px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace" }}>NEW DAILY 3</button>
-          </div>
         )}
 
         {/* Result */}
