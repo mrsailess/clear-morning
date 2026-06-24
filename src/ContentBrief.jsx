@@ -85,6 +85,7 @@ const BRAND_CONFIGS = {
         "Why It Works For The Ritual"
       ],
       placement: [
+        "Beautiful Evening",
         "Hero Bottle",
         "Bar Cart",
         "How To Pour",
@@ -283,6 +284,8 @@ CAPTION: 30–60 words. Supports the image. Educates or builds trust. Short sent
 CTA: Soft product bridge. Max 12 words.
 TONE: Premium. Warm. Clean. Realistic. Masculine. Understated. Not cheesy. Not salesy.
 AVOID: Fake text inside the image. Bar scene energy. Generic whiskey ad. Cheap product shot feel. Overproduction. Hard sell.
+BEAUTIFUL EVENING CATEGORY — when subcategory is Beautiful Evening:
+This is the scroll-stopping lane. Lighting is the main creative driver. Use patio at blue hour, open kitchen with warm evening light, quiet balcony at sunset, backyard table after dinner, living room with soft lamp glow, hotel balcony at dusk, firepit with subtle glow, or bar cart near a window at golden hour. The bottle can be more prominent than other categories but should still feel naturally placed — not stiff or staged. On-screen text should be Emotional Truth style, about 30 words, a private truth someone would save or share. Do not explain the product on screen. The viewer should think "I want that evening" — not "that is a nice ad." Avoid dark moody scenes, luxury-for-luxury styling, studio product energy, and over-styled sets. The image should feel aspirational, warm, calm, and real.
 HASHTAGS: 5–8 as one string. Prefer: #no86 #nonalcoholicwhiskey #whiskeyritual #mindfuldrinking #drinkno86
 QUALITY GATE — run both checks before returning output. If either fails, rewrite.
 ASPIRATION CHECK: The image should feel premium and desirable. The viewer should want the bottle, the glass, and the setting. Not a clinical product shot. Not a bar ad. Aspirational and brand-right.
