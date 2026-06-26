@@ -215,8 +215,7 @@ CTA: Invite reflection or comments. Soft. Max 12 words.
 TONE: "I noticed this too." Never "you need to fix this." Observe the tradeoff. Never scold.
 Prefer: quiet truth, simple contrast, private recognition, ritual language, morning-after clarity.
 BANNED: "the real you" / "full version of yourself" / "show up better" / "better version" / "level up" / "your highest self" / "nervous system" / "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "quit drinking" / "recovery" / "sober community"
-INTERNAL CHECK: Reject anything that sounds like a coach or lecture. If it sounds like a private thought — it is right.
-SHAREABILITY TEST: Would someone send this with "this is me"? Would they share it if the bottle were not there? If no — rethink.
+WINNING PATTERN: The strongest No. 86 post ever produced was: "Most people don't realize the drink after work isn't about the drink. It's about the 20 minutes of silence nobody gave you all day." It worked because: it was bigger than No. 86, it described the reason behind the drink not the drink itself, it named a hidden truth the viewer immediately recognized, it was easy to send to a friend and say "this is me," and the bottle was visible but not the story. Follow this structure: start with the hidden truth behind the habit or ritual, make it about the viewer's life not the product, keep it short and clear, do not mention No. 86 on screen. Use these hook patterns as inspiration only — never repeat them: "The drink after work was never about the drink." / "Some nights you do not need another drink." / "The glass was never the whole thing." / "You were not chasing the drink. You were chasing the pause." / "At some point, the drink stopped being celebration." / "The ritual mattered because the day would not stop."
 HOOK PROCESS: Generate 20 hooks internally. At least 12 emotional-truth, 5 specific-moment, max 3 product-led. Output 8 best as hookOptions each using a different hook family. Set bestHook and hook to the winner. Follow the required hook family from the user message.
 HOOK: 25–35 words. Varied structure. No fixed starters.
 CAPTION: 45–90 words. Short sentences. Never repeats hook. Tradeoff → ritual → No. 86 bridge → clarity.
@@ -225,7 +224,7 @@ GOOD EXAMPLES:
 "The drink after work was never about the drink. It was about the 20 minutes of silence nobody gave you all day."
 "Some nights you do not need another drink. You need the day to stop needing you."
 "The night feels easier. The morning asks for it back."
-QUALITY GATE: Before returning, check two things. 1. Does the person feel like someone the viewer wants to be right now? 2. Would someone send the on-screen text to a friend and say "this is me"? If either answer is no, rewrite before returning.
+QUALITY GATE: Before returning, answer internally: Would someone share this if the bottle were not in the image? Would someone send this to a friend and say "this is me"? Does the subject feel aspirational, calm, and in control? If any answer is no, rewrite before returning.
 Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
 {"postType":"Emotional Truth","subcategory":"...","angle":"...","hook":"...","bestHook":"...","hookOptions":["...","...","...","...","...","...","...","..."],"imageConcept":"...","caption":"...","cta":"...","hashtags":"..."}`,
     ritualPrompt: `You write Ritual / Lifestyle content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
@@ -795,13 +794,13 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
 
         {/* 04 Category */}
         {brand && (
-          <div style={{ marginBottom: "28px" }}>
+          <div style={{ marginBottom: brand === "no86" ? "100px" : "28px" }}>
             <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>{brand === "no86" ? "04" : "03"} Content Category</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: brand === "no86" ? "1fr 1fr" : "1fr", gap: "8px" }}>
               {config.categories[mode].map((cat) => (
                 <button key={cat}
                   onClick={() => { setCategory(cat); setBrief(null); setError(null); resetMemory(); }}
-                  style={{ background: category === cat ? config.surface : "transparent", border: `1px solid ${category === cat ? accent : "#222"}`, borderRadius: "8px", padding: "13px 16px", cursor: "pointer", textAlign: "left", fontSize: "14px", color: category === cat ? accent : "#888", fontWeight: category === cat ? "600" : "400" }}>
+                  style={{ background: category === cat ? config.surface : "transparent", border: `1px solid ${category === cat ? accent : "#222"}`, borderRadius: "8px", padding: "10px 12px", cursor: "pointer", textAlign: "left", fontSize: "13px", color: category === cat ? accent : "#888", fontWeight: category === cat ? "600" : "400", lineHeight: 1.3 }}>
                   {cat}
                 </button>
               ))}
@@ -809,11 +808,19 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
           </div>
         )}
 
-        {/* Generate */}
+        {/* Sticky Generate */}
         {canGenerate && !loading && !brief && (
-          <button onClick={() => generateBrief()} style={{ width: "100%", background: accent, border: "none", borderRadius: "10px", padding: "16px", cursor: "pointer", fontSize: "14px", fontWeight: "700", color: "#000", letterSpacing: "1.5px", textTransform: "uppercase", fontFamily: "monospace", marginBottom: "10px" }}>
-            Generate
-          </button>
+          <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, padding: "12px 20px", background: brand ? config.bg : "#080808", borderTop: `1px solid ${config.border}`, zIndex: 100 }}>
+            {category && (
+              <div style={{ fontSize: "10px", color: "#555", fontFamily: "monospace", letterSpacing: "0.5px", marginBottom: "8px", textAlign: "center" }}>
+                {(brand === "no86" ? NO86_MODES : PERSONAL_MODES).find((m) => m.key === mode)?.label}
+                {brand === "no86" ? ` / ${audienceContext}` : ""} / {category}
+              </div>
+            )}
+            <button onClick={() => generateBrief()} style={{ width: "100%", background: accent, border: "none", borderRadius: "10px", padding: "16px", cursor: "pointer", fontSize: "14px", fontWeight: "700", color: "#000", letterSpacing: "1.5px", textTransform: "uppercase", fontFamily: "monospace" }}>
+              Generate
+            </button>
+          </div>
         )}
 
         {loading && (
