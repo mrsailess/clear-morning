@@ -52,13 +52,13 @@ const BRAND_CONFIGS = {
     categories: {
       emotional: [
         "After Work Silence",
-        "The Tradeoff Tomorrow",
+        "Shareable Truth",
+        "Lived Shift",
         "The Ritual, Not the Alcohol",
-        "Identity Shift",
-        "Showing Up Fully",
-        "Bored, Stressed, or Just Empty",
+        "The Tradeoff Tomorrow",
         "What You Actually Miss",
-        "Control and Clarity"
+        "Control and Clarity",
+        "Identity Shift"
       ],
       ritual: [
         "Patio Ritual",
@@ -215,6 +215,10 @@ CTA: Invite reflection or comments. Soft. Max 12 words.
 TONE: "I noticed this too." Never "you need to fix this." Observe the tradeoff. Never scold.
 Prefer: quiet truth, simple contrast, private recognition, ritual language, morning-after clarity.
 BANNED: "the real you" / "full version of yourself" / "show up better" / "better version" / "level up" / "your highest self" / "nervous system" / "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "quit drinking" / "recovery" / "sober community"
+SUBCATEGORY DEFINITIONS:
+Shareable Truth — Name a private feeling people recognize immediately. Feels like something someone sends a friend and says "this is me." Bigger than No. 86. Usually does not mention the product on screen. Examples: "The drink after work was never about the drink. It was about the 20 minutes of silence nobody gave you all day." / "Some nights you do not need another drink. You need the day to stop needing you." / "The glass was never the whole thing. It was the signal that nobody needed anything for a minute."
+Lived Shift — Name a change people have experienced over time. Capture the moment the drink shifted from celebration into decompression, habit, escape, or a signal the day was over. Examples: "At some point, the drink stopped being celebration. It became the way the day finally ended." / "Nobody talks about when one drink turns from reward into routine." / "One day it was a toast. Then it became how you got through the quiet."
+After Work Silence — The proven highest-performer. Private after-work moment. Phone face down. Day finished. No one needs anything. Person settled and quietly in control.
 WINNING PATTERN: The strongest No. 86 post ever produced was: "Most people don't realize the drink after work isn't about the drink. It's about the 20 minutes of silence nobody gave you all day." It worked because: it was bigger than No. 86, it described the reason behind the drink not the drink itself, it named a hidden truth the viewer immediately recognized, it was easy to send to a friend and say "this is me," and the bottle was visible but not the story. Follow this structure: start with the hidden truth behind the habit or ritual, make it about the viewer's life not the product, keep it short and clear, do not mention No. 86 on screen. Use these hook patterns as inspiration only — never repeat them: "The drink after work was never about the drink." / "Some nights you do not need another drink." / "The glass was never the whole thing." / "You were not chasing the drink. You were chasing the pause." / "At some point, the drink stopped being celebration." / "The ritual mattered because the day would not stop."
 HOOK PROCESS: Generate 20 hooks internally. At least 12 emotional-truth, 5 specific-moment, max 3 product-led. Output 8 best as hookOptions each using a different hook family. Set bestHook and hook to the winner. Follow the required hook family from the user message.
 HOOK: 25–35 words. Varied structure. No fixed starters.
