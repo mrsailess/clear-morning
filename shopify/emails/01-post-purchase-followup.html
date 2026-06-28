@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You made a good call.</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400;500&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: #0D0602;
+      font-family: 'Inter', Helvetica, Arial, sans-serif;
+      color: #E8DDD0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrapper {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      color: #C9A870;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(201, 168, 112, 0.35);
+      margin: 32px auto;
+    }
+
+    .headline {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 1.25;
+      color: #F0E8D8;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .body-text {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: #B8A898;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .body-text strong {
+      color: #E8DDD0;
+      font-weight: 500;
+    }
+
+    .ritual-block {
+      background: rgba(201, 168, 112, 0.06);
+      border: 1px solid rgba(201, 168, 112, 0.15);
+      border-radius: 2px;
+      padding: 28px 32px;
+      margin: 36px 0;
+    }
+
+    .ritual-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #C9A870;
+      margin-bottom: 14px;
+    }
+
+    .ritual-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: #E8DDD0;
+      font-style: italic;
+    }
+
+    .cta-wrap {
+      text-align: center;
+      margin: 40px 0;
+    }
+
+    .cta {
+      display: inline-block;
+      background: #C9A870;
+      color: #0D0602;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 36px;
+    }
+
+    .signature {
+      font-size: 14px;
+      font-weight: 300;
+      color: #7A6A5A;
+      text-align: center;
+      line-height: 1.7;
+      margin-top: 16px;
+    }
+
+    .footer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 11px;
+      color: #4A3A2A;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    .footer a {
+      color: #6A5A4A;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <div class="logo">No. 86</div>
+
+    <div class="headline">You made a good call.</div>
+
+    <p class="body-text">
+      Your order is confirmed and on its way.<br />
+      Before it arrives — a few things worth knowing.
+    </p>
+
+    <div class="divider"></div>
+
+    <div class="ritual-block">
+      <div class="ritual-label">The Ritual</div>
+      <p class="ritual-text">
+        "No. 86 is built for the glass you actually want to hold at the end of the night —
+        the one that looks right, smells right, and lets you wake up sharp."
+      </p>
+    </div>
+
+    <p class="body-text">
+      Pour it neat over a big cube. Or build an Old Fashioned — same steps,
+      same result, <strong>zero fog in the morning.</strong>
+    </p>
+
+    <p class="body-text" style="margin-top: 20px;">
+      Oak. Smoke. Vanilla. Caramel.<br />
+      Everything the ritual deserves.
+    </p>
+
+    <div class="cta-wrap">
+      <a class="cta" href="https://www.drinkno86.com/blogs/recipes">See Our Cocktail Recipes</a>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="signature">
+      Welcome to the ritual.<br /><br />
+      — The No. 86 Team<br />
+      <em style="font-size: 12px; color: #5A4A3A;">Veteran Owned. Small Batch. &lt;.5 ABV.</em>
+    </p>
+
+    <div class="footer">
+      You're receiving this because you placed an order at
+      <a href="https://www.drinkno86.com">drinkno86.com</a><br />
+      <a href="{{ unsubscribe_url }}">Unsubscribe</a> &nbsp;·&nbsp;
+      <a href="https://www.drinkno86.com/policies/privacy-policy">Privacy Policy</a>
+    </div>
+
+  </div>
+</body>
+</html>
