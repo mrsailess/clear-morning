@@ -1,0 +1,185 @@
+{% comment %}
+  Purchase Options — No. 86 Product Page
+  Add to your product template via the theme customizer or product.json
+{% endcomment %}
+
+<div class="po-wrap" data-purchase-options>
+
+  <div class="po-options">
+
+    <!-- Subscribe — default selected -->
+    <label class="po-option po-option--featured" data-option="subscribe">
+      <input type="radio" name="purchase_type" value="subscribe" checked hidden />
+      <div class="po-option__inner">
+        <div class="po-option__left">
+          <span class="po-badge">Best Value</span>
+          <span class="po-title">Subscribe &amp; Save</span>
+          <span class="po-detail">Ships every 45 days · Cancel anytime</span>
+        </div>
+        <div class="po-option__right">
+          <span class="po-price">$31.59</span>
+          <span class="po-saving">Save 15%</span>
+        </div>
+      </div>
+    </label>
+
+    <!-- One-time -->
+    <label class="po-option" data-option="onetime">
+      <input type="radio" name="purchase_type" value="onetime" hidden />
+      <div class="po-option__inner">
+        <div class="po-option__left">
+          <span class="po-title">One-Time Purchase</span>
+          <span class="po-detail">Try it first</span>
+        </div>
+        <div class="po-option__right">
+          <span class="po-price">$35.99</span>
+        </div>
+      </div>
+    </label>
+
+  </div>
+
+  <!-- Trust bar -->
+  <div class="po-trust">
+    <span>Free shipping over $50</span>
+    <span class="po-trust__dot">·</span>
+    <span>Secure checkout</span>
+    <span class="po-trust__dot">·</span>
+    <span>Veteran Owned</span>
+  </div>
+
+</div>
+
+<style>
+  .po-wrap {
+    margin: 20px 0 28px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  .po-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .po-option {
+    display: block;
+    border: 1px solid rgba(201, 168, 112, 0.2);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    background: transparent;
+  }
+
+  .po-option--featured {
+    border-color: #C9A870;
+    background: rgba(201, 168, 112, 0.04);
+  }
+
+  .po-option:hover {
+    border-color: rgba(201, 168, 112, 0.6);
+  }
+
+  .po-option__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    gap: 12px;
+  }
+
+  .po-option__left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .po-option__right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .po-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #C9A870;
+    margin-bottom: 2px;
+  }
+
+  .po-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1A0A04;
+    letter-spacing: 0.01em;
+  }
+
+  .po-detail {
+    font-size: 11px;
+    font-weight: 400;
+    color: #8A7A6A;
+    letter-spacing: 0.02em;
+  }
+
+  .po-price {
+    font-size: 16px;
+    font-weight: 500;
+    color: #1A0A04;
+  }
+
+  .po-saving {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: #C9A870;
+    text-transform: uppercase;
+  }
+
+  .po-trust {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: #8A7A6A;
+    text-transform: uppercase;
+    padding: 0 2px;
+    flex-wrap: wrap;
+  }
+
+  .po-trust__dot {
+    color: rgba(201, 168, 112, 0.4);
+  }
+
+  /* Active state via JS */
+  .po-option--active {
+    border-color: #C9A870;
+    background: rgba(201, 168, 112, 0.04);
+  }
+
+  .po-option:not(.po-option--active):not(.po-option--featured) {
+    border-color: rgba(0,0,0,0.12);
+    background: transparent;
+  }
+</style>
+
+<script>
+  (function() {
+    var options = document.querySelectorAll('[data-purchase-options] [data-option]');
+    options.forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        options.forEach(function(o) {
+          o.classList.remove('po-option--active', 'po-option--featured');
+        });
+        opt.classList.add('po-option--active');
+        opt.querySelector('input[type="radio"]').checked = true;
+      });
+    });
+  })();
+</script>
