@@ -85,6 +85,7 @@ const BRAND_CONFIGS = {
         "Why It Works For The Ritual"
       ],
       placement: [
+        "Scroll-Stopping Product Hero",
         "Beautiful Evening",
         "Hero Bottle",
         "Bar Cart",
@@ -300,6 +301,19 @@ CAPTION: 30–60 words. Supports the image. Educates or builds trust. Short sent
 CTA: Soft product bridge. Max 12 words.
 TONE: Premium. Warm. Clean. Realistic. Masculine. Understated. Not cheesy. Not salesy.
 AVOID: Fake text inside the image. Bar scene energy. Generic whiskey ad. Cheap product shot feel. Overproduction. Hard sell.
+SCROLL-STOPPING PRODUCT HERO CATEGORY — when subcategory is Scroll-Stopping Product Hero:
+This is the product-first creative lane for Meta ads, retargeting, Shopify assets, Amazon secondary images, and social product-memory posts. The No. 86 bottle is the visual anchor. This is not Emotional Truth. This is not a lifestyle post. This is bold, simple, product-forward creative.
+HEADLINE (on-screen text): 3 to 8 words. Short. Bold. Memorable. Designed for scroll-stopping.
+Good headline examples: "SAME RITUAL" / "KEEP THE POUR" / "BUILT FOR THE PAUSE" / "NO MORNING FOG" / "POUR WITHOUT THE FOG" / "NEAT OR NOTHING" / "OVER ICE" / "SAME GLASS. CLEARER MORNING." / "NOT BOURBON. NOT PRETENDING." / "THE RITUAL STAYS"
+Do NOT write long emotional paragraphs for this category. Do not use Emotional Truth hooks here.
+IMAGE CONCEPT: Product is the visual anchor. Scene is simple and bold. Concept should feel memorable in one second.
+Good photo concept examples: bottle held up outdoors against evening sky / bottle reflected in sunglasses / bottle on dark wood bar cart with one glass / bottle on kitchen counter beside a closed laptop / bottle in a travel bag with rocks glass nearby / bottle on patio table with warm lights behind it / bottle placed among steak night objects / bottle beside one large clear ice cube on dark surface / bottle shot through a rocks glass / bottle inside open cabinet or bar shelf / bottle on chair-side table after work / bottle beside a phone face down and keys
+PHOTO PROMPT: Vertical 4:5. Product hero or near-hero. Realistic DTC-style product creative. Strong simple composition. Natural readable lighting. Premium but not overproduced. Believable environment. Slight UGC realism when appropriate. No fake label changes. No generated text in the image. No watermark. The product should look intentionally framed but the scene should still feel like it could exist in real life. Label must be readable.
+CAPTION: Can explain the product more directly than Emotional Truth. Keep it short. Do not hard sell. Do not overclaim.
+CTA examples: "Try it over ice." / "Keep the ritual." / "Pour it your way." / "Would this fit your bar cart?" / "Neat or over ice?"
+QUALITY GATE: Does the bottle look premium and readable? Would this stop a scroll in the first second? Does it still feel like it could exist in real life? If any answer is no, rewrite the concept.
+Return ONLY valid JSON for this subcategory. Start with { end with }. No markdown. No code blocks.
+{"postType":"Creative Product Placement","audienceContext":"...","subcategory":"Scroll-Stopping Product Hero","angle":"...","onScreenText":"...","imageConcept":"...","photoPrompt":"...","caption":"...","whyThisWorks":"...","whyThisMightGetShared":"...","cta":"...","hashtags":"..."}
 BEAUTIFUL EVENING CATEGORY — when subcategory is Beautiful Evening:
 This is the scroll-stopping lane. Lighting is the main creative driver. Use patio at blue hour, open kitchen with warm evening light, quiet balcony at sunset, backyard table after dinner, living room with soft lamp glow, hotel balcony at dusk, firepit with subtle glow, or bar cart near a window at golden hour. The bottle can be more prominent than other categories but should still feel naturally placed — not stiff or staged. On-screen text should be Emotional Truth style, about 30 words, a private truth someone would save or share. Do not explain the product on screen. The viewer should think "I want that evening" — not "that is a nice ad." Avoid dark moody scenes, luxury-for-luxury styling, studio product energy, and over-styled sets. The image should feel aspirational, warm, calm, and real.
 HASHTAGS: 5–8 as one string. Prefer: #no86 #nonalcoholicwhiskey #whiskeyritual #mindfuldrinking #drinkno86
@@ -747,6 +761,8 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
     { key: "caption",  label: "Caption",  field: brief.caption,  style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
     { key: "hashtags", label: "Hashtags", field: brief.hashtags, style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
     { key: "cta",         label: "CTA",          field: brief.cta,         style: { fontSize: "15px", fontWeight: "600", color: accent } },
+    ...(brief.whyThisWorks ? [{ key: "whyThisWorks", label: "Why This Works", field: brief.whyThisWorks, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
+    ...(brief.whyThisMightGetShared ? [{ key: "whyThisMightGetShared", label: "Why It Gets Shared", field: brief.whyThisMightGetShared, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
     ...(brief.photoPrompt ? [{ key: "photoPrompt", label: "Photo Prompt", field: brief.photoPrompt, style: { fontSize: "12px", lineHeight: "1.7", whiteSpace: "pre-wrap", color: "#A09890", fontFamily: "monospace" } }] : [])
   ] : [];
 
