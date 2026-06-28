@@ -85,6 +85,7 @@ const BRAND_CONFIGS = {
         "Why It Works For The Ritual"
       ],
       placement: [
+        "Pattern Interrupt Product Story",
         "Scroll-Stopping Product Hero",
         "Beautiful Evening",
         "Hero Bottle",
@@ -301,6 +302,30 @@ CAPTION: 30–60 words. Supports the image. Educates or builds trust. Short sent
 CTA: Soft product bridge. Max 12 words.
 TONE: Premium. Warm. Clean. Realistic. Masculine. Understated. Not cheesy. Not salesy.
 AVOID: Fake text inside the image. Bar scene energy. Generic whiskey ad. Cheap product shot feel. Overproduction. Hard sell.
+PATTERN INTERRUPT PRODUCT STORY CATEGORY — when subcategory is Pattern Interrupt Product Story:
+This is not a product photo. This is a scene that makes the viewer stop and ask: what is happening here?
+The No. 86 bottle is clearly visible, but the bottle is not the subject. The tension in the scene is the subject.
+FORMULA: No. 86 bottle + one story object + emotional truth. That is the whole image.
+STORY OBJECTS — pick exactly one that creates quiet tension with the bottle:
+face-down phone with unread notifications / closed laptop / loosened tie / work boots kicked off / hotel room key / steak knife and half-finished plate / baby monitor with no child shown / unopened mail stack / notebook with crossed-out checklist / gym bag by the chair / grill tools after dinner / coffee mug from earlier / house keys dropped beside the glass / remote on couch arm / jacket over chair / bottle cap off to the side / melting ice cube / empty chair across the table
+WHAT MAKES A SCENE SCROLL-STOPPING — one of these five things must be true:
+1. Visually unusual — the pairing is unexpected but instantly believable
+2. Emotionally familiar — the viewer has felt this exact moment before
+3. Immediately useful — the text answers something the viewer was already thinking
+4. Mildly contradictory — something looks slightly out of place
+5. Identity-relevant — the scene signals something about who the viewer is or wants to be
+THE SCENE SHOULD FEEL LIKE SOMETHING HAPPENED ONE SECOND AGO:
+phone just flipped face down / laptop just closed / chair still slightly pulled back / jacket just dropped / ice just cracked in the glass / hand leaving the frame / glass ring on the table / bottle cap off to the side / empty plate not yet cleared
+THE PRODUCT SHOULD FEEL LIKE THE ANSWER, NOT THE TOPIC:
+The viewer should think "I want that moment — what is that bottle?" Not "they are trying to sell me that bottle."
+If the image would make sense as a normal product shot, rewrite it. The scene must contain tension, contrast, or a hidden story.
+ON-SCREEN TEXT: 4 to 12 words if product-forward. Up to 30 words if the emotional truth is the main hook. Creates curiosity or recognition. Never overexplains.
+Good text examples: "THE DAY FINALLY STOPPED" / "SAME POUR. DIFFERENT TOMORROW." / "THE GLASS WAS NEVER THE WHOLE THING" / "THE PHONE CAN WAIT" / "THIS IS THE PART I MISSED" / "NOT THE DRINK. THE PAUSE." / "THE RITUAL STAYS" / "WORK IS DONE. STAY CLEAR."
+PHOTO PROMPT: Vertical 9:16. Lived-in. One dominant object pairing. Natural light. Believable environment. Not staged. Not a bar. Not luxury for luxury's sake. No pile of props. The scene implies a story without spelling it out.
+AVOID: Generic bottle-on-counter / standard bar cart shots / fake luxury / overproduced studio lighting / random props that do not connect to the story / bar scene energy / party energy / dramatic staging.
+QUALITY GATE: Before returning, run this check internally — if someone saw just the image with no caption, would they stop and wonder about the scene for one second? If no, rewrite.
+Return ONLY valid JSON for this subcategory:
+{"postType":"Creative Product Placement","audienceContext":"...","subcategory":"Pattern Interrupt Product Story","angle":"...","onScreenText":"...","imageConcept":"...","visualPatternInterrupt":"...","storyObject":"...","scrollStopReason":"...","photoPrompt":"...","caption":"...","whyThisWorks":"...","whyThisMightGetShared":"...","cta":"...","hashtags":"..."}
 SCROLL-STOPPING PRODUCT HERO CATEGORY — when subcategory is Scroll-Stopping Product Hero:
 This is the product-first creative lane for Meta ads, retargeting, Shopify assets, Amazon secondary images, and social product-memory posts. The No. 86 bottle is the visual anchor. This is not Emotional Truth. This is not a lifestyle post. This is bold, simple, product-forward creative.
 HEADLINE (on-screen text): 3 to 8 words. Short. Bold. Memorable. Designed for scroll-stopping.
@@ -761,6 +786,9 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
     { key: "caption",  label: "Caption",  field: brief.caption,  style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
     { key: "hashtags", label: "Hashtags", field: brief.hashtags, style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
     { key: "cta",         label: "CTA",          field: brief.cta,         style: { fontSize: "15px", fontWeight: "600", color: accent } },
+    ...(brief.visualPatternInterrupt ? [{ key: "visualPatternInterrupt", label: "Pattern Interrupt", field: brief.visualPatternInterrupt, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
+    ...(brief.storyObject ? [{ key: "storyObject", label: "Story Object", field: brief.storyObject, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
+    ...(brief.scrollStopReason ? [{ key: "scrollStopReason", label: "Scroll-Stop Reason", field: brief.scrollStopReason, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
     ...(brief.whyThisWorks ? [{ key: "whyThisWorks", label: "Why This Works", field: brief.whyThisWorks, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
     ...(brief.whyThisMightGetShared ? [{ key: "whyThisMightGetShared", label: "Why It Gets Shared", field: brief.whyThisMightGetShared, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
     ...(brief.photoPrompt ? [{ key: "photoPrompt", label: "Photo Prompt", field: brief.photoPrompt, style: { fontSize: "12px", lineHeight: "1.7", whiteSpace: "pre-wrap", color: "#A09890", fontFamily: "monospace" } }] : [])
