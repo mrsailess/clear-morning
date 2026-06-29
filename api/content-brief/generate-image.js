@@ -42,7 +42,7 @@ export default async function handler(req, res) {
       formData.append("model", "gpt-image-1");
       formData.append("image[]", bottleBlob, "no86-bottle.png");
       formData.append("prompt", `${bottleInstruction}\n\n${photoPrompt}${noTextInstruction}`);
-      formData.append("size", "1024x1536");
+      formData.append("size", "1024x1792");
 
       const response = await fetch("https://api.openai.com/v1/images/edits", {
         method: "POST",
@@ -66,7 +66,7 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           model: "gpt-image-1",
           prompt: `${photoPrompt}${noTextInstruction}`,
-          size: "1024x1536",
+          size: "1024x1792",
           output_format: "png",
         }),
       });
