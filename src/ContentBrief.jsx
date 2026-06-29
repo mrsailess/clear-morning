@@ -337,7 +337,7 @@ keys just dropped / boot just kicked off / laptop just closed / phone just flipp
 face-down phone with notification glow / unopened mail / work bag / notebook with crossed-out checklist / room key on hotel desk / steak knife with half-finished plate / baby monitor no child visible / gym bag / grill tools / coffee mug from earlier / house keys / loosened tie / remote on couch arm / empty chair across table
 4. CLEAR EMOTIONAL TENSION — one sentence of human truth:
 the day just ended but his mind is still running / the house finally got quiet / he is choosing the pause / work is done but he is still catching up / the old habit is available but the ritual changed / the first quiet second after walking in the door
-PHOTO PROMPT: Describe only the scene — camera angle, surface, fresh action evidence, bottle placement (label readable), glass, partial human presence, one background detail, lighting source. One sentence for the emotional feeling. Style guide handles everything else.
+PHOTO PROMPT: Describe only the scene — camera angle, surface, fresh action evidence, bottle placement (label readable), glass, partial human presence, one background detail, lighting source. One sentence for the emotional feeling. Style guide handles everything else. End with: "Shot on full-frame mirrorless, 50mm prime, f/2.0. Natural sensor grain. Slight vignette. No studio lighting."
 QUALITY GATE — run all four internally before returning. Rewrite if any fail:
 1. If the bottle were removed, would the scene still tell a story? If no, rewrite.
 2. If someone saw only the image, no caption, would they wonder what happened one second before or after the frame? If no, rewrite.
@@ -376,7 +376,7 @@ Good headline examples: "SAME RITUAL" / "KEEP THE POUR" / "BUILT FOR THE PAUSE" 
 Do NOT write long emotional paragraphs for this category. Do not use Emotional Truth hooks here.
 IMAGE CONCEPT: Product IS the scene — not a prop in a scene. Start with the bottle. Wrap one strong environment or surface around it. Simple. Bold. Memorable in one second.
 Good photo concept examples: bottle held up against evening sky (hand visible, no face) / bottle on a bourbon barrel head / bottle sitting in a cooler of ice shot from above / bottle on a golf cart cup holder / bottle on a grill side shelf / bottle framed through a car window / bottle nestled in a mesh bag or weekender / bottle on concrete pool coping at golden hour / bottle on a truck hood at sunset / bottle framed through a bar cabinet door half open
-PHOTO PROMPT: Describe only the scene — bottle placement, setting, angle, and one or two supporting elements. The style guide handles everything else.
+PHOTO PROMPT: Describe only the scene — bottle placement, setting, angle, and one or two supporting elements. The style guide handles everything else. End with: "Shot on full-frame mirrorless, 50mm prime, f/2.0. Natural sensor grain. Slight vignette. No studio lighting."
 CAPTION: Can explain the product more directly than Emotional Truth. Keep it short. Do not hard sell. Do not overclaim.
 CTA examples: "Try it over ice." / "Keep the ritual." / "Pour it your way." / "Would this fit your bar cart?" / "Neat or over ice?"
 QUALITY GATE: Does the bottle look premium and readable? Would this stop a scroll in the first second? Does it still feel like it could exist in real life? If any answer is no, rewrite the concept.
