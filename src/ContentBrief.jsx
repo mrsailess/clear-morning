@@ -94,6 +94,7 @@ const BRAND_CONFIGS = {
       ],
       placement: [
         "Pattern Interrupt Product Story",
+        "Out-of-Context Product Story",
         "Scroll-Stopping Product Hero",
         "Beautiful Evening",
         "Hero Bottle",
@@ -333,6 +334,23 @@ Good text: "THE DAY FINALLY STOPPED" / "SAME POUR. DIFFERENT TOMORROW." / "THE G
 AVOID: Simple combinations like bottle + glass + one prop with no story / generic bottle-on-counter / bar scene / party energy / sadness / loneliness / depressive mood / studio lighting / overproduced / fake luxury / agency campaign / staged composition.
 Return ONLY valid JSON for this subcategory:
 {"postType":"Creative Product Placement","audienceContext":"...","subcategory":"Pattern Interrupt Product Story","angle":"...","onScreenText":"...","imageConcept":"...","visualPatternInterrupt":"...","storyObject":"...","freshActionEvidence":"...","partialHumanPresence":"...","emotionalTension":"...","scrollStopReason":"...","photoPrompt":"...","caption":"...","whyThisWorks":"...","whyThisMightGetShared":"...","cta":"...","hashtags":"..."}
+OUT-OF-CONTEXT PRODUCT STORY CATEGORY — when subcategory is Out-of-Context Product Story:
+The lane: out of normal product-photo context, still inside the customer's life.
+The bottle appears somewhere visually unexpected but the setting still belongs to a No. 86 customer. The placement creates a one-second pause — not because it is weird, but because it is slightly surprising and immediately believable.
+DIFFERENCE FROM STANDARD PRODUCT HERO: Standard product hero = bottle looks good. Out-of-Context Product Story = bottle is placed or framed in a way the viewer does not expect.
+PLACEMENT IDEAS — use one unexpected but believable placement:
+bottle reflected in a rocks glass / bottle seen through a large clear ice cube / bottle reflected in a dark window at night / bottle in an open weekender bag on a hotel bed / bottle on a hotel desk beside a room key / bottle on a porch rail at blue hour / bottle beside work boots on the floor / bottle on a garage workbench beside tools / bottle on a grill side shelf after dinner / bottle on a steak night table near a knife and plate / bottle inside an open bar cabinet / bottle on a chair-side table beside a face-down phone / bottle beside house keys dropped on a wood surface / bottle on a nightstand after the house is quiet / bottle framed through a doorway with warm light behind it / bottle partially visible in a tote or gift bag / bottle on a kitchen windowsill at evening light / bottle on a patio table with string lights reflected behind it / bottle beside a closed laptop and one lamp
+QUALITY GATE — answer all four before returning. Rewrite if any is no:
+1. Is this visually different from a normal bottle-on-counter shot?
+2. Would this still make sense for a No. 86 customer?
+3. Does the placement create curiosity without feeling random?
+4. Is the product memorable in one second?
+ON-SCREEN TEXT: 3 to 8 words. Short. Bold. No emotional paragraphs.
+Good text: "SAME RITUAL" / "THE POUR STAYS" / "KEEP THE GLASS" / "THE DAY FINALLY STOPPED" / "BUILT FOR THE PAUSE" / "NO MORNING FOG" / "OVER ICE" / "SAME GLASS. CLEARER MORNING." / "NOT THE DRINK. THE PAUSE." / "THE RITUAL STAYS"
+PHOTO PROMPT: Describe only the scene — exact placement, camera angle, surface, lighting source, what makes the framing unexpected. Style guide handles everything else. Vertical 9:16.
+AVOID: Tennis balls / gym floors / desert / sports props that do not fit the brand / random fashion / party scenes / bar crowd / car driving / fake luxury / studio photography / generic bottle-on-counter / predictable bottle-and-glass arrangement.
+Return ONLY valid JSON for this subcategory:
+{"postType":"Creative Product Placement","audienceContext":"...","subcategory":"Out-of-Context Product Story","angle":"...","placementConcept":"...","whyItFeelsUnexpected":"...","whyItStillFitsTheCustomer":"...","onScreenText":"...","imageConcept":"...","photoPrompt":"...","caption":"...","cta":"...","hashtags":"..."}
 SCROLL-STOPPING PRODUCT HERO CATEGORY — when subcategory is Scroll-Stopping Product Hero:
 This is the product-first creative lane for Meta ads, retargeting, Shopify assets, Amazon secondary images, and social product-memory posts. The No. 86 bottle is the visual anchor. This is not Emotional Truth. This is not a lifestyle post. This is bold, simple, product-forward creative.
 HEADLINE (on-screen text): 3 to 8 words. Short. Bold. Memorable. Designed for scroll-stopping.
@@ -793,6 +811,9 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
     { key: "caption",  label: "Caption",  field: brief.caption,  style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
     { key: "hashtags", label: "Hashtags", field: brief.hashtags, style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
     { key: "cta",         label: "CTA",          field: brief.cta,         style: { fontSize: "15px", fontWeight: "600", color: accent } },
+    ...(brief.placementConcept ? [{ key: "placementConcept", label: "Placement Concept", field: brief.placementConcept, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
+    ...(brief.whyItFeelsUnexpected ? [{ key: "whyItFeelsUnexpected", label: "Why It's Unexpected", field: brief.whyItFeelsUnexpected, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
+    ...(brief.whyItStillFitsTheCustomer ? [{ key: "whyItStillFitsTheCustomer", label: "Why It Fits", field: brief.whyItStillFitsTheCustomer, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
     ...(brief.visualPatternInterrupt ? [{ key: "visualPatternInterrupt", label: "Pattern Interrupt", field: brief.visualPatternInterrupt, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
     ...(brief.storyObject ? [{ key: "storyObject", label: "Story Object", field: brief.storyObject, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
     ...(brief.freshActionEvidence ? [{ key: "freshActionEvidence", label: "Fresh Action Evidence", field: brief.freshActionEvidence, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
