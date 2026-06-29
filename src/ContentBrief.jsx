@@ -334,20 +334,24 @@ AVOID: Simple combinations like bottle + glass + one prop with no story / generi
 Return ONLY valid JSON for this subcategory:
 {"postType":"Creative Product Placement","audienceContext":"...","subcategory":"Pattern Interrupt Product Story","angle":"...","onScreenText":"...","imageConcept":"...","visualPatternInterrupt":"...","storyObject":"...","freshActionEvidence":"...","partialHumanPresence":"...","emotionalTension":"...","scrollStopReason":"...","photoPrompt":"...","caption":"...","whyThisWorks":"...","whyThisMightGetShared":"...","cta":"...","hashtags":"..."}
 OUT-OF-CONTEXT PRODUCT STORY CATEGORY — when subcategory is Out-of-Context Product Story:
-The lane: out of normal product-photo context, still inside the customer's life.
-The bottle appears somewhere visually unexpected but the setting still belongs to a No. 86 customer. The placement creates a one-second pause — not because it is weird, but because it is slightly surprising and immediately believable.
-DIFFERENCE FROM STANDARD PRODUCT HERO: Standard product hero = bottle looks good. Out-of-Context Product Story = bottle is placed or framed in a way the viewer does not expect.
-PLACEMENT IDEAS — use one unexpected but believable placement:
-bottle reflected in a rocks glass / bottle seen through a large clear ice cube / bottle reflected in a dark window at night / bottle in an open weekender bag on a hotel bed / bottle on a hotel desk beside a room key / bottle on a porch rail at blue hour / bottle beside work boots on the floor / bottle on a garage workbench beside tools / bottle on a grill side shelf after dinner / bottle on a steak night table near a knife and plate / bottle inside an open bar cabinet / bottle on a chair-side table beside a face-down phone / bottle beside house keys dropped on a wood surface / bottle on a nightstand after the house is quiet / bottle framed through a doorway with warm light behind it / bottle partially visible in a tote or gift bag / bottle on a kitchen windowsill at evening light / bottle on a patio table with string lights reflected behind it / bottle beside a closed laptop and one lamp
-QUALITY GATE — answer all four before returning. Rewrite if any is no:
-1. Is this visually different from a normal bottle-on-counter shot?
-2. Would this still make sense for a No. 86 customer?
-3. Does the placement create curiosity without feeling random?
-4. Is the product memorable in one second?
-ON-SCREEN TEXT: 3 to 8 words. Short. Bold. No emotional paragraphs.
-Good text: "SAME RITUAL" / "THE POUR STAYS" / "KEEP THE GLASS" / "THE DAY FINALLY STOPPED" / "BUILT FOR THE PAUSE" / "NO MORNING FOG" / "OVER ICE" / "SAME GLASS. CLEARER MORNING." / "NOT THE DRINK. THE PAUSE." / "THE RITUAL STAYS"
-PHOTO PROMPT: Describe only the scene — exact placement, camera angle, surface, lighting source, what makes the framing unexpected. Style guide handles everything else. Vertical 9:16.
-AVOID: Tennis balls / gym floors / desert / sports props that do not fit the brand / random fashion / party scenes / bar crowd / car driving / fake luxury / studio photography / generic bottle-on-counter / predictable bottle-and-glass arrangement.
+THE FORMULA: Product IS the scene. Environment IS the surprise. This is not a lifestyle shot with a bottle in it. Start with the bottle — then wrap an unexpected, brand-right environment around it.
+VISUAL REFERENCE: Think Optiva product ads — bottle centered and clean on a running track, nestled in tennis balls, held up against an open sky, framed through a bag zipper opening. The product is always the clear hero. The environment creates the "wait — why is that there?" reaction. That is the target.
+THE DISTINCTION: Do not build a scene and place the bottle in it. Place the bottle first, then choose the environment that creates contrast and surprise.
+ENVIRONMENT = the scroll-stopper. The bottle is always clean, readable, and hero.
+NO. 86 ENVIRONMENTS — unexpected but brand-right for a 30–45 year old man:
+Placed ON: bourbon barrel head / golf cart cup holder / grill grate or grill side shelf / concrete pool coping / truck hood at golden hour / leather locker room bench / poker table / concrete front step / stadium seat / dock or pier edge
+Nestled IN: cooler packed with ice (shot from above) / bag of wood chips / mesh gym bag / weekender bag / open toolbox / open car center console
+Held UP against: evening sky (just a hand and arm visible, no face) / truck bed with sunset behind / open field at dusk / garage door opening
+Framed THROUGH: car window / tent opening / bar cabinet door half open / mirror reflection / rocks glass looking through to bottle behind
+CAMERA: Slightly low or slightly overhead. Tight on the bottle with environment as context. Not wide establishing shot.
+LIGHT: Natural. Golden hour, blue hour, or practical lamp. Never studio.
+TEXT: 2 to 5 words. Bold. All caps. Acts like a headline not a caption. "SAME RITUAL" / "OVER ICE" / "KEEP THE POUR" / "NO MORNING FOG" / "THE RITUAL STAYS" / "BUILT FOR THE PAUSE" / "NEAT OR NOTHING"
+QUALITY GATE — rewrite if any fail:
+1. Is the bottle the clear visual subject, not a prop in someone's scene?
+2. Does the environment create a one-second "why is that there?" reaction?
+3. Would this still make sense for the No. 86 customer's actual life?
+4. Is the label readable and the bottle accurate?
+AVOID: Bottle beside a phone and keys (lifestyle prop arrangement) / bar counter setups / generic patio / kitchen counter / emotional scene-building / party / bar crowd / studio / fake luxury.
 Return ONLY valid JSON for this subcategory:
 {"postType":"Creative Product Placement","audienceContext":"...","subcategory":"Out-of-Context Product Story","angle":"...","placementConcept":"...","whyItFeelsUnexpected":"...","whyItStillFitsTheCustomer":"...","onScreenText":"...","imageConcept":"...","photoPrompt":"...","caption":"...","cta":"...","hashtags":"..."}
 SCROLL-STOPPING PRODUCT HERO CATEGORY — when subcategory is Scroll-Stopping Product Hero:
@@ -355,8 +359,8 @@ This is the product-first creative lane for Meta ads, retargeting, Shopify asset
 HEADLINE (on-screen text): 3 to 8 words. Short. Bold. Memorable. Designed for scroll-stopping.
 Good headline examples: "SAME RITUAL" / "KEEP THE POUR" / "BUILT FOR THE PAUSE" / "NO MORNING FOG" / "POUR WITHOUT THE FOG" / "NEAT OR NOTHING" / "OVER ICE" / "SAME GLASS. CLEARER MORNING." / "NOT BOURBON. NOT PRETENDING." / "THE RITUAL STAYS"
 Do NOT write long emotional paragraphs for this category. Do not use Emotional Truth hooks here.
-IMAGE CONCEPT: Product is the visual anchor. Scene is simple and bold. Concept should feel memorable in one second.
-Good photo concept examples: bottle held up outdoors against evening sky / bottle reflected in sunglasses / bottle on dark wood bar cart with one glass / bottle on kitchen counter beside a closed laptop / bottle in a travel bag with rocks glass nearby / bottle on patio table with warm lights behind it / bottle placed among steak night objects / bottle beside one large clear ice cube on dark surface / bottle shot through a rocks glass / bottle inside open cabinet or bar shelf / bottle on chair-side table after work / bottle beside a phone face down and keys
+IMAGE CONCEPT: Product IS the scene — not a prop in a scene. Start with the bottle. Wrap one strong environment or surface around it. Simple. Bold. Memorable in one second.
+Good photo concept examples: bottle held up against evening sky (hand visible, no face) / bottle on a bourbon barrel head / bottle sitting in a cooler of ice shot from above / bottle on a golf cart cup holder / bottle on a grill side shelf / bottle framed through a car window / bottle nestled in a mesh bag or weekender / bottle on concrete pool coping at golden hour / bottle on a truck hood at sunset / bottle framed through a bar cabinet door half open
 PHOTO PROMPT: Describe only the scene — bottle placement, setting, angle, and one or two supporting elements. The style guide handles everything else.
 CAPTION: Can explain the product more directly than Emotional Truth. Keep it short. Do not hard sell. Do not overclaim.
 CTA examples: "Try it over ice." / "Keep the ritual." / "Pour it your way." / "Would this fit your bar cart?" / "Neat or over ice?"
