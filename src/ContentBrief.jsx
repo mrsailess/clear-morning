@@ -8,26 +8,38 @@ PRIORITY ORDER
 3. Real photography — looks like a real photograph, not an advertisement.
 4. Beautiful composition — secondary to everything above.
 
+FORMAT
+Vertical 9:16 at 1080×1920 pixels. Every image.
+
+PHOTOGRAPHIC REALISM — CRITICAL
+Every image must be indistinguishable from a professionally captured photograph.
+Capture as if photographed on a real full-frame mirrorless camera using a 35mm, 50mm, or 85mm prime lens.
+Natural depth of field only. Focus should fall off realistically without exaggerated blur.
+Exposure should be slightly imperfect, with natural highlight rolloff and believable shadow detail.
+Retain realistic lens characteristics including subtle optical imperfections, gentle vignetting, natural perspective, and authentic glass rendering.
+Materials must behave like real materials. Wood should show grain. Leather should show natural wear. Fabric should wrinkle naturally. Glass should have believable thickness and refraction. Ice should have realistic translucency and internal imperfections.
+Skin must retain natural pores, texture, fine lines, and subtle imperfections. Never plastic or airbrushed.
+Allow small imperfections that occur in real photography: slight sensor noise, subtle film grain, soft edge transitions, realistic reflection behavior, fingerprints on glass when appropriate.
+Nothing should appear digitally illustrated, over-rendered, or artificially perfect.
+
 LIGHTING
-Only believable natural or practical light. Windows, lamps, golden hour, blue hour. Never studio lighting. Never dramatic hero lighting.
+Only believable natural or practical light. Windows, lamps, golden hour, blue hour. Never studio lighting. Never dramatic hero lighting. Light should fall naturally through the scene with realistic shadow transitions and believable color temperature.
 
 ENVIRONMENT
 Homes feel lived in. Natural wear. Real wood. Wrinkled fabric. Nothing staged or showroom perfect.
 
 PEOPLE
-No posing. No eye contact with camera. Natural body language. Capture between actions, not performing.
+No posing. No eye contact with camera. Natural body language. Capture between actions, not performing. Expressions should feel unconscious rather than intentional.
 
 EMOTION
 The image should feel like the viewer arrived one second after something meaningful happened. Quiet. Present. Honest. Never lonely. Never celebratory.
 
 COLOR
-Warm, restrained, realistic. No heavy HDR. No oversaturation. No excessive contrast.
-
-FORMAT
-Vertical 9:16 at 1080×1920 pixels. Every image.
+Warm. Restrained. Realistic. No heavy HDR. No oversaturation. No excessive contrast. Natural white balance with subtle tonal variation.
 
 AVOID — CRITICAL
-AI look. CGI. Plastic skin. Synthetic textures. Over-sharpening. Unnatural reflections. Fake bokeh. Distorted hands or fingers. Incorrect bottle shape or label. Studio lighting. Perfect interiors. Overly smooth surfaces. Too-clean composition. Anything that reads as computer-generated. The image must look like it was taken by a real photographer with a real camera on location.`;
+AI look. CGI. Plastic skin. Synthetic textures. Over-sharpening. Unnatural reflections. Fake bokeh. Distorted hands or fingers. Incorrect bottle shape or label. Studio lighting. Perfect interiors. Overly smooth surfaces. Too-clean composition. Overprocessed HDR. Overly crisp edges. Excessive background blur. Wax-like skin. Hyper-detailed textures. Artificial symmetry. Anything that reads as computer-generated.
+The image must look like it was captured by a real photographer using a real camera on location. If someone viewed the image without context, they should assume it is an authentic photograph.`;
 
 const NO86_PHOTO_PROMPT_SYSTEM = `You generate photo prompts for No. 86, a non-alcoholic whiskey alternative. Return ONLY valid JSON. Start with { end with }. No markdown. No explanation.
 {"photoPrompt":"..."}
