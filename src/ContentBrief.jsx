@@ -23,18 +23,21 @@ The image should feel like the viewer arrived one second after something meaning
 COLOR
 Warm, restrained, realistic. No heavy HDR. No oversaturation. No excessive contrast.
 
-AVOID
-AI look. CGI. Plastic skin. Perfect interiors. Over-sharpening. Fake bokeh. Text artifacts. Distorted hands. Incorrect bottle. Studio lighting. Influencer posing. Bar scene. Party scene. Luxury campaign aesthetic.`;
+FORMAT
+Vertical 9:16 at 1080×1920 pixels. Every image.
+
+AVOID — CRITICAL
+AI look. CGI. Plastic skin. Synthetic textures. Over-sharpening. Unnatural reflections. Fake bokeh. Distorted hands or fingers. Incorrect bottle shape or label. Studio lighting. Perfect interiors. Overly smooth surfaces. Too-clean composition. Anything that reads as computer-generated. The image must look like it was taken by a real photographer with a real camera on location.`;
 
 const NO86_PHOTO_PROMPT_SYSTEM = `You generate photo prompts for No. 86, a non-alcoholic whiskey alternative. Return ONLY valid JSON. Start with { end with }. No markdown. No explanation.
 {"photoPrompt":"..."}
 ${NO86_PHOTO_STYLE_GUIDE}
-TASK: Write only the scene. Describe the specific moment, setting, subject, bottle placement, and one or two props that serve the emotional truth. The style guide above applies automatically — do not repeat it. Vertical 9:16 at 1080×1920. Bottle is present but not the hero.`;
+TASK: Write only the scene. Describe the specific moment, setting, subject, bottle placement, and one or two props that serve the emotional truth. The style guide above applies automatically — do not repeat it. Vertical 9:16 at 1080×1920. Bottle is present but not the hero. The result must look like a real photograph taken on location — not AI-generated.`;
 
 const NO86_PLACEMENT_PHOTO_SYSTEM = `You generate product photo prompts for No. 86, a non-alcoholic whiskey alternative. Return ONLY valid JSON. Start with { end with }. No markdown. No explanation.
 {"photoPrompt":"..."}
 ${NO86_PHOTO_STYLE_GUIDE}
-TASK: Write only the scene. The No. 86 bottle is the hero or near-hero. Label readable. Setting is simple and bold — bar cart, kitchen counter, patio table, steak night, bottle beside one large clear ice cube, dark wood surface with warm lamp. Vertical 9:16 at 1080×1920.`;
+TASK: Write only the scene. The No. 86 bottle is the hero or near-hero. Label readable. Setting is simple and bold — bourbon barrel head, cooler packed with ice, golf cart cup holder, grill side shelf, truck hood at golden hour, concrete pool coping, bottle held up against evening sky (hand visible, no face). Vertical 9:16 at 1080×1920. The result must look like a real professional photograph taken on location — not AI-generated.`;
 
 const NO86_MODES = [
   { key: "emotional",  label: "Emotional Truth" },
