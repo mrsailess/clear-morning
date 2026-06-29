@@ -638,9 +638,9 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
       const parsed = await response.json();
       if (parsed.error) throw new Error(`API error: ${parsed.error} ${parsed.detail || parsed.raw || ""}`);
       if (!parsed.imageConcept && !parsed.hook && !parsed.onScreenText) throw new Error(`Unexpected response: ${JSON.stringify(parsed)}`);
-      const CAMERA_SUFFIX = "Shot on full-frame mirrorless, 50mm prime, f/2.0. Natural sensor grain. Slight vignette. No studio lighting.";
-      if (parsed.photoPrompt && !parsed.photoPrompt.includes("mirrorless")) {
-        parsed.photoPrompt = parsed.photoPrompt.trim() + " " + CAMERA_SUFFIX;
+      const CAMERA_SUFFIX = "\n\nCAMERA: Shot on full-frame mirrorless (Sony A7 IV), 50mm prime, f/2.0, ISO 400–800, 1/125 sec. Natural sensor grain. Slight optical vignette. No studio lighting. Authenticity over beauty — if any element looks AI-generated or artificially perfect, reduce it.";
+      if (parsed.photoPrompt) {
+        parsed.photoPrompt = parsed.photoPrompt.trim() + CAMERA_SUFFIX;
       }
       setBrief({ ...parsed, hookFamily });
       setSelectedHook(parsed.bestHook || parsed.hook || null);
@@ -720,8 +720,8 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
         if (!promptRes.ok || promptData.error) throw new Error(promptData.error || "Failed to generate photo prompt");
         photoPrompt = promptData.photoPrompt;
         if (!photoPrompt) throw new Error("No photo prompt returned");
-        const CAMERA_SUFFIX = "Shot on full-frame mirrorless, 50mm prime, f/2.0. Natural sensor grain. Slight vignette. No studio lighting.";
-        if (!photoPrompt.includes("mirrorless")) photoPrompt = photoPrompt.trim() + " " + CAMERA_SUFFIX;
+        const CAMERA_SUFFIX = "\n\nCAMERA: Shot on full-frame mirrorless (Sony A7 IV), 50mm prime, f/2.0, ISO 400–800, 1/125 sec. Natural sensor grain. Slight optical vignette. No studio lighting. Authenticity over beauty — if any element looks AI-generated or artificially perfect, reduce it.";
+        photoPrompt = photoPrompt.trim() + CAMERA_SUFFIX;
         setBrief((prev) => ({ ...prev, photoPrompt }));
       }
 
