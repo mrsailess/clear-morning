@@ -5,22 +5,19 @@ const NO86_PHOTO_STYLE_GUIDE = `NO. 86 PHOTOGRAPHY STYLE GUIDE — apply to ever
 PRIORITY ORDER
 1. Exact bottle fidelity — use the attached No. 86 bottle reference exactly. Never redesign the label, typography, proportions, reflections, or colors. Label must be readable when facing camera.
 2. Emotional authenticity — the moment should feel observed, not directed. A24 film still. Documentary photography.
-3. Real photography — looks like a real photograph, not an advertisement.
+3. Real photography — indistinguishable from a professionally captured editorial photograph. If shown beside ten real photographs from Kinfolk, Cereal Magazine, or A24 production stills, it should not be identifiable as AI.
 4. Beautiful composition — secondary to everything above.
 
 FORMAT
 Vertical 9:16 at 1080×1920 pixels. Every image.
 
-PHOTOGRAPHIC REALISM — CRITICAL
-Every image must be indistinguishable from a professionally captured photograph.
-Capture as if photographed on a real full-frame mirrorless camera using a 35mm, 50mm, or 85mm prime lens.
-Natural depth of field only. Focus should fall off realistically without exaggerated blur.
-Exposure should be slightly imperfect, with natural highlight rolloff and believable shadow detail.
-Retain realistic lens characteristics including subtle optical imperfections, gentle vignetting, natural perspective, and authentic glass rendering.
-Materials must behave like real materials. Wood should show grain. Leather should show natural wear. Fabric should wrinkle naturally. Glass should have believable thickness and refraction. Ice should have realistic translucency and internal imperfections.
-Skin must retain natural pores, texture, fine lines, and subtle imperfections. Never plastic or airbrushed.
-Allow small imperfections that occur in real photography: slight sensor noise, subtle film grain, soft edge transitions, realistic reflection behavior, fingerprints on glass when appropriate.
-Nothing should appear digitally illustrated, over-rendered, or artificially perfect.
+CAMERA & PHOTOGRAPHIC REALISM — APPLY BEFORE ALL OTHER DECISIONS
+Every image must be indistinguishable from a real photograph captured by a professional photographer on location.
+Shot on a full-frame mirrorless camera with a 50mm prime lens. Typical settings: f/2.0, ISO 400–800, 1/125 sec. Natural optical depth of field only. Real lens rendering. Natural sensor grain. Slight optical vignette. Physically accurate exposure and white balance. Real glass characteristics and lens falloff.
+Focus should never be clinically perfect. Allow subtle focus breathing, natural edge softness, slight chromatic aberration, realistic highlight rolloff, and authentic dynamic range. Preserve fine texture in skin, fabric, leather, wood, and glass.
+No studio lighting. No CGI rendering. No artificial sharpening. No HDR processing. No computational photography look. No exaggerated bokeh. No hyper-clean edges. No plastic skin. No synthetic textures. No perfect symmetry.
+The final image should be believable as an unedited RAW photograph from a Sony A7 IV, Canon R6 Mark II, or Nikon Z6 III using a 50mm prime lens.
+If any element appears artificial, overly perfect, or computer-generated, reduce its perfection until it matches the imperfections of real photography. Authenticity takes priority over beauty.
 
 LIGHTING
 Only believable natural or practical light. Windows, lamps, golden hour, blue hour. Never studio lighting. Never dramatic hero lighting. Light should fall naturally through the scene with realistic shadow transitions and believable color temperature.
