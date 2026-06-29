@@ -303,29 +303,39 @@ CTA: Soft product bridge. Max 12 words.
 TONE: Premium. Warm. Clean. Realistic. Masculine. Understated. Not cheesy. Not salesy.
 AVOID: Fake text inside the image. Bar scene energy. Generic whiskey ad. Cheap product shot feel. Overproduction. Hard sell.
 PATTERN INTERRUPT PRODUCT STORY CATEGORY — when subcategory is Pattern Interrupt Product Story:
-This is not a product photo. This is a scene that makes the viewer stop and ask: what is happening here?
-The No. 86 bottle is clearly visible, but the bottle is not the subject. The tension in the scene is the subject.
-FORMULA: No. 86 bottle + one story object + emotional truth. That is the whole image.
-STORY OBJECTS — pick exactly one that creates quiet tension with the bottle:
-face-down phone with unread notifications / closed laptop / loosened tie / work boots kicked off / hotel room key / steak knife and half-finished plate / baby monitor with no child shown / unopened mail stack / notebook with crossed-out checklist / gym bag by the chair / grill tools after dinner / coffee mug from earlier / house keys dropped beside the glass / remote on couch arm / jacket over chair / bottle cap off to the side / melting ice cube / empty chair across the table
-WHAT MAKES A SCENE SCROLL-STOPPING — one of these five things must be true:
-1. Visually unusual — the pairing is unexpected but instantly believable
-2. Emotionally familiar — the viewer has felt this exact moment before
-3. Immediately useful — the text answers something the viewer was already thinking
-4. Mildly contradictory — something looks slightly out of place
-5. Identity-relevant — the scene signals something about who the viewer is or wants to be
-THE SCENE SHOULD FEEL LIKE SOMETHING HAPPENED ONE SECOND AGO:
-phone just flipped face down / laptop just closed / chair still slightly pulled back / jacket just dropped / ice just cracked in the glass / hand leaving the frame / glass ring on the table / bottle cap off to the side / empty plate not yet cleared
-THE PRODUCT SHOULD FEEL LIKE THE ANSWER, NOT THE TOPIC:
-The viewer should think "I want that moment — what is that bottle?" Not "they are trying to sell me that bottle."
-If the image would make sense as a normal product shot, rewrite it. The scene must contain tension, contrast, or a hidden story.
-ON-SCREEN TEXT: 4 to 12 words if product-forward. Up to 30 words if the emotional truth is the main hook. Creates curiosity or recognition. Never overexplains.
-Good text examples: "THE DAY FINALLY STOPPED" / "SAME POUR. DIFFERENT TOMORROW." / "THE GLASS WAS NEVER THE WHOLE THING" / "THE PHONE CAN WAIT" / "THIS IS THE PART I MISSED" / "NOT THE DRINK. THE PAUSE." / "THE RITUAL STAYS" / "WORK IS DONE. STAY CLEAR."
-PHOTO PROMPT: Vertical 9:16. Lived-in. One dominant object pairing. Natural light. Believable environment. Not staged. Not a bar. Not luxury for luxury's sake. No pile of props. The scene implies a story without spelling it out.
-AVOID: Generic bottle-on-counter / standard bar cart shots / fake luxury / overproduced studio lighting / random props that do not connect to the story / bar scene energy / party energy / dramatic staging.
-QUALITY GATE: Before returning, run this check internally — if someone saw just the image with no caption, would they stop and wonder about the scene for one second? If no, rewrite.
+This is not lifestyle texture. This is not a pretty product photo. This is a scene with human presence, fresh action, and a story the viewer walks into mid-moment.
+FORMULA: No. 86 bottle + story object + fresh action evidence + partial human presence + emotional truth.
+Every output MUST include at least 2 of these 4 story signals:
+1. PARTIAL HUMAN PRESENCE — the person is felt, not posed:
+hand entering or leaving frame / lower legs just out of frame / sleeve visible / person blurred in background / someone just sat down / someone just walked away
+2. FRESH ACTION EVIDENCE — something happened one second ago:
+keys just dropped / boot just kicked off / laptop just closed / phone just flipped face down / glass just set down / cap just removed / chair just pulled back / work bag just dropped / jacket just landed on chair
+3. SHARP STORY OBJECT — one object that carries the meaning:
+face-down phone with notification glow / unopened mail / work bag / notebook with crossed-out checklist / room key on hotel desk / steak knife with half-finished plate / baby monitor no child visible / gym bag / grill tools / coffee mug from earlier / house keys / loosened tie / remote on couch arm / empty chair across table
+4. CLEAR EMOTIONAL TENSION — one sentence of human truth:
+the day just ended but his mind is still running / the house finally got quiet / he is choosing the pause / work is done but he is still catching up / the old habit is available but the ritual changed / the first quiet second after walking in the door
+PHOTO PROMPT STRUCTURE — write the photoPrompt as a specific scene description that includes:
+- Camera angle and shot type
+- Exact floor or surface material
+- Specific fresh action evidence visible
+- Where the No. 86 bottle sits and that the label is readable
+- What the rocks glass looks like (ice, pour, condensation)
+- What partial human presence exists
+- One background detail out of focus
+- Lighting source (lamp, window, fading light — never studio)
+- The emotional feeling of the moment in one line
+REFERENCE EXAMPLE (do not copy this exactly — use it as a model for specificity):
+"Vertical 9:16. Natural warm light from a nearby lamp, never overhead or studio. Worn hardwood floor in a real lived-in home. One leather work boot lies on its side in the foreground, clearly just kicked off. A second boot still upright but slightly turned. Keys have just landed nearby. The No. 86 bottle stands to the right, label facing camera and readable, cap off beside it. A heavy rocks glass with one large clear ice cube and a small amber pour sits close with slight condensation. In the background, slightly out of focus, a work bag rests near a chair and a phone lies face down. Shot from a low angle just above floor level. The scene feels like the first quiet second after walking in the door. Warm, real, slightly imperfect, not styled, not staged. The bottle feels like it was already waiting."
+QUALITY GATE — run all four internally before returning. Rewrite if any fail:
+1. If the bottle were removed, would the scene still tell a story? If no, rewrite.
+2. If someone saw only the image, no caption, would they wonder what happened one second before or after the frame? If no, rewrite.
+3. Does the scene still work as a generic stock product image? If yes, rewrite.
+4. Does the output include at least 2 of the 4 story signals? If no, rewrite.
+ON-SCREEN TEXT: 4 to 12 words if product-forward. Up to 30 words if emotional truth is the main hook. Creates curiosity or recognition. Never overexplains.
+Good text: "THE DAY FINALLY STOPPED" / "SAME POUR. DIFFERENT TOMORROW." / "THE GLASS WAS NEVER THE WHOLE THING" / "THE PHONE CAN WAIT" / "THIS IS THE PART I MISSED" / "NOT THE DRINK. THE PAUSE." / "THE RITUAL STAYS" / "WORK IS DONE. STAY CLEAR."
+AVOID: Simple combinations like bottle + glass + one prop with no story / generic bottle-on-counter / bar scene / party energy / sadness / loneliness / depressive mood / studio lighting / overproduced / fake luxury / agency campaign / staged composition.
 Return ONLY valid JSON for this subcategory:
-{"postType":"Creative Product Placement","audienceContext":"...","subcategory":"Pattern Interrupt Product Story","angle":"...","onScreenText":"...","imageConcept":"...","visualPatternInterrupt":"...","storyObject":"...","scrollStopReason":"...","photoPrompt":"...","caption":"...","whyThisWorks":"...","whyThisMightGetShared":"...","cta":"...","hashtags":"..."}
+{"postType":"Creative Product Placement","audienceContext":"...","subcategory":"Pattern Interrupt Product Story","angle":"...","onScreenText":"...","imageConcept":"...","visualPatternInterrupt":"...","storyObject":"...","freshActionEvidence":"...","partialHumanPresence":"...","emotionalTension":"...","scrollStopReason":"...","photoPrompt":"...","caption":"...","whyThisWorks":"...","whyThisMightGetShared":"...","cta":"...","hashtags":"..."}
 SCROLL-STOPPING PRODUCT HERO CATEGORY — when subcategory is Scroll-Stopping Product Hero:
 This is the product-first creative lane for Meta ads, retargeting, Shopify assets, Amazon secondary images, and social product-memory posts. The No. 86 bottle is the visual anchor. This is not Emotional Truth. This is not a lifestyle post. This is bold, simple, product-forward creative.
 HEADLINE (on-screen text): 3 to 8 words. Short. Bold. Memorable. Designed for scroll-stopping.
@@ -788,6 +798,9 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
     { key: "cta",         label: "CTA",          field: brief.cta,         style: { fontSize: "15px", fontWeight: "600", color: accent } },
     ...(brief.visualPatternInterrupt ? [{ key: "visualPatternInterrupt", label: "Pattern Interrupt", field: brief.visualPatternInterrupt, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
     ...(brief.storyObject ? [{ key: "storyObject", label: "Story Object", field: brief.storyObject, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
+    ...(brief.freshActionEvidence ? [{ key: "freshActionEvidence", label: "Fresh Action Evidence", field: brief.freshActionEvidence, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
+    ...(brief.partialHumanPresence ? [{ key: "partialHumanPresence", label: "Human Presence", field: brief.partialHumanPresence, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
+    ...(brief.emotionalTension ? [{ key: "emotionalTension", label: "Emotional Tension", field: brief.emotionalTension, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
     ...(brief.scrollStopReason ? [{ key: "scrollStopReason", label: "Scroll-Stop Reason", field: brief.scrollStopReason, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
     ...(brief.whyThisWorks ? [{ key: "whyThisWorks", label: "Why This Works", field: brief.whyThisWorks, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
     ...(brief.whyThisMightGetShared ? [{ key: "whyThisMightGetShared", label: "Why It Gets Shared", field: brief.whyThisMightGetShared, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
