@@ -1,32 +1,40 @@
 import { useState, useRef, useCallback } from "react";
 
-const NO86_MASTER_TEMPLATE = `Use the attached No. 86 bottle as the exact product reference. Vertical 9:16 photograph at 1080 × 1920 pixels for TikTok and Instagram Reels. Candid and observed — never staged, never directed. No posing. No eye contact with camera. The bottle is present but never the hero. When tradeoffs are required: emotional truth over technical perfection. Believable moment over bottle visibility. Emotional recognition over luxury aesthetic.
-EMOTIONAL TRUTH: [This is the image. Generate one specific, recognizable human truth the image is visualizing — e.g. "The day is over. Nobody needs anything from me right now." or "For the first time all day, he isn't rushing." or "He got home before his mind did." Build every other element around this truth. If the emotional truth isn't immediately clear without a caption, the image fails regardless of everything else.]
-MOMENT: [One specific observable action — not a feeling, not a story, a moment. Examples: he just set the glass down and leaned forward. She paused before the first sip. He closed the laptop and stayed seated. One moment only. Match it to the emotional truth.]
-SETTING: [Where this moment naturally happens. The setting should explain the emotion without words. Kitchen after work, lived-in living room, home office at night, patio at dusk. Not a luxury penthouse, designer loft, or styled Pinterest home.]
-SUBJECT: [Who would naturally be in that moment. Men 30–45 for after-work and ritual, men 45–55 for firepit and mature ritual, women 30–45 for partner-noticed and night routine, adults 25–34 for identity-shift and sober-curious. Race rotates: Black man, Black woman, white man, white woman, Latino man, Latina woman, mixed race man, mixed race woman, ambiguous man, ambiguous woman. Real person energy — looks capable, looks trustworthy. Not model energy. No children.]
-BOTTLE PLACEMENT: [On the counter, table, desk, or nearby surface. Secondary in emphasis but clearly visible and label readable. If the bottle disappeared, the image should still work — then add the bottle back. Never centered like a product ad.]
-LIGHTING: [Warm, clean, and readable. Soft window light, warm kitchen or lamp light, patio or early evening ambient. Face, hands, glass, and bottle all visible on a phone screen. No moody darkness. No dramatic shadows. No whiskey-ad lighting. People buy clarity, not mystery.]
-PROPS: [Only objects that help tell the story — laptop, work bag, throw blanket, book, glass with ice. No random decor, no fake luxury cues, no unnecessary whiskey accessories.]
-FACE AND POSTURE: [Describe physical behavior, not emotions. Eyes forward into middle distance. Elbows on knees or one hand still near the glass. The pose should create the emotion — do not describe the emotion directly. Not: relaxed and content. Yes: shoulders dropped, gaze forward, one hand loose around the glass.]
-PHOTOGRAPHY STYLE: Authentic UGC. Documentary photography. Natural depth of field. Slight film grain.
-NEGATIVE PROMPTS: Hero bottle shot. Influencer pose. Subject looking at camera. Party scene. Bar scene. Studio lighting. Stock photography. Luxury campaign aesthetic. CGI. Text. Watermark.`;
+const NO86_PHOTO_STYLE_GUIDE = `NO. 86 PHOTOGRAPHY STYLE GUIDE — apply to every image.
 
-const NO86_PHOTO_PROMPT_SYSTEM = `You generate photo prompts for No. 86, a non-alcoholic whiskey alternative. Given a hook and content category, write a single assembled photo prompt using the master template below. Return ONLY valid JSON. Start with { and end with }. No markdown. No explanation.
-{"photoPrompt":"..."}
-MASTER TEMPLATE — write EMOTIONAL TRUTH, MOMENT, SETTING, SUBJECT, BOTTLE PLACEMENT, and PROPS fresh based on the hook. Keep all other sections exactly as written.
-${NO86_MASTER_TEMPLATE}`;
+PRIORITY ORDER
+1. Exact bottle fidelity — use the attached No. 86 bottle reference exactly. Never redesign the label, typography, proportions, reflections, or colors. Label must be readable when facing camera.
+2. Emotional authenticity — the moment should feel observed, not directed. A24 film still. Documentary photography.
+3. Real photography — looks like a real photograph, not an advertisement.
+4. Beautiful composition — secondary to everything above.
 
-const NO86_PLACEMENT_PHOTO_SYSTEM = `You generate product photo prompts for No. 86, a non-alcoholic whiskey alternative. The bottle is the hero or near-hero. Return ONLY valid JSON. Start with { and end with }. No markdown. No explanation.
+LIGHTING
+Only believable natural or practical light. Windows, lamps, golden hour, blue hour. Never studio lighting. Never dramatic hero lighting.
+
+ENVIRONMENT
+Homes feel lived in. Natural wear. Real wood. Wrinkled fabric. Nothing staged or showroom perfect.
+
+PEOPLE
+No posing. No eye contact with camera. Natural body language. Capture between actions, not performing.
+
+EMOTION
+The image should feel like the viewer arrived one second after something meaningful happened. Quiet. Present. Honest. Never lonely. Never celebratory.
+
+COLOR
+Warm, restrained, realistic. No heavy HDR. No oversaturation. No excessive contrast.
+
+AVOID
+AI look. CGI. Plastic skin. Perfect interiors. Over-sharpening. Fake bokeh. Text artifacts. Distorted hands. Incorrect bottle. Studio lighting. Influencer posing. Bar scene. Party scene. Luxury campaign aesthetic.`;
+
+const NO86_PHOTO_PROMPT_SYSTEM = `You generate photo prompts for No. 86, a non-alcoholic whiskey alternative. Return ONLY valid JSON. Start with { end with }. No markdown. No explanation.
 {"photoPrompt":"..."}
-RULES:
-Vertical 9:16 at 1080 × 1920 pixels for TikTok and Instagram Reels.
-The No. 86 bottle should be clearly visible, label readable, and intentionally placed — but not artificially staged.
-Product-forward does not mean overproduced. Keep it premium, warm, realistic, and clean.
-Use settings like: dark wood bar cart, kitchen counter, patio table, steak night table, rocks glass beside bottle, bottle beside one large clear ice cube, bottle with oak or caramel cues, premium dark surface with warm practical light, Amazon-style clean layout, Shopify-style hero lifestyle image.
-LIGHTING: Natural readable light. Warm. Clean. No studio flash. No harsh shadows. Label must be readable.
-STYLE: Premium. Warm. Masculine. Understated. Not cheesy. Not a generic whiskey ad. Not a bar scene.
-NEGATIVE PROMPTS: Fake text in image. Bar scene. Generic whiskey ad. Cheap ecommerce look. Studio flash. Artificial staging. CGI. Watermark. Text. Overproduced lighting.`;
+${NO86_PHOTO_STYLE_GUIDE}
+TASK: Write only the scene. Describe the specific moment, setting, subject, bottle placement, and one or two props that serve the emotional truth. The style guide above applies automatically — do not repeat it. Vertical 9:16 at 1080×1920. Bottle is present but not the hero.`;
+
+const NO86_PLACEMENT_PHOTO_SYSTEM = `You generate product photo prompts for No. 86, a non-alcoholic whiskey alternative. Return ONLY valid JSON. Start with { end with }. No markdown. No explanation.
+{"photoPrompt":"..."}
+${NO86_PHOTO_STYLE_GUIDE}
+TASK: Write only the scene. The No. 86 bottle is the hero or near-hero. Label readable. Setting is simple and bold — bar cart, kitchen counter, patio table, steak night, bottle beside one large clear ice cube, dark wood surface with warm lamp. Vertical 9:16 at 1080×1920.`;
 
 const NO86_MODES = [
   { key: "emotional",  label: "Emotional Truth" },
@@ -314,18 +322,7 @@ keys just dropped / boot just kicked off / laptop just closed / phone just flipp
 face-down phone with notification glow / unopened mail / work bag / notebook with crossed-out checklist / room key on hotel desk / steak knife with half-finished plate / baby monitor no child visible / gym bag / grill tools / coffee mug from earlier / house keys / loosened tie / remote on couch arm / empty chair across table
 4. CLEAR EMOTIONAL TENSION — one sentence of human truth:
 the day just ended but his mind is still running / the house finally got quiet / he is choosing the pause / work is done but he is still catching up / the old habit is available but the ritual changed / the first quiet second after walking in the door
-PHOTO PROMPT STRUCTURE — write the photoPrompt as a specific scene description that includes:
-- Camera angle and shot type
-- Exact floor or surface material
-- Specific fresh action evidence visible
-- Where the No. 86 bottle sits and that the label is readable
-- What the rocks glass looks like (ice, pour, condensation)
-- What partial human presence exists
-- One background detail out of focus
-- Lighting source (lamp, window, fading light — never studio)
-- The emotional feeling of the moment in one line
-REFERENCE EXAMPLE (do not copy this exactly — use it as a model for specificity):
-"Vertical 9:16. Natural warm light from a nearby lamp, never overhead or studio. Worn hardwood floor in a real lived-in home. One leather work boot lies on its side in the foreground, clearly just kicked off. A second boot still upright but slightly turned. Keys have just landed nearby. The No. 86 bottle stands to the right, label facing camera and readable, cap off beside it. A heavy rocks glass with one large clear ice cube and a small amber pour sits close with slight condensation. In the background, slightly out of focus, a work bag rests near a chair and a phone lies face down. Shot from a low angle just above floor level. The scene feels like the first quiet second after walking in the door. Warm, real, slightly imperfect, not styled, not staged. The bottle feels like it was already waiting."
+PHOTO PROMPT: Describe only the scene — camera angle, surface, fresh action evidence, bottle placement (label readable), glass, partial human presence, one background detail, lighting source. One sentence for the emotional feeling. Style guide handles everything else.
 QUALITY GATE — run all four internally before returning. Rewrite if any fail:
 1. If the bottle were removed, would the scene still tell a story? If no, rewrite.
 2. If someone saw only the image, no caption, would they wonder what happened one second before or after the frame? If no, rewrite.
@@ -343,7 +340,7 @@ Good headline examples: "SAME RITUAL" / "KEEP THE POUR" / "BUILT FOR THE PAUSE" 
 Do NOT write long emotional paragraphs for this category. Do not use Emotional Truth hooks here.
 IMAGE CONCEPT: Product is the visual anchor. Scene is simple and bold. Concept should feel memorable in one second.
 Good photo concept examples: bottle held up outdoors against evening sky / bottle reflected in sunglasses / bottle on dark wood bar cart with one glass / bottle on kitchen counter beside a closed laptop / bottle in a travel bag with rocks glass nearby / bottle on patio table with warm lights behind it / bottle placed among steak night objects / bottle beside one large clear ice cube on dark surface / bottle shot through a rocks glass / bottle inside open cabinet or bar shelf / bottle on chair-side table after work / bottle beside a phone face down and keys
-PHOTO PROMPT: Vertical 4:5. Product hero or near-hero. Realistic DTC-style product creative. Strong simple composition. Natural readable lighting. Premium but not overproduced. Believable environment. Slight UGC realism when appropriate. No fake label changes. No generated text in the image. No watermark. The product should look intentionally framed but the scene should still feel like it could exist in real life. Label must be readable.
+PHOTO PROMPT: Describe only the scene — bottle placement, setting, angle, and one or two supporting elements. The style guide handles everything else.
 CAPTION: Can explain the product more directly than Emotional Truth. Keep it short. Do not hard sell. Do not overclaim.
 CTA examples: "Try it over ice." / "Keep the ritual." / "Pour it your way." / "Would this fit your bar cart?" / "Neat or over ice?"
 QUALITY GATE: Does the bottle look premium and readable? Would this stop a scroll in the first second? Does it still feel like it could exist in real life? If any answer is no, rewrite the concept.
