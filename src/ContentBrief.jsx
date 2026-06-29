@@ -105,23 +105,8 @@ const BRAND_CONFIGS = {
         "Why It Works For The Ritual"
       ],
       placement: [
-        "Pattern Interrupt Product Story",
-        "Out-of-Context Product Story",
-        "Scroll-Stopping Product Hero",
-        "Beautiful Evening",
-        "Hero Bottle",
-        "Bar Cart",
-        "How To Pour",
-        "Neat / Over Ice / Mixed",
-        "50/50",
-        "Flavor Profile",
-        "Bottle With Glass",
-        "Amazon Listing Image",
-        "Dark Premium Product Shot",
-        "Kitchen Counter Product Shot",
-        "Patio Table Product Shot",
-        "Gift / Host Bottle",
-        "Review / Social Proof Image"
+        "Pattern Interrupt Product Story"
+        // hidden: "Out-of-Context Product Story", "Scroll-Stopping Product Hero", "Beautiful Evening", "Hero Bottle", "Bar Cart", "How To Pour", "Neat / Over Ice / Mixed", "50/50", "Flavor Profile", "Bottle With Glass", "Amazon Listing Image", "Dark Premium Product Shot", "Kitchen Counter Product Shot", "Patio Table Product Shot", "Gift / Host Bottle", "Review / Social Proof Image"
       ]
     },
     systemPrompt: `You write TikTok/Instagram content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
@@ -340,8 +325,8 @@ QUALITY GATE — run all four internally before returning. Rewrite if any fail:
 2. If someone saw only the image, no caption, would they wonder what happened one second before or after the frame? If no, rewrite.
 3. Does the scene still work as a generic stock product image? If yes, rewrite.
 4. Does the output include at least 2 of the 4 story signals? If no, rewrite.
-ON-SCREEN TEXT: 4 to 12 words if product-forward. Up to 30 words if emotional truth is the main hook. Creates curiosity or recognition. Never overexplains.
-Good text: "THE DAY FINALLY STOPPED" / "SAME POUR. DIFFERENT TOMORROW." / "THE GLASS WAS NEVER THE WHOLE THING" / "THE PHONE CAN WAIT" / "THIS IS THE PART I MISSED" / "NOT THE DRINK. THE PAUSE." / "THE RITUAL STAYS" / "WORK IS DONE. STAY CLEAR."
+ON-SCREEN TEXT: Emotional Truth style. 25–35 words. A private human truth someone would send a friend and say "this is me." Should not mention No. 86. Optimized for shares. Short sentences. White space between lines.
+Good text examples: "The drink after work was never about the drink. It was about the 20 minutes of silence nobody gave you all day." / "Some nights you do not need another drink. You need the day to stop needing you." / "The glass was never the whole thing. It was the signal that nobody needed anything for a minute."
 AVOID: Simple combinations like bottle + glass + one prop with no story / generic bottle-on-counter / bar scene / party energy / sadness / loneliness / depressive mood / studio lighting / overproduced / fake luxury / agency campaign / staged composition.
 Return ONLY valid JSON for this subcategory:
 {"postType":"Creative Product Placement","audienceContext":"...","subcategory":"Pattern Interrupt Product Story","angle":"...","onScreenText":"...","imageConcept":"...","visualPatternInterrupt":"...","storyObject":"...","freshActionEvidence":"...","partialHumanPresence":"...","emotionalTension":"...","scrollStopReason":"...","photoPrompt":"...","caption":"...","whyThisWorks":"...","whyThisMightGetShared":"...","cta":"...","hashtags":"..."}
