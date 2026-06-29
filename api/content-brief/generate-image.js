@@ -23,6 +23,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing photoPrompt" });
   }
 
+  const cameraSpec = "PHOTOGRAPHIC REALISM — CRITICAL: Every image must be indistinguishable from a real photograph captured by a professional photographer on location. Shot on a full-frame mirrorless camera (Sony A7 IV, Canon R6 Mark II, or Nikon Z6 III) with a 50mm prime lens. Settings: f/2.0, ISO 400–800, 1/125 sec. Natural optical depth of field only. Real lens rendering. Natural sensor grain. Slight optical vignette. Physically accurate exposure and white balance. Real glass characteristics and lens falloff. Focus should never be clinically perfect — allow subtle edge softness, slight chromatic aberration, realistic highlight rolloff. Preserve fine texture in skin, fabric, leather, wood, and glass. No CGI rendering. No artificial sharpening. No HDR processing. No exaggerated bokeh. No hyper-clean edges. No plastic skin. No synthetic textures. No perfect symmetry. If any element appears artificial or overly perfect, reduce its perfection until it matches the imperfections of real photography. Authenticity takes priority over beauty.\n\n";
+
   const noTextInstruction = "\n\nImportant: Do not include any text, captions, logos, or watermarks in the image. The on-screen text will be added separately outside the image.";
 
   try {
@@ -41,7 +43,7 @@ export default async function handler(req, res) {
       const formData = new FormData();
       formData.append("model", "gpt-image-1");
       formData.append("image[]", bottleBlob, "no86-bottle.png");
-      formData.append("prompt", `${bottleInstruction}\n\n${photoPrompt}${noTextInstruction}`);
+      formData.append("prompt", `${cameraSpec}${bottleInstruction}\n\n${photoPrompt}${noTextInstruction}`);
       formData.append("size", "1024x1792");
 
       const response = await fetch("https://api.openai.com/v1/images/edits", {
@@ -65,7 +67,7 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           model: "gpt-image-1",
-          prompt: `${photoPrompt}${noTextInstruction}`,
+          prompt: `${cameraSpec}${photoPrompt}${noTextInstruction}`,
           size: "1024x1792",
           output_format: "png",
         }),
