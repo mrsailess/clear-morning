@@ -811,17 +811,6 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
     { key: "caption",  label: "Caption",  field: brief.caption,  style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
     { key: "hashtags", label: "Hashtags", field: brief.hashtags, style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
     { key: "cta",         label: "CTA",          field: brief.cta,         style: { fontSize: "15px", fontWeight: "600", color: accent } },
-    ...(brief.placementConcept ? [{ key: "placementConcept", label: "Placement Concept", field: brief.placementConcept, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
-    ...(brief.whyItFeelsUnexpected ? [{ key: "whyItFeelsUnexpected", label: "Why It's Unexpected", field: brief.whyItFeelsUnexpected, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
-    ...(brief.whyItStillFitsTheCustomer ? [{ key: "whyItStillFitsTheCustomer", label: "Why It Fits", field: brief.whyItStillFitsTheCustomer, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
-    ...(brief.visualPatternInterrupt ? [{ key: "visualPatternInterrupt", label: "Pattern Interrupt", field: brief.visualPatternInterrupt, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
-    ...(brief.storyObject ? [{ key: "storyObject", label: "Story Object", field: brief.storyObject, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
-    ...(brief.freshActionEvidence ? [{ key: "freshActionEvidence", label: "Fresh Action Evidence", field: brief.freshActionEvidence, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
-    ...(brief.partialHumanPresence ? [{ key: "partialHumanPresence", label: "Human Presence", field: brief.partialHumanPresence, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
-    ...(brief.emotionalTension ? [{ key: "emotionalTension", label: "Emotional Tension", field: brief.emotionalTension, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
-    ...(brief.scrollStopReason ? [{ key: "scrollStopReason", label: "Scroll-Stop Reason", field: brief.scrollStopReason, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
-    ...(brief.whyThisWorks ? [{ key: "whyThisWorks", label: "Why This Works", field: brief.whyThisWorks, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
-    ...(brief.whyThisMightGetShared ? [{ key: "whyThisMightGetShared", label: "Why It Gets Shared", field: brief.whyThisMightGetShared, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
     ...(brief.photoPrompt ? [{ key: "photoPrompt", label: "Photo Prompt", field: brief.photoPrompt, style: { fontSize: "12px", lineHeight: "1.7", whiteSpace: "pre-wrap", color: "#A09890", fontFamily: "monospace" } }] : [])
   ] : [];
 
