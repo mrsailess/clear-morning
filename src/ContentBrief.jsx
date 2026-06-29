@@ -208,9 +208,8 @@ CREATOR TYPE: Who shoots this. e.g. "30s professional male at home", "lifestyle 
 NEVER USE:
 "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "quit drinking" / "recovery" / "sober community" / "nervous system" / "fixed that part" / "they were right" / anything defensive or shame-based.
 PHOTO PROMPT RULES:
-Use the No. 86 master template below. Write SETTING, SUBJECT, SUBJECT ACTION, VISUAL STORY, BOTTLE PLACEMENT, and PROPS fresh each time. Keep all other sections exactly as written. Vary the setting, activity, and lighting across generations — do not repeat the same patio scene, same man sitting alone, or same blue hour lighting.
-NO. 86 MASTER TEMPLATE:
-${NO86_MASTER_TEMPLATE}
+Write a specific scene for the photo prompt — setting, subject, action, bottle placement, and one or two props. Vary setting, activity, and lighting across generations.
+${NO86_PHOTO_STYLE_GUIDE}
 NEVER USE:
 sobriety / recovery / quit drinking / nervous system / fixed that part / they were right / anything defensive or shame-based.
 Return ONLY valid JSON:
