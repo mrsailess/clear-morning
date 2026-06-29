@@ -641,6 +641,10 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
       const parsed = await response.json();
       if (parsed.error) throw new Error(`API error: ${parsed.error} ${parsed.detail || parsed.raw || ""}`);
       if (!parsed.imageConcept && !parsed.hook && !parsed.onScreenText) throw new Error(`Unexpected response: ${JSON.stringify(parsed)}`);
+      const CAMERA_SUFFIX = "Shot on full-frame mirrorless, 50mm prime, f/2.0. Natural sensor grain. Slight vignette. No studio lighting.";
+      if (parsed.photoPrompt && !parsed.photoPrompt.includes("mirrorless")) {
+        parsed.photoPrompt = parsed.photoPrompt.trim() + " " + CAMERA_SUFFIX;
+      }
       setBrief({ ...parsed, hookFamily });
       setSelectedHook(parsed.bestHook || parsed.hook || null);
       const newHook = parsed.bestHook || parsed.hook || parsed.onScreenText || "";
@@ -719,6 +723,8 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
         if (!promptRes.ok || promptData.error) throw new Error(promptData.error || "Failed to generate photo prompt");
         photoPrompt = promptData.photoPrompt;
         if (!photoPrompt) throw new Error("No photo prompt returned");
+        const CAMERA_SUFFIX = "Shot on full-frame mirrorless, 50mm prime, f/2.0. Natural sensor grain. Slight vignette. No studio lighting.";
+        if (!photoPrompt.includes("mirrorless")) photoPrompt = photoPrompt.trim() + " " + CAMERA_SUFFIX;
         setBrief((prev) => ({ ...prev, photoPrompt }));
       }
 
