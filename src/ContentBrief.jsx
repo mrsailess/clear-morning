@@ -13,7 +13,7 @@ Vertical 9:16 at 1080×1920 pixels. Every image.
 
 CAMERA & PHOTOGRAPHIC REALISM — APPLY BEFORE ALL OTHER DECISIONS
 Every image must be indistinguishable from a real photograph captured by a professional photographer on location.
-Shot on a full-frame mirrorless camera with a 50mm prime lens. Typical settings: f/2.0, ISO 400–800, 1/125 sec. Natural optical depth of field only. Real lens rendering. Natural sensor grain. Slight optical vignette. Physically accurate exposure and white balance. Real glass characteristics and lens falloff.
+Shot on a full-frame mirrorless camera with a 50mm prime lens. Typical settings: f/2.0, ISO 400–800, 1/125 sec. Natural optical depth of field only. Real lens rendering. Natural sensor grain. No vignette. Physically accurate exposure and white balance. Real glass characteristics and lens falloff.
 Focus should never be clinically perfect. Allow subtle focus breathing, natural edge softness, slight chromatic aberration, realistic highlight rolloff, and authentic dynamic range. Preserve fine texture in skin, fabric, leather, wood, and glass.
 No studio lighting. No CGI rendering. No artificial sharpening. No HDR processing. No computational photography look. No exaggerated bokeh. No hyper-clean edges. No plastic skin. No synthetic textures. No perfect symmetry.
 The final image should be believable as an unedited RAW photograph from a Sony A7 IV, Canon R6 Mark II, or Nikon Z6 III using a 50mm prime lens.
@@ -638,7 +638,7 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
       const parsed = await response.json();
       if (parsed.error) throw new Error(`API error: ${parsed.error} ${parsed.detail || parsed.raw || ""}`);
       if (!parsed.imageConcept && !parsed.hook && !parsed.onScreenText) throw new Error(`Unexpected response: ${JSON.stringify(parsed)}`);
-      const CAMERA_SUFFIX = "\n\nCAMERA: Shot on full-frame mirrorless (Sony A7 IV), 50mm prime, f/2.0, ISO 400–800, 1/125 sec. Natural sensor grain. Slight optical vignette. No studio lighting. Authenticity over beauty — if any element looks AI-generated or artificially perfect, reduce it.";
+      const CAMERA_SUFFIX = "\n\nCAMERA: Shot on full-frame mirrorless (Sony A7 IV), 50mm prime, f/2.0, ISO 400–800, 1/125 sec. Vertical 9:16 at 1080×1920. Natural sensor grain. No vignette. No studio lighting. Authenticity over beauty — if any element looks AI-generated or artificially perfect, reduce it.";
       if (parsed.photoPrompt) {
         parsed.photoPrompt = parsed.photoPrompt.trim() + CAMERA_SUFFIX;
       }
@@ -720,7 +720,7 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
         if (!promptRes.ok || promptData.error) throw new Error(promptData.error || "Failed to generate photo prompt");
         photoPrompt = promptData.photoPrompt;
         if (!photoPrompt) throw new Error("No photo prompt returned");
-        const CAMERA_SUFFIX = "\n\nCAMERA: Shot on full-frame mirrorless (Sony A7 IV), 50mm prime, f/2.0, ISO 400–800, 1/125 sec. Natural sensor grain. Slight optical vignette. No studio lighting. Authenticity over beauty — if any element looks AI-generated or artificially perfect, reduce it.";
+        const CAMERA_SUFFIX = "\n\nCAMERA: Shot on full-frame mirrorless (Sony A7 IV), 50mm prime, f/2.0, ISO 400–800, 1/125 sec. Vertical 9:16 at 1080×1920. Natural sensor grain. No vignette. No studio lighting. Authenticity over beauty — if any element looks AI-generated or artificially perfect, reduce it.";
         photoPrompt = photoPrompt.trim() + CAMERA_SUFFIX;
         setBrief((prev) => ({ ...prev, photoPrompt }));
       }
