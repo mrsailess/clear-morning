@@ -264,12 +264,15 @@ Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
 JOB: Make No. 86 feel desirable and real in everyday life. Create desire through the ritual.
 READING LEVEL: 5th–8th grade. Short sentences. Simple words. No em dashes.
 CORE RULE: Start with the ritual, not the product. Show the moment where No. 86 belongs.
+TONE: "I noticed this too." Never "you need to fix this." Observe the moment. Never lecture. Premium but understated. Calm. Real. Not a luxury ad. Not a bar ad.
 ON-SCREEN TEXT: This is the hook. 25–35 words. Short lines. White space between them. Reads like a private thought or specific moment, not a product description. Must stand alone without the bottle.
+HOOK REWRITE RULE — if a draft hook contains "version of you," "real you," "show up," or "better version," rewrite it as a quieter moment or tradeoff line.
+INTERNAL SCORING RULE: Before finalizing, reject any output that sounds like a motivational coach, therapist, or moral lecture. If it sounds like a lesson, it is wrong. If it sounds like something a person would think privately, it is right.
 PRODUCT VISIBILITY: More visible than Emotional Truth posts, but still feels natural. Never the hero.
 IMAGE: Real lived-in settings. Natural or realistic home lighting. No staged ad energy. No influencer posing.
 CAPTION: 45–80 words. The image carries the feeling. Text supports, does not overpower.
-CTA: Invite community. Max 12 words. Good: "What does your version of this look like?" / "What tells your day it is over?"
-TONE: Premium but understated. Calm. Real. Not a luxury ad. Not a bar ad.
+CTA: Soft and reflective. Max 12 words. Good: "What does your version of this look like?" / "What tells your day it is over?" / "Keep the ritual?"
+BANNED: "the real you" / "full version of yourself" / "show up better" / "better version" / "level up" / "your highest self" / "nervous system" / "Here's the truth" / "The hard truth" / "soft ache" / "holding space" / "quit drinking" / "recovery"
 AVOID: Looking like an ad. Overly staged scenes. Product-first copy. Generic luxury lifestyle. Party energy. Bar energy.
 GOOD EXAMPLES:
 "Laptop closed. Phone face down. Glass on the table. That small pause matters more than people think."
@@ -282,12 +285,16 @@ Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
     productPrompt: `You write Product Belief content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
 JOB: Remove doubt and create purchase intent.
 READING LEVEL: 5th–8th grade. Short sentences. Simple words. No em dashes.
-CORE RULE: Product mention is allowed. Still start with a human truth when possible.
+CORE RULE: Product mention is allowed. Still start with a human truth when possible. Say the true thing cleanly. Let it land. Do not explain it.
+TONE: Calm. Direct. Believable. Not a pitch. Not a wellness ad. Not a sobriety story.
+INTERNAL SCORING RULE: Before finalizing, reject any output that sounds like a sales pitch, health claim, or moral lecture. If it sounds like an ad, it is wrong. If it sounds like something a person would tell a friend, it is right.
 ROTATE between: taste profile, how to drink it, 50/50 serve, less than 0.5% ABV, reviews, objection handling, founder story, Amazon social proof, comparison to whiskey experience (not flavor).
 KEEP IT: Simple and believable. Show belief not hype. Do not overclaim. Do not say it tastes exactly like bourbon. Do not use recovery or sobriety framing by default.
 ON-SCREEN TEXT: This is the hook. 25–35 words. Can mention No. 86 directly. Short lines. Must carry the entire post by itself.
+HOOK REWRITE RULE — if a draft hook contains "version of you," "real you," "show up," or "better version," rewrite it as a quieter product truth.
 CAPTION: 45–80 words. Explains, educates, or builds trust simply.
 CTA: Soft product bridge. Max 12 words. Good: "Try No. 86 tonight." / "Link in bio." / "Would this fit your ritual?"
+BANNED: "the real you" / "full version of yourself" / "show up better" / "better version" / "level up" / "your highest self" / "nervous system" / "Here's the truth" / "The hard truth" / "quit drinking" / "recovery" / "sober community"
 AVOID: Hard sell. Fake urgency. Medical claims. Wellness promises. Overexplaining. Cheesy product claims. Spam tone.
 GOOD EXAMPLES:
 "No. 86 is not trying to be bourbon. It is trying to keep the glass, the ice, and the pause without borrowing from tomorrow."
@@ -326,6 +333,9 @@ QUALITY GATE — run all four internally before returning. Rewrite if any fail:
 3. Does the scene still work as a generic stock product image? If yes, rewrite.
 4. Does the output include at least 2 of the 4 story signals? If no, rewrite.
 ON-SCREEN TEXT: Emotional Truth style. 25–35 words. A private human truth someone would send a friend and say "this is me." Should not mention No. 86. Optimized for shares. Short sentences. White space between lines.
+TONE: "I noticed this too." Never "you need to fix this." If it sounds like a lesson, rewrite it. If it sounds like a private thought, keep it.
+HOOK REWRITE RULE — if the draft contains "version of you," "real you," "show up," or "better version," rewrite as a quieter tradeoff or moment.
+BANNED: "the real you" / "full version of yourself" / "show up better" / "better version" / "level up" / "your highest self" / "nervous system" / "Here's the truth" / "The hard truth" / "quit drinking" / "recovery"
 Good text examples: "The drink after work was never about the drink. It was about the 20 minutes of silence nobody gave you all day." / "Some nights you do not need another drink. You need the day to stop needing you." / "The glass was never the whole thing. It was the signal that nobody needed anything for a minute."
 AVOID: Simple combinations like bottle + glass + one prop with no story / generic bottle-on-counter / bar scene / party energy / sadness / loneliness / depressive mood / studio lighting / overproduced / fake luxury / agency campaign / staged composition.
 Return ONLY valid JSON for this subcategory:
