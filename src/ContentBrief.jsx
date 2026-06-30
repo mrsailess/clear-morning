@@ -49,9 +49,10 @@ ${NO86_PHOTO_STYLE_GUIDE}
 TASK: Write only the scene. The No. 86 bottle is the hero or near-hero. Label readable. Setting is simple and bold — bourbon barrel head, cooler packed with ice, golf cart cup holder, grill side shelf, truck hood at golden hour, concrete pool coping, bottle held up against evening sky (hand visible, no face). Vertical 9:16 at 1080×1920. The result must look like a real professional photograph taken on location — not AI-generated. End every photo prompt with this exact line: "Shot on full-frame mirrorless, 50mm prime, f/2.0. Natural sensor grain. No vignette. No studio lighting."`;
 
 const NO86_MODES = [
-  { key: "emotional",  label: "Emotional Truth" },
-  { key: "ritual",     label: "Ritual / Lifestyle" },
-  { key: "product",    label: "Product Belief" },
+  { key: "emotional",   label: "Emotional Truth" },
+  { key: "ugc",        label: "Real Customer UGC" },
+  { key: "founder",    label: "Founder Content" },
+  { key: "customer",   label: "Customer Stories" },
   { key: "placement",  label: "Creative Placement" }
 ];
 
@@ -71,42 +72,30 @@ const BRAND_CONFIGS = {
     tagline: "Keep the ritual. Lose the fog.",
     categories: {
       emotional: [
-        "After Work Silence",
-        "Shareable Truth",
-        "Lived Shift",
-        "The Ritual, Not the Alcohol",
-        "The Tradeoff Tomorrow",
-        "What You Actually Miss",
-        "Control and Clarity",
-        "Identity Shift"
+        "Shareable Truth", "Lived Shift", "After Work Silence",
+        "The Ritual, Not the Alcohol", "The Tradeoff Tomorrow",
+        "What You Actually Miss", "Control and Clarity", "Identity Shift"
       ],
-      ritual: [
-        "Patio Ritual",
-        "Steak Night",
-        "Kitchen Wind Down",
-        "Bar Cart",
-        "Firepit",
-        "Hotel Room",
-        "Home Office Reset",
-        "Weekend Porch",
-        "Dinner Table",
-        "Late Night Exhale"
+      ugc: [
+        "Actual Evening", "After Work Pour", "Dinner Cleanup",
+        "Patio Moment", "Couch / TV Night", "Game Night",
+        "Steak Night", "First Taste", "50/50 Pour",
+        "Morning After", "Partner Noticed", "Bar Cart at Home"
       ],
-      product: [
-        "What No. 86 Is",
-        "Taste Profile",
-        "How To Drink It",
-        "Why People Buy It",
-        "Objection Handling",
-        "Founder Story",
-        "Customer Reaction",
-        "First Pour Experience",
-        "When To Reach For It",
-        "Why It Works For The Ritual"
+      founder: [
+        "Pouring No. 86", "Cooking", "Working Late", "Reading",
+        "Sunset", "Walking the Dog", "Being a Dad", "Packing Orders",
+        "Checking Amazon", "Formulation / Notes", "Veteran Founder", "Quiet Night"
+      ],
+      customer: [
+        "Sober Years", "After Work Ritual", "Partner Noticed", "First Pour",
+        "Repeat Buyer", "Morning Clarity", "50/50 User", "Steak Night",
+        "Used to Drink Whiskey", "Did Not Expect to Like It",
+        "Amazon Review", "Facebook Comment"
       ],
       placement: [
         "Pattern Interrupt Product Story"
-        // hidden: "Out-of-Context Product Story", "Scroll-Stopping Product Hero", "Beautiful Evening", "Hero Bottle", "Bar Cart", "How To Pour", "Neat / Over Ice / Mixed", "50/50", "Flavor Profile", "Bottle With Glass", "Amazon Listing Image", "Dark Premium Product Shot", "Kitchen Counter Product Shot", "Patio Table Product Shot", "Gift / Host Bottle", "Review / Social Proof Image"
+        // hidden: Out-of-Context, Scroll-Stopping Hero, Beautiful Evening, Hero Bottle, Bar Cart, How To Pour, Neat/Over Ice/Mixed, 50/50, Flavor Profile, Amazon Listing Image, Shopify Hero, Retargeting Image
       ]
     },
     systemPrompt: `You write TikTok/Instagram content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
@@ -260,6 +249,71 @@ GOOD EXAMPLES:
 QUALITY GATE: Before returning, answer internally: Would someone share this if the bottle were not in the image? Would someone send this to a friend and say "this is me"? Does the subject feel aspirational, calm, and in control? If any answer is no, rewrite before returning.
 Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
 {"postType":"Emotional Truth","subcategory":"...","angle":"...","hook":"...","bestHook":"...","hookOptions":["...","...","...","...","...","...","...","..."],"imageConcept":"...","caption":"...","cta":"...","hashtags":"..."}`,
+    ugcPrompt: `You write Real Customer UGC briefs for No. 86, a non-alcoholic whiskey alternative for men 30–45.
+JOB: Create simple creator instructions a real customer can follow to film their actual evening. Not a script. Not influencer content.
+READING LEVEL: 5th–8th grade. Short sentences. Simple words. No em dashes.
+CORE RULE: The customer films their real life. No acting. No ring light. No forced hook. No influencer voice. Real imperfections are good.
+TONE: Honest. Understated. Human. The goal is trust, not perfection.
+INTERNAL SCORING RULE: If the brief sounds like an influencer script or ad direction, rewrite it. If it sounds like something you would text a friend before they film their evening, it is right.
+CUSTOMER BRIEF RULES:
+- Give instructions, not a script.
+- "Film your actual evening" not "say this line."
+- "Show the glass how you actually pour it" not "perform the pour."
+- "Do not clean up too much" is a valid instruction.
+- Product appears naturally — never forced into frame.
+GOOD CUSTOMER PROMPT EXAMPLE: "Film the first 20 minutes after your workday ends. Put your phone face down. Pour No. 86 how you actually drink it. Do not talk unless you naturally want to. Show the room as it is."
+SHOT LIST: 3 to 5 specific shots. Simple. Achievable with a phone. No lighting equipment needed.
+WHAT TO AVOID: Ring light / influencer staging / forced product placement / talking to camera / cleaning everything up / scripted lines / fake spontaneity.
+HASHTAGS: 5–8. Prefer: #no86 #afterworkritual #mindfuldrinking #whiskeyritual #realmoment
+QUALITY GATE: Would a real customer actually film this? Does it feel like their real evening? If no, rewrite.
+Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
+{"postType":"Real Customer UGC","subcategory":"...","customerBrief":"...","shotList":["...","...","..."],"whatToAvoid":["...","...","..."],"naturalPromptToCustomer":"...","optionalOnScreenText":"...","caption":"...","cta":"...","hashtags":"..."}`,
+    founderPrompt: `You write Founder Content briefs for Sean, the founder of No. 86, a non-alcoholic whiskey alternative.
+Sean is a Black Navy veteran, father of two, husband, entrepreneur. He is in his late 30s. He built No. 86 through 172 formulations. He lives the product.
+JOB: Make Sean visible as a founder without turning him into an influencer. People buy founders. The content should feel observed, not performed.
+READING LEVEL: 5th–8th grade. Short sentences. Simple words. No em dashes.
+CORE RULE: The camera should observe Sean, not make him perform. Founder content can be quiet. Show Sean living the brand.
+TONE: Calm. Understated. Honest. Not hustle content. Not motivational speech. Not overexplaining.
+INTERNAL SCORING RULE: If the content makes Sean look like he is performing for an audience, rewrite it. If it looks like someone caught a real moment, it is right.
+GOOD FOUNDER CONTENT EXAMPLES:
+- Sean pouring No. 86 while dinner cooks
+- Sean closing his laptop and sitting outside
+- Sean reading with a glass nearby
+- Sean walking the dog at sunset
+- Sean being a dad while the bottle sits in the background
+- Sean packing a customer order
+- Sean looking at old formulation notes
+ON-SCREEN TEXT: 25–35 words. Human truth or founder observation. Not a pitch.
+TONE FILTER: "I noticed this too." Never "you need to fix this." Never motivational speech. Never hustle content.
+BANNED: "the real you" / "full version of yourself" / "show up better" / "better version" / "level up" / "grind" / "hustle" / "nervous system" / "recovery" / "Here's the truth"
+CAPTION: 45–80 words. First person. Sean's voice. Sounds lived, not written.
+CTA: Soft. Max 12 words.
+HASHTAGS: 5–8. Prefer: #no86 #founderstory #buildinginpublic #veteranfounder #no86whiskey
+QUALITY GATE: Does this look like a real moment from Sean's life? Would someone believe it is real? If no, rewrite.
+Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
+{"postType":"Founder Content","subcategory":"...","founderMoment":"...","shotList":["...","...","..."],"onScreenText":"...","caption":"...","photoPrompt":"...","whyThisWorks":"...","cta":"...","hashtags":"..."}`,
+    customerStoriesPrompt: `You write Customer Stories content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
+JOB: Turn real customer experiences into trust-building content. This is the strongest trust lane.
+READING LEVEL: 5th–8th grade. Short sentences. Simple words. No em dashes.
+CORE RULE: Use real customer language when available. Do not fake sobriety stories. Do not invent recovery claims. If no real quote is provided, output a story collection prompt instead of inventing one.
+TONE: Honest. Specific. Human. Not polished. Not a testimonial ad.
+INTERNAL SCORING RULE: If it sounds like a fake review or manufactured testimonial, rewrite it. If it sounds like something a real person would say to a friend, it is right.
+CUSTOMER STORY COLLECTION PROMPTS (use when no real quote is provided):
+"What did you miss most about the ritual?"
+"When do you usually pour No. 86?"
+"What surprised you about it?"
+"What did your partner notice?"
+"What changed the next morning?"
+"How do you drink it?"
+"What made you buy again?"
+ON-SCREEN TEXT: 25–35 words. Customer voice. Specific and real. Not polished.
+CAPTION: 45–80 words. Supports the story. Bridges softly to No. 86.
+BANNED: Fake sobriety stories / invented recovery claims / manufactured testimonials / "life-changing" / "changed my life" / wellness promises / medical claims
+CTA: Soft. Max 12 words. Invite others to share.
+HASHTAGS: 5–8. Prefer: #no86 #mindfuldrinking #whiskeyritual #afterworkritual #drinkno86
+QUALITY GATE: Is this specific enough to be believable? Does it sound like a real person? If no, rewrite.
+Return ONLY valid JSON. Start with { end with }. No markdown. No code blocks.
+{"postType":"Customer Stories","subcategory":"...","storyAngle":"...","customerStoryPrompt":"...","onScreenText":"...","caption":"...","photoPrompt":"...","whyThisBuildsTrust":"...","cta":"...","hashtags":"..."}`,
     ritualPrompt: `You write Ritual / Lifestyle content for No. 86, a non-alcoholic whiskey alternative for men 30–45.
 JOB: Make No. 86 feel desirable and real in everyday life. Create desire through the ritual.
 READING LEVEL: 5th–8th grade. Short sentences. Simple words. No em dashes.
@@ -532,13 +586,21 @@ Focus on social ritual without party energy. Use game night, grill night, firepi
 Focus on presence, responsibility, after-bedtime quiet, dinner cleanup, or the house finally settling. Do not show children as the main focus. Children may be implied through toys, homework, lunchbox, hallway light, or a closed bedroom door — do not make them the subject. No guilt-heavy parenting copy. Tone should be calm and grounded, not shame-based.`
 };
 
+const AUDIENCE_OPTIONS_BY_MODE = {
+  emotional:  ["Solo", "Couples", "Friends", "Family"],
+  ugc:        ["Solo", "Couples", "Friends", "Family"],
+  founder:    ["Sean", "Family", "Work", "Product"],
+  customer:   ["Customer", "Partner", "Repeat Buyer", "Review"],
+  placement:  ["Product First", "Lifestyle Product", "Amazon", "Meta Ad", "Shopify"]
+};
+
 const pick = (arr, exclude) => {
   const pool = exclude ? arr.filter((x) => x !== exclude) : arr;
   return pool[Math.floor(Math.random() * pool.length)];
 };
 
 const isImageMode = (m) => m === "ugc" || m === "paid";
-const isNo86Mode = (m) => m === "emotional" || m === "ritual" || m === "product" || m === "placement";
+const isNo86Mode = (m) => ["emotional","ugc","founder","customer","placement"].includes(m);
 
 export default function ContentBrief() {
   const [brand, setBrand] = useState(null);
@@ -555,6 +617,8 @@ export default function ContentBrief() {
   const [recentHooks, setRecentHooks] = useState([]);
   const [selectedHook, setSelectedHook] = useState(null);
   const [promptLoading, setPromptLoading] = useState(false);
+  const [daily3, setDaily3] = useState(null);
+  const [daily3Loading, setDaily3Loading] = useState(false);
   const lastAngle = useRef(null);
   const lastHookFamily = useRef(null);
 
@@ -565,9 +629,11 @@ export default function ContentBrief() {
   const getSystemPrompt = (b, m) => {
     if (b === "no86") {
       if (m === "emotional")  return BRAND_CONFIGS.no86.emotionalPrompt;
-      if (m === "ritual")     return BRAND_CONFIGS.no86.ritualPrompt;
-      if (m === "product")    return BRAND_CONFIGS.no86.productPrompt;
+      if (m === "ugc")        return BRAND_CONFIGS.no86.ugcPrompt;
+      if (m === "founder")    return BRAND_CONFIGS.no86.founderPrompt;
+      if (m === "customer")   return BRAND_CONFIGS.no86.customerStoriesPrompt;
       if (m === "placement")  return BRAND_CONFIGS.no86.placementPrompt;
+      return BRAND_CONFIGS.no86.systemPrompt;
     }
     return isImageMode(m) ? BRAND_CONFIGS[b].imageSystemPrompt : BRAND_CONFIGS[b].systemPrompt;
   };
@@ -593,23 +659,25 @@ export default function ContentBrief() {
       ? `\nRecent hooks to avoid:\n${recentHooks.map((h, i) => `${i + 1}. ${h}`).join("\n")}\nDo not reuse the same opening, sentence structure, emotional claim, metaphor, or hook family as any of these. If the new idea feels like a rewrite of one of those, reject it and try another direction.\n`
       : "";
 
-    const modeInstruction = m === "ugc"
+    const modeInstruction = m === "ugc" && b === "personal"
       ? "Generate a still-image UGC concept with 25 to 40 words of on-screen text. Feel like a real person posted it."
       : m === "paid"
       ? "Generate a still-image paid ad concept with 25 to 40 words of on-screen text and a stronger sales angle. Same UGC feel, but sharper product benefit and clearer CTA."
       : m === "emotional"
       ? "Generate an Emotional Truth post. Lead with a human truth. Do not mention No. 86 in the on-screen text. Optimize for shares and comments. Every regeneration should explore a different tension, moment, or idea."
-      : m === "ritual"
-      ? "Generate a Ritual / Lifestyle post. Start with the ritual moment. Show where No. 86 belongs naturally. Use a real lived-in setting."
-      : m === "product"
-      ? "Generate a Product Belief post. Start with a human truth if possible. Product mention is allowed. Rotate the product angle — taste, how to drink, objection, founder, proof."
+      : m === "ugc" && b === "no86"
+      ? "Generate a Real Customer UGC brief. Give simple instructions a real customer can follow to film their actual evening. Not a script. Not influencer content."
+      : m === "founder"
+      ? "Generate a Founder Content brief. Show Sean living the brand — observed, not performed. Quiet real moments only."
+      : m === "customer"
+      ? "Generate a Customer Stories brief. Turn real customer experiences into trust-building content. Use customer voice. Specific and honest."
       : m === "placement"
       ? "Generate a Creative Product Placement concept. The bottle is the hero or near-hero. Make it visually memorable and brand-right. Premium, warm, and clean — not a generic whiskey ad."
       : "Generate a post. Every regeneration should explore a different tension, moment, or idea inside this category.";
 
-    const audienceBlock = (b === "no86" && isNo86Mode(m)) ? `\n${AUDIENCE_RULES[audienceContext]}\n` : "";
+    const audienceBlock = (b === "no86" && isNo86Mode(m)) ? `\nAudience context: ${audienceContext}\n` : (b === "no86" || !isNo86Mode(m)) && AUDIENCE_RULES[audienceContext] ? `\n${AUDIENCE_RULES[audienceContext]}\n` : "";
 
-    const userContent = `Content mode: ${m === "ugc" ? "Static UGC Image" : m === "paid" ? "Paid Ad Image" : m === "emotional" ? "Emotional Truth" : m === "ritual" ? "Ritual / Lifestyle" : m === "product" ? "Product Belief" : m === "placement" ? "Creative Product Placement" : "Social Post"}
+    const userContent = `Content mode: ${m === "ugc" && b !== "no86" ? "Static UGC Image" : m === "paid" ? "Paid Ad Image" : m === "emotional" ? "Emotional Truth" : m === "ugc" ? "Real Customer UGC" : m === "founder" ? "Founder Content" : m === "customer" ? "Customer Stories" : m === "placement" ? "Creative Product Placement" : "Social Post"}
 Content category: ${c}
 Content angle: ${angle}
 Required hook family: ${hookFamily}
@@ -623,7 +691,7 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
         body: JSON.stringify({
           system: getSystemPrompt(b, m),
           messages: [{ role: "user", content: userContent }],
-          max_tokens: b === "no86" ? (m === "emotional" ? 2000 : 1500) : isImageMode(m) ? 1500 : 500
+          max_tokens: b === "no86" ? (m === "emotional" ? 2000 : 1500) : (m === "ugc" || m === "paid") ? 1500 : 500
         })
       });
       if (!response.ok) {
@@ -632,7 +700,7 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
       }
       const parsed = await response.json();
       if (parsed.error) throw new Error(`API error: ${parsed.error} ${parsed.detail || parsed.raw || ""}`);
-      if (!parsed.imageConcept && !parsed.hook && !parsed.onScreenText) throw new Error(`Unexpected response: ${JSON.stringify(parsed)}`);
+      if (!parsed.imageConcept && !parsed.hook && !parsed.onScreenText && !parsed.customerBrief && !parsed.founderMoment && !parsed.storyAngle) throw new Error(`Unexpected response: ${JSON.stringify(parsed)}`);
       const CAMERA_SUFFIX = "\n\nCAMERA: Shot on full-frame mirrorless (Sony A7 IV), 50mm prime, f/2.0, ISO 400–800, 1/125 sec. Vertical 9:16 at 1080×1920. Natural sensor grain. No vignette. No studio lighting. Authenticity over beauty — if any element looks AI-generated or artificially perfect, reduce it.";
       if (parsed.photoPrompt) {
         parsed.photoPrompt = parsed.photoPrompt.trim() + CAMERA_SUFFIX;
@@ -822,8 +890,16 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
   ] : [];
 
   const no86Fields = brief ? [
-    { key: "onScreenText", label: "On-Screen Text", field: selectedHook || brief.hookOptions?.[0] || brief.hook || brief.onScreenText, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
+    { key: "onScreenText", label: "On-Screen Text", field: selectedHook || brief.hookOptions?.[0] || brief.hook || brief.onScreenText || brief.optionalOnScreenText, style: { fontSize: "17px", fontWeight: "600", lineHeight: 1.6, whiteSpace: "pre-wrap", color: "#F0E8DA" } },
     { key: "imageConcept", label: "Image Concept",  field: brief.imageConcept, style: { fontSize: "14px", lineHeight: "1.7", color: "#C8C0B4", fontStyle: "italic" } },
+    ...(brief.customerBrief ? [{ key: "customerBrief", label: "Customer Brief", field: brief.customerBrief, style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } }] : []),
+    ...(brief.shotList?.length ? [{ key: "shotList", label: "Shot List", field: brief.shotList.map((s,i) => `${i+1}. ${s}`).join("\n"), style: { fontSize: "13px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4", fontFamily: "monospace" } }] : []),
+    ...(brief.whatToAvoid?.length ? [{ key: "whatToAvoid", label: "What To Avoid", field: brief.whatToAvoid.map(s => `• ${s}`).join("\n"), style: { fontSize: "13px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#9A5A5A", fontFamily: "monospace" } }] : []),
+    ...(brief.naturalPromptToCustomer ? [{ key: "naturalPromptToCustomer", label: "Prompt To Customer", field: brief.naturalPromptToCustomer, style: { fontSize: "14px", lineHeight: "1.8", fontStyle: "italic", color: "#C8C0B4" } }] : []),
+    ...(brief.founderMoment ? [{ key: "founderMoment", label: "Founder Moment", field: brief.founderMoment, style: { fontSize: "14px", lineHeight: "1.7", color: "#C8C0B4" } }] : []),
+    ...(brief.customerStoryPrompt ? [{ key: "customerStoryPrompt", label: "Story Collection Prompt", field: brief.customerStoryPrompt, style: { fontSize: "14px", lineHeight: "1.8", fontStyle: "italic", color: "#C8C0B4" } }] : []),
+    ...(brief.whyThisBuildsTrust ? [{ key: "whyThisBuildsTrust", label: "Why This Builds Trust", field: brief.whyThisBuildsTrust, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
+    ...(brief.storyAngle ? [{ key: "storyAngle", label: "Story Angle", field: brief.storyAngle, style: { fontSize: "13px", lineHeight: "1.7", color: "#A09890" } }] : []),
     { key: "caption",  label: "Caption",  field: brief.caption,  style: { fontSize: "14px", lineHeight: "1.8", whiteSpace: "pre-wrap", color: "#C8C0B4" } },
     { key: "hashtags", label: "Hashtags", field: brief.hashtags, style: { fontSize: "13px", color: accent, lineHeight: 1.8 } },
     { key: "cta",         label: "CTA",          field: brief.cta,         style: { fontSize: "15px", fontWeight: "600", color: accent } },
@@ -873,7 +949,7 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               {(brand === "no86" ? NO86_MODES : PERSONAL_MODES).map((m) => (
                 <button key={m.key}
-                  onClick={() => { setMode(m.key); setCategory(null); setBrief(null); setError(null); setDaily3(null); resetMemory(); }}
+                  onClick={() => { setMode(m.key); setCategory(null); setBrief(null); setError(null); setDaily3(null); resetMemory(); if (brand === "no86") { const opts = AUDIENCE_OPTIONS_BY_MODE[m.key] || AUDIENCE_OPTIONS; setAudienceContext(opts[0]); } }}
                   style={{ flex: 1, minWidth: "80px", background: mode === m.key ? config.surface : "transparent", border: `1px solid ${mode === m.key ? accent : "#222"}`, borderRadius: "8px", padding: "10px 8px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace", color: mode === m.key ? accent : "#666", fontWeight: mode === m.key ? "700" : "400", letterSpacing: "0.5px", textTransform: "uppercase", textAlign: "center" }}>
                   {m.label}
                 </button>
@@ -887,7 +963,7 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
           <div style={{ marginBottom: "28px" }}>
             <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>03 Audience Context</div>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-              {AUDIENCE_OPTIONS.map((a) => (
+              {(AUDIENCE_OPTIONS_BY_MODE[mode] || AUDIENCE_OPTIONS).map((a) => (
                 <button key={a}
                   onClick={() => { setAudienceContext(a); setBrief(null); setError(null); setDaily3(null); }}
                   style={{ flex: 1, minWidth: "60px", background: audienceContext === a ? config.surface : "transparent", border: `1px solid ${audienceContext === a ? accent : "#222"}`, borderRadius: "8px", padding: "10px 8px", cursor: "pointer", fontSize: "11px", fontFamily: "monospace", color: audienceContext === a ? accent : "#666", fontWeight: audienceContext === a ? "700" : "400", letterSpacing: "0.5px", textTransform: "uppercase", textAlign: "center" }}>
@@ -1001,11 +1077,11 @@ ${audienceBlock}${recentHooksBlock}${modeInstruction}`;
               </div>
             )}
 
-            {/* Generate Photo Prompt — for ritual/product/placement tabs (no hookOptions) */}
-            {brand === "no86" && (mode === "ritual" || mode === "product" || mode === "placement") && (
+            {/* Generate Photo Prompt — for ugc/founder/customer/placement tabs (no hookOptions) */}
+            {brand === "no86" && (mode === "ugc" || mode === "founder" || mode === "customer" || mode === "placement") && (
               <div style={{ padding: "20px", borderTop: `1px solid ${config.border}` }}>
                 <button
-                  onClick={() => generatePhotoPrompt(selectedHook || brief.onScreenText || brief.imageConcept || brief.angle || brief.subcategory || "Generate photo prompt")}
+                  onClick={() => generatePhotoPrompt(selectedHook || brief.onScreenText || brief.founderMoment || brief.customerStoryPrompt || brief.imageConcept || brief.angle || brief.subcategory || "Generate photo prompt")}
                   disabled={promptLoading}
                   style={{ width: "100%", background: "transparent", border: `1px solid ${promptLoading ? config.border : accent}`, borderRadius: "8px", padding: "11px", cursor: promptLoading ? "default" : "pointer", fontSize: "11px", fontWeight: "700", color: promptLoading ? "#555" : accent, letterSpacing: "1px", textTransform: "uppercase", fontFamily: "monospace" }}>
                   {promptLoading ? "BUILDING PHOTO PROMPT..." : brief.photoPrompt ? "REGENERATE PHOTO PROMPT" : "GENERATE PHOTO PROMPT"}
